@@ -1,0 +1,193 @@
+// Player.js
+import { CombatManager } from "./CombatManager.js";
+
+export default class Player {
+    constructor(x, y, canvasHeight, canvasWidth, id) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.speed = 3.5;
+        this.height = 100;
+        this.width = 60;
+
+        this.canvasHeight = canvasHeight;
+        this.canvasWidth = canvasWidth;
+
+        this.isGrounded = false;
+        this.velocityY = 0;
+        this.jumpForce = -8.5;
+        this.gravity = 0.1;
+
+        this.isAttacking = false;
+        this.attackCooldown = false;
+        this.attackDuration = 300;
+        // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
+        this.attackRange = { width: 40, height: 20 };
+
+        // Propriedade para simular a vida do player
+        this.health = 100;
+        this.isDamaged = false;
+
+        // NOVO: Propriedades de stamina
+        this.maxStamina = 100;
+        this.stamina = this.maxStamina;
+        this.staminaRegenRate = 0.2; // Quantidade regenerada por frame (pode ajustar)
+        this.attackStaminaCost = 20;
+        this.jumpStaminaCost = 15;
+
+        // Propriedade para controlar a direção que o player está olhando (left ou right)
+        this.facingDirection = "right";
+    }
+
+    draw(ctx) {
+        // Define a cor do player (muda se estiver danificado)
+        ctx.fillStyle = this.isDamaged ? "orange" : "#838282";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(this.facingDirection == "right" ? this.x + 20 : this.x , this.y + 10, 40, 30);
+
+        // Exibe a vida do player acima dele (opcional)
+        ctx.fillStyle = "white";
+        ctx.font = "12px Arial";
+        ctx.fillText(`${this.health}`, this.x, this.y - 10);
+
+        // Exibe a stamina do player (opcional)
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x, this.y - (this.height / 2), (this.stamina / this.maxStamina) * this.width, 5);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(this.x, this.y - (this.height / 2), this.width, 5);
+
+        // Se estiver atacando, desenha a área de ataque
+        if (this.isAttacking) {
+            const attackBox = this.getAttackHitbox();
+            ctx.fillStyle = "red";
+            ctx.fillRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
+        }
+    }
+
+    update(keys, players) {
+        // Regenera stamina a cada frame (até o máximo)
+        this.regenStamina();
+
+        this.#applyGravity();
+
+        // Movimento lateral e atualização da direção
+        if (keys.ArrowLeft || keys.a) {
+            if (this.x > 0) {
+                this.x -= this.speed;
+                this.facingDirection = "left";
+            }
+        }
+        if (keys.ArrowRight || keys.d) {
+            if (this.x < this.canvasWidth - this.width) {
+                this.x += this.speed;
+                this.facingDirection = "right";
+            }
+        }
+
+        // Pulo (verifica se há stamina suficiente para pular)
+        if ((keys.ArrowUp || keys.w) && this.isGrounded) {
+            if (this.stamina >= this.jumpStaminaCost) {
+                this.stamina -= this.jumpStaminaCost;
+                this.velocityY = this.jumpForce;
+                this.isGrounded = false;
+            }
+        }
+
+        // Ataque (verifica se há stamina suficiente para atacar)
+        if (keys.Control || keys[" "]) {
+            if (this.stamina >= this.attackStaminaCost) {
+                this.stamina -= this.attackStaminaCost;
+                this.attack(players);
+            }
+        }
+    }
+
+    attack(players) {
+        if (!this.isAttacking && !this.attackCooldown) {
+            this.isAttacking = true;
+            this.attackCooldown = true;
+
+            // O CombatManager verifica se o ataque atingiu algum player
+            CombatManager.handleAttack(this, players);
+
+            setTimeout(() => {
+                this.isAttacking = false;
+            }, this.attackDuration);
+
+            setTimeout(() => {
+                this.attackCooldown = false;
+            }, this.attackDuration + 200);
+        }
+    }
+
+    getHitbox() {
+        return {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+    }
+
+    getAttackHitbox() {
+        // Define a posição do ataque baseada na direção do player
+        const attackX = this.facingDirection === "right"
+            ? this.x + this.width // Ataca para a direita
+            : this.x - this.attackRange.width; // Ataca para a esquerda
+
+        return {
+            x: attackX,
+            y: this.y + this.height / 2 - this.attackRange.height / 2,
+            width: this.attackRange.width,
+            height: this.attackRange.height
+        };
+    }
+
+    #applyGravity() {
+        if (!this.isGrounded) {
+            this.velocityY += this.gravity;
+            this.y += this.velocityY;
+        }
+        this.#checkCollisionWithGround();
+    }
+
+    #checkCollisionWithGround() {
+        if (this.y + this.height >= this.canvasHeight) {
+            this.y = this.canvasHeight - this.height;
+            this.velocityY = 0;
+            this.isGrounded = true;
+        }
+    }
+
+    // Método que regenera a stamina
+    regenStamina() {
+        if (this.stamina < this.maxStamina) {
+            this.stamina += this.staminaRegenRate;
+            if (this.stamina > this.maxStamina) {
+                this.stamina = this.maxStamina;
+            }
+        }
+    }
+
+    takeDamage(damage, players) {
+        this.health -= damage;
+        this.isDamaged = true;
+        setTimeout(() => {
+            this.isDamaged = false;
+        }, 100);
+
+        if (this.health <= 0) {
+            const index = players.indexOf(this);
+            if (index !== -1) {
+                players.splice(index, 1);
+            }
+        }
+    }
+
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}

@@ -1,0 +1,19 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width:  100%; 
+    height:  100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    background-color: #ccc;
+}
+
+#game {
+    background-color: hsl(0, 0%, 14%);
+}

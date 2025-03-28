@@ -15,8 +15,8 @@ export default class Player {
 
         this.isGrounded = false;
         this.velocityY = 0;
-        this.jumpForce = -8.5;
-        this.gravity = 0.1;
+        this.jumpForce = -15;
+        this.gravity = 0.3;
 
         this.isAttacking = false;
         this.attackCooldown = false;
@@ -31,17 +31,18 @@ export default class Player {
         // NOVO: Propriedades de stamina
         this.maxStamina = 100;
         this.stamina = this.maxStamina;
-        this.staminaRegenRate = 0.2; // Quantidade regenerada por frame (pode ajustar)
-        this.attackStaminaCost = 20;
+        this.staminaRegenRate = 0.25; // Quantidade regenerada por frame (pode ajustar)
+        this.attackStaminaCost = 10;
         this.jumpStaminaCost = 15;
 
         // Propriedade para controlar a direção que o player está olhando (left ou right)
         this.facingDirection = "right";
     }
 
-    draw(ctx) {
-        // Define a cor do player (muda se estiver danificado)
-        ctx.fillStyle = this.isDamaged ? "orange" : "#838282";
+    draw(ctx, id) {
+        const playerColor = id == "Player 1" ?  "#838282" : "red"
+
+        ctx.fillStyle = this.isDamaged ? "orange" : playerColor;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
         ctx.fillStyle = 'blue'
@@ -96,7 +97,7 @@ export default class Player {
         }
 
         // Ataque (verifica se há stamina suficiente para atacar)
-        if (keys.Control || keys[" "]) {
+        if (keys.ArrowDown || keys[" "]) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
                 this.attack(players);

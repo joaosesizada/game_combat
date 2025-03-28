@@ -20,14 +20,14 @@ function gameloop() {
         } else {
             player.update(keys_two, players);
         }
-        player.draw(ctx);
+        player.draw(ctx, player.id);
     });
 
     requestAnimationFrame(gameloop);
 }
 
 const keys_one = { w: false, a: false, d: false, s: false, ' ': false };
-const keys_two = { ArrowUp: false, ArrowLeft: false, ArrowRight: false, ArrowDown: false, Control: false };
+const keys_two = { ArrowUp: false, ArrowLeft: false, ArrowRight: false, ArrowDown: false};
 
 window.addEventListener("keydown", (event) => {
     const key = event.key;

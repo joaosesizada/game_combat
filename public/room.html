@@ -15,11 +15,9 @@
   <script>
     const socket = io();
 
-    // Extrai o código da sala a partir da URL
     const pathArray = window.location.pathname.split('/');
     const codigoSala = pathArray[pathArray.length - 1];
 
-    // Emite o evento para acessar a sala
     socket.emit("acessar_sala", codigoSala, (resposta) => {
       if (resposta.sucesso) {
         document.getElementById('infoSala').innerText = `Você entrou na sala ${codigoSala}`;
@@ -28,14 +26,13 @@
       }
     });
 
-    // Atualiza a lista de usuários na sala quando o servidor emitir esse evento
     socket.on("atualizar_sala", (usuarios) => {
       console.log(`Usuários na sala ${codigoSala}:`, usuarios);
       const ul = document.getElementById('players');
-      ul.innerHTML = ""; // Limpa a lista
+      ul.innerHTML = ""; 
       usuarios.forEach((id) => {
         const li = document.createElement('li');
-        li.innerText = id; // Aqui você pode exibir um nome, se tiver essa informação
+        li.innerText = id; 
         ul.appendChild(li);
       });
     });

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+    <script src="/socket.io/socket.io.js"></script> 
+</head>
+<body>
+    <h1>Lobby game combat</h1>
+    
+    <div>
+        <label for="cod_entry">Digite o código da Sala:</label>
+        <div>
+            <input type="text" id="cod_entry" placeholder="Informe o código da sala">
+            <button id="btn_entry">Entrar</button>
+        </div>
+    </div>
+    
+    <div>
+        <button id="btn_create">Criar Sala</button>
+    </div>
+    
+    <p id="mensagem"></p>
+
+    <script>
+        const socket = io();
+        
+        const btn_create = document.getElementById('btn_create');
+        const btn_entry = document.getElementById('btn_entry');
+        const cod_entry = document.getElementById('cod_entry');
+        const mensagem = document.getElementById('mensagem');
+
+        // Criar uma nova sala e redirecionar
+        btn_create.addEventListener('click', () => {
+            socket.emit("criar_sala", (resposta) => {
+                if (resposta && resposta.url) {
+                    window.location.href = resposta.url;
+                }
+            });
+        });
+
+        // Entrar em uma sala existente e redirecionar
+        btn_entry.addEventListener('click', () => {
+            const codigoSala = cod_entry.value.trim();
+            if (codigoSala) {
+                socket.emit("entrar_sala", codigoSala, (resposta) => {
+                    if (resposta.sucesso) {
+                        window.location.href = resposta.url;
+                    } else {
+                        mensagem.innerText = resposta.mensagem;
+                    }
+                });
+            } else {
+                mensagem.innerText = "Digite um código de sala válido!";
+            }
+        });
+    </script>
+</body>
+</html>

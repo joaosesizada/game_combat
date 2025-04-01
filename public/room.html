@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sala de Jogo</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Sala de Jogo</h1>
+  <p id="infoSala">Carregando informações da sala...</p>
+  <h2>Jogadores na sala:</h2>
+  <ul id="players"></ul>
+
+  <script>
+    const socket = io();
+
+    // Extrai o código da sala a partir da URL
+    const pathArray = window.location.pathname.split('/');
+    const codigoSala = pathArray[pathArray.length - 1];
+
+    // Emite o evento para acessar a sala
+    socket.emit("acessar_sala", codigoSala, (resposta) => {
+      if (resposta.sucesso) {
+        document.getElementById('infoSala').innerText = `Você entrou na sala ${codigoSala}`;
+      } else {
+        document.getElementById('infoSala').innerText = "Houve um problema ao acessar a sala.";
+      }
+    });
+
+    // Atualiza a lista de usuários na sala quando o servidor emitir esse evento
+    socket.on("atualizar_sala", (usuarios) => {
+      console.log(`Usuários na sala ${codigoSala}:`, usuarios);
+      const ul = document.getElementById('players');
+      ul.innerHTML = ""; // Limpa a lista
+      usuarios.forEach((id) => {
+        const li = document.createElement('li');
+        li.innerText = id; // Aqui você pode exibir um nome, se tiver essa informação
+        ul.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

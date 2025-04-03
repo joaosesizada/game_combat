@@ -2,7 +2,7 @@
 import { CombatManager } from "./CombatManager.js";
 
 export default class Player {
-    constructor(x, y, canvasHeight, canvasWidth, id) {
+    constructor(x, y, id) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -10,8 +10,8 @@ export default class Player {
         this.height = 100;
         this.width = 60;
 
-        this.canvasHeight = canvasHeight;
-        this.canvasWidth = canvasWidth;
+        this.canvasHeight = 800;
+        this.canvasWidth = 800;
 
         this.isGrounded = false;
         this.velocityY = 0;
@@ -40,24 +40,24 @@ export default class Player {
     }
 
     draw(ctx, id) {
-        const playerColor = id == "Player 1" ?  "#838282" : "red"
+        const playerColor = id == "Player 1" ?  "#  " : "red"
 
         ctx.fillStyle = this.isDamaged ? "orange" : playerColor;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
-        ctx.fillStyle = 'blue'
-        ctx.fillRect(this.facingDirection == "right" ? this.x + 20 : this.x , this.y + 10, 40, 30);
+            ctx.fillStyle = 'blue'
+            ctx.fillRect(this.facingDirection == "right" ? this.x + 20 : this.x , this.y + 10, 40, 30);
 
-        // Exibe a vida do player acima dele (opcional)
-        ctx.fillStyle = "white";
-        ctx.font = "12px Arial";
-        ctx.fillText(`${this.health}`, this.x, this.y - 10);
+            // Exibe a vida do player acima dele (opcional)
+            ctx.fillStyle = "white";
+            ctx.font = "12px Arial";
+            ctx.fillText(`${this.health}`, this.x, this.y - 10);
 
-        // Exibe a stamina do player (opcional)
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.x, this.y - (this.height / 2), (this.stamina / this.maxStamina) * this.width, 5);
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(this.x, this.y - (this.height / 2), this.width, 5);
+            // Exibe a stamina do player (opcional)
+            ctx.fillStyle = "blue";
+            ctx.fillRect(this.x, this.y - (this.height / 2), (this.stamina / this.maxStamina) * this.width, 5);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(this.x, this.y - (this.height / 2), this.width, 5);
 
         // Se estiver atacando, desenha a área de ataque
         if (this.isAttacking) {

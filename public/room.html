@@ -1,20 +1,104 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sala de Jogo</title>
-  <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-  <h1>Sala de Jogo</h1>
-  <p id="infoSala">Carregando informações da sala...</p>
-  <h2>Jogadores na sala:</h2>
-  <ul id="players"></ul>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
 
+    body {
+      background-color: #556458;
+      /* Verde pastel */
+      font-family: "Jersey 15", sans-serif;
+      font-weight: 200;
+      font-style: normal;
+      font-size: 1.2rem;
+    }
+
+    .player-item {
+      background-color: #f5f9a3;
+      border: 3px solid #ced18a;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      /* Inicia invisível para a animação */
+      opacity: 0;
+      animation: fadeIn 0.8s forwards;
+    }
+
+    .player-item:hover {
+      transition: 0.5s;
+      transform: translateY(-5px);
+    }
+
+    /* Animação de fade-in com delay para cada item */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    #infoSala {
+      background-color: #8bbd7a;
+      border-radius: 0;
+      border: #7ca86d solid 3px;
+      font-weight: 500;
+      font-size: 2rem;
+    }
+
+    #infoSala:hover {
+      transition: 0.5s;
+      transform: translateY(-5px);
+    }
+
+    #jogadoresText {
+      color: #212529;
+    }
+
+    #play {
+      display: none;
+      background-color: #804a43;
+      border-radius: 0;
+      font-size: 1.6rem;
+      border: 3px solid #5b342f;
+    }
+
+    #play:hover {
+      color: #212529;
+      transition: 0.5s;
+      transform: translateY(-5px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-4">
+    <h1 class="text-center mb-4 text-dark">Sala de Jogo</h1>
+    <div class="alert alert-info text-center" id="infoSala">Carregando informações da sala...</div>
+    <h2 class="text-center mb-4" id="jogadoresText">Jogadores na sala:</h2>
+    <ul id="players" class="list-unstyled">
+      <!-- Lista de jogadores -->
+    </ul>
+    <div class="text-center">
+      <a id="linkButton">
+        <button id="play" type="button" class="btn custom-btn mt-3">
+          Jogar <i class="fas fa-play ms-2"></i>
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-
     const pathArray = window.location.pathname.split('/');
     const codigoSala = pathArray[pathArray.length - 1];
 
@@ -29,13 +113,27 @@
     socket.on("atualizar_sala", (usuarios) => {
       console.log(`Usuários na sala ${codigoSala}:`, usuarios);
       const ul = document.getElementById('players');
-      ul.innerHTML = ""; 
-      usuarios.forEach((id) => {
+      ul.innerHTML = "";
+      
+      usuarios.forEach((id, index) => {
         const li = document.createElement('li');
-        li.innerText = id; 
+        li.classList.add('player-item');
+        // Aplica um delay escalonado para a animação de cada item
+        li.style.animationDelay = `${index * 0.2}s`;
+        li.innerHTML = `<i class="fas fa-user fa-lg me-2"></i> ${id}`;
         ul.appendChild(li);
       });
+
+      if(usuarios.length == 2) {
+        document.getElementById('play').style.display = "inline-block"
+      }
+
+      let game = document.getElementById('linkButton')
+      game.setAttribute('href', 'http://localhost:3001/game/'+codigoSala)
     });
   </script>
+  <!-- Bootstrap JS (Bundle com Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

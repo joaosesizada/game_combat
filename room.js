@@ -1,7 +1,12 @@
-const express = require('express');
-const http = require('http');
-const path = require('path');
-const { Server } = require("socket.io");
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import { Server } from "socket.io";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
@@ -10,24 +15,23 @@ const io = new Server(server);
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'home.html'))
-})
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
 
 app.get('/room/:codigo', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'room.html'));
 });
 
-const salas = {}; 
+const salas = {};
 
 io.on("connection", (socket) => {
     console.log(`Novo usuário conectado! ID: ${socket.id}`);
 
     socket.on("criar_sala", (callback) => {
-        const codigoSala = Math.random().toString(36).substring(2, 7); // Gera um código aleatório
-        salas[codigoSala] = { usuarios: [socket.id] }; // Cria a sala e adiciona o usuário
-        socket.join(codigoSala); // Faz o usuário entrar na sala
+        const codigoSala = Math.random().toString(36).substring(2, 7);
+        salas[codigoSala] = { usuarios: [socket.id] };
+        socket.join(codigoSala);
         console.log(`Sala ${codigoSala} criada por ${socket.id}`);
-        // Retorna a URL da sala para redirecionamento
         callback({ codigo: codigoSala, url: `/room/${codigoSala}` });
     });
 
@@ -43,25 +47,18 @@ io.on("connection", (socket) => {
         }
     });
 
-    // Evento para acessar (ou recriar) a sala quando o usuário acessa diretamente a URL
     socket.on("acessar_sala", (codigoSala, callback) => {
         if (salas[codigoSala]) {
-            // Adiciona o usuário à sala existente
             salas[codigoSala].usuarios.push(socket.id);
         } else {
-            // Se a sala não existir, cria-a e adiciona o usuário
             salas[codigoSala] = { usuarios: [socket.id] };
         }
         socket.join(codigoSala);
         console.log(`Usuário ${socket.id} acessou a sala ${codigoSala}`);
-        // Responde ao cliente indicando sucesso
         callback({ sucesso: true });
-        // Emite a lista atualizada para todos na sala
         io.to(codigoSala).emit("atualizar_sala", salas[codigoSala].usuarios);
     });
 
-
-    // Quando o usuário desconectar
     socket.on("disconnect", () => {
         console.log(`Usuário desconectado: ${socket.id}`);
         for (const sala in salas) {

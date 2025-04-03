@@ -22,13 +22,17 @@ const gameState = { players: {} };
 const FPS = 60;
 
 setInterval(() => {
-    // Aqui você pode atualizar lógicas de física e outras regras
+    Object.values(gameState.players).forEach(player => {
+        player.update(Object.values(gameState.players))
+    });
+
     io.emit('update', gameState);
 }, 1000 / FPS);
 
 io.on("connection", (socket) => {
     console.log(`Novo usuário conectado: ${socket.id}`);
-    
+    console.log("------------------------------------")
+
     // Limita o jogo a dois jogadores
     if (Object.keys(gameState.players).length >= 2) {
         socket.emit('erro', 'Jogo com dois jogadores já está em andamento.');
@@ -39,40 +43,14 @@ io.on("connection", (socket) => {
     
     // Ajusta a posição inicial do jogador, se necessário
     const posicaoInicialX = Object.keys(gameState.players).length === 0 ? 0 : 500;
-    gameState.players[socket.id] = new Player(posicaoInicialX, 500, `Player ${socket.id}`);
+    gameState.players[socket.id] = new Player(posicaoInicialX, 700, `Player ${socket.id}`);
     
     // Lógica de movimentação
-    socket.on("move", (data) => {
+    socket.on("move", (dataKeys) => {
         const player = gameState.players[socket.id];
         if (!player) return;
 
-        switch (data.direcao) {
-            case 'direita':
-                if (player.x < player.canvasWidth - player.width) {
-                    player.x += player.speed;
-                    player.facingDirection = "right";
-                }
-                break;
-            case 'esquerda':
-                if (player.x > 0) {
-                    player.x -= player.speed;
-                    player.facingDirection = "left";
-                }
-                break;
-            case 'cima':
-                if (player.isGrounded && player.stamina >= player.jumpStaminaCost) {
-                    player.stamina -= player.jumpStaminaCost;
-                    player.velocityY = player.jumpForce;
-                    player.isGrounded = false;
-                }
-                break;
-            case 'baixo':
-                if (player.stamina >= player.attackStaminaCost) {
-                    player.stamina -= player.attackStaminaCost;
-                    player.attack(Object.values(gameState.players));
-                }
-                break;
-        }
+        player.keys = dataKeys
     });
 
     socket.on("disconnect", () => {

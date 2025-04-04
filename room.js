@@ -1,20 +1,12 @@
 import express from 'express';
 import http from 'http';
 import path from 'path';
-<<<<<<< HEAD
 import { Server } from "socket.io";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-=======
-import { Server } from 'socket.io';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
->>>>>>> e6f136b878d671fddb10ff8285938c700c7ca310
 
 const app = express();
 const server = http.createServer(app);
@@ -37,10 +29,13 @@ io.on("connection", (socket) => {
 
     socket.on("criar_sala", (callback) => {
         const codigoSala = Math.random().toString(36).substring(2, 7);
-        salas[codigoSala] = { usuarios: [socket.id] };
+        salas[codigoSala] = { 
+            usuarios: [socket.id], 
+            host: socket.id // Salva quem criou a sala
+        };
         socket.join(codigoSala);
         console.log(`Sala ${codigoSala} criada por ${socket.id}`);
-        callback({ codigo: codigoSala, url: `/room/${codigoSala}` });
+        callback({ codigo: codigoSala, url: `/room/${codigoSala}`, host: socket.id });
     });
 
     socket.on("entrar_sala", (codigoSala, callback) => {
@@ -59,11 +54,11 @@ io.on("connection", (socket) => {
         if (salas[codigoSala]) {
             salas[codigoSala].usuarios.push(socket.id);
         } else {
-            salas[codigoSala] = { usuarios: [socket.id] };
+            salas[codigoSala] = { usuarios: [socket.id], host: socket.id };
         }
         socket.join(codigoSala);
         console.log(`Usuário ${socket.id} acessou a sala ${codigoSala}`);
-        callback({ sucesso: true });
+        callback({ sucesso: true, host: salas[codigoSala].host });
         io.to(codigoSala).emit("atualizar_sala", salas[codigoSala].usuarios);
     });
 
@@ -77,6 +72,13 @@ io.on("connection", (socket) => {
             } else {
                 io.to(sala).emit("atualizar_sala", salas[sala].usuarios);
             }
+        }
+    });
+
+    socket.on("iniciar_jogo", (codigoSala) => {
+        if (salas[codigoSala] && salas[codigoSala].host === socket.id) {
+            console.log(`Jogo iniciado na sala ${codigoSala}`);
+            io.to(codigoSala).emit("redirecionar_para_jogo", codigoSala);
         }
     });
 });

@@ -9,17 +9,7 @@ function draw(gameState) {
     for (let id in gameState.players) {
         const jogador = gameState.players[id];
         
-        const playerColor = id === Object.keys(gameState.players)[0] ? "#838282" : "red"
-        ctx.fillStyle = jogador.isDamaged ? "orange" : playerColor;
-        ctx.fillRect(jogador.x, jogador.y, jogador.width, jogador.height);
-
-        ctx.fillStyle = 'blue'
-        ctx.fillRect(jogador.facingDirection == "right" ? jogador.x + 20 : jogador.x , jogador.y + 10, 40, 30);
-
-        // Exibe a vida do player acima dele (opcional)
-        ctx.fillStyle = "white";
-        ctx.font = "12px Arial";
-        ctx.fillText(`${jogador.health}`, jogador.x, jogador.y - 10);
+        ctx.drawImage(jogador.sprite , jogador.x, jogador.y, jogador.width, jogador.height);
 
         // Exibe a stamina do player (opcional)
         ctx.fillStyle = "blue";
@@ -59,7 +49,7 @@ const keys = { w: false, a: false, d: false, s: false, ' ': false };
 window.addEventListener("keydown", (event) => {
     const key = event.key;
 
-    if (keys.hasOwnProperty(key) && !keys[key]) {
+    if (keys.hasOwnProperty(key) ) {
         keys[key] = true
         socket.emit('move', keys)
     };

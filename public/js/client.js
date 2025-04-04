@@ -59,7 +59,7 @@ const keys = { w: false, a: false, d: false, s: false, ' ': false };
 window.addEventListener("keydown", (event) => {
     const key = event.key;
 
-    if (keys.hasOwnProperty(key)) {
+    if (keys.hasOwnProperty(key) && !keys[key]) {
         keys[key] = true
         socket.emit('move', keys)
     };

@@ -99,7 +99,7 @@ export default class Player {
         }
 
         // Ataque (verifica se há stamina suficiente para atacar)
-        if (this.keys[" "]) {
+        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
                 this.attack(players);

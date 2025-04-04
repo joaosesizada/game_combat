@@ -13,7 +13,9 @@ export default class Player {
         this.canvasHeight = 800;
         this.canvasWidth = 800;
 
-        this.isGrounded = false;
+        this.keys = { w: false, a: false, d: false, s: false, ' ': false };
+
+        this.isGrounded = true;
         this.velocityY = 0;
         this.jumpForce = -15;
         this.gravity = 0.3;
@@ -21,6 +23,7 @@ export default class Player {
         this.isAttacking = false;
         this.attackCooldown = false;
         this.attackDuration = 300;
+        this.attackBox = {}
         // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
         this.attackRange = { width: 40, height: 20 };
 
@@ -67,20 +70,20 @@ export default class Player {
         }
     }
 
-    update(keys, players) {
+    update(players) {
         // Regenera stamina a cada frame (até o máximo)
         this.regenStamina();
 
         this.#applyGravity();
 
         // Movimento lateral e atualização da direção
-        if (keys.ArrowLeft || keys.a) {
+        if (this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
             }
         }
-        if (keys.ArrowRight || keys.d) {
+        if (this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";
@@ -88,7 +91,7 @@ export default class Player {
         }
 
         // Pulo (verifica se há stamina suficiente para pular)
-        if ((keys.ArrowUp || keys.w) && this.isGrounded) {
+        if (this.keys.w && this.isGrounded) {
             if (this.stamina >= this.jumpStaminaCost) {
                 this.stamina -= this.jumpStaminaCost;
                 this.velocityY = this.jumpForce;
@@ -97,7 +100,7 @@ export default class Player {
         }
 
         // Ataque (verifica se há stamina suficiente para atacar)
-        if (keys.ArrowDown || keys[" "]) {
+        if (this.keys[" "]) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
                 this.attack(players);
@@ -112,7 +115,8 @@ export default class Player {
 
             // O CombatManager verifica se o ataque atingiu algum player
             CombatManager.handleAttack(this, players);
-
+            this.attackBox = this.getAttackHitbox()
+            
             setTimeout(() => {
                 this.isAttacking = false;
             }, this.attackDuration);

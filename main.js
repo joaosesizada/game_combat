@@ -14,7 +14,9 @@ function gameloop() {
 
     // Atualiza e desenha cada jogador
     players.forEach(player => {
-        // Associa os inputs corretos a cada player
+        
+        console.log(player)
+        
         if (player.id === "Player 1") {
             player.update(keys_one, players);
         } else {

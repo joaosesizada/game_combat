@@ -1,3 +1,4 @@
+
 const socket = io();
 
 function draw(gameState) {

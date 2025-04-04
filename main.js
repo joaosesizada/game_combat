@@ -11,7 +11,7 @@ const players = [player_one, player_two];
 
 function gameloop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     // Atualiza e desenha cada jogador
     players.forEach(player => {
         
@@ -32,7 +32,7 @@ const keys_one = { w: false, a: false, d: false, s: false, ' ': false };
 const keys_two = { ArrowUp: false, ArrowLeft: false, ArrowRight: false, ArrowDown: false};
 
 window.addEventListener("keydown", (event) => {
-    const key = event.key;
+    const key = event.key.toLowerCase();
     console.log(key)
     if (keys_one.hasOwnProperty(key)) keys_one[key] = true;
     if (keys_two.hasOwnProperty(key)) keys_two[key] = true;

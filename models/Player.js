@@ -2,16 +2,17 @@
 import { CombatManager } from "./CombatManager.js";
 
 export default class Player {
-    constructor(x, y, id) {
+    constructor(x, y, id, sprite) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.speed = 3.5;
         this.height = 100;
         this.width = 60;
-
-        this.canvasHeight = 800;
-        this.canvasWidth = 800;
+        
+        this.sprite = sprite;
+        this.canvasHeight = 675;
+        this.canvasWidth = 1200;
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
 
@@ -23,7 +24,6 @@ export default class Player {
         this.isAttacking = false;
         this.attackCooldown = false;
         this.attackDuration = 300;
-        this.attackBox = {}
         // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
         this.attackRange = { width: 40, height: 20 };
 
@@ -43,8 +43,7 @@ export default class Player {
     }
 
     draw(ctx, id) {
-        const playerColor = id == "Player 1" ?  "#  " : "red"
-
+        
         ctx.fillStyle = this.isDamaged ? "orange" : playerColor;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
@@ -115,7 +114,6 @@ export default class Player {
 
             // O CombatManager verifica se o ataque atingiu algum player
             CombatManager.handleAttack(this, players);
-            this.attackBox = this.getAttackHitbox()
             
             setTimeout(() => {
                 this.isAttacking = false;

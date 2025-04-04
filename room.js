@@ -1,20 +1,12 @@
 import express from 'express';
 import http from 'http';
 import path from 'path';
-<<<<<<< HEAD
 import { Server } from "socket.io";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-=======
-import { Server } from 'socket.io';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
->>>>>>> e6f136b878d671fddb10ff8285938c700c7ca310
 
 const app = express();
 const server = http.createServer(app);

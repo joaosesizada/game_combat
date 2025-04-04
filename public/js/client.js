@@ -26,14 +26,28 @@ function draw(gameState) {
         ctx.fillRect(jogador.x, jogador.y - (jogador.height / 2), (jogador.stamina / jogador.maxStamina) * jogador.width, 5);
         ctx.strokeStyle = "black";
         ctx.strokeRect(jogador.x, jogador.y - (jogador.height / 2), jogador.width, 5);
-
+        
         if (jogador.isAttacking) {
-            const attackBox = jogador.attackBox
+            const attackBox = getAttackHitbox(jogador)
             ctx.fillStyle = "red";
             ctx.fillRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
         }
     }
 }
+
+function getAttackHitbox(jogador) {
+    const attackX = jogador.facingDirection === "right"
+        ? jogador.x + jogador.width 
+        : jogador.x - jogador.attackRange.width; 
+
+    return {
+        x: attackX,
+        y: jogador.y + jogador.height / 2 - jogador.attackRange.height / 2,
+        width: jogador.attackRange.width,
+        height: jogador.attackRange.height
+    };
+}
+
 
 socket.on('update', (gameState) => {
     draw(gameState);

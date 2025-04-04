@@ -11,7 +11,7 @@ const players = [player_one, player_two];
 
 function gameloop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     // Atualiza e desenha cada jogador
     players.forEach(player => {
         

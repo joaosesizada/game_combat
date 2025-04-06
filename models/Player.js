@@ -6,7 +6,6 @@ const config = {
         speed: 6.5,
         attackDuration: 300,
         maxStamina: 100,
-        sprite: "../imgs/ninja.png"
     },
     monge: {},
     tedesco: {},
@@ -21,8 +20,8 @@ export default class Player {
         this.x = x;
         this.y = y;
         this.speed = this.config.speed || 5;
-        this.height = 100;
-        this.width = 60;
+        this.height = 120;
+        this.width = 80;
         
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
@@ -30,6 +29,7 @@ export default class Player {
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
 
+        this.isMoving = false;
         this.isGrounded = true;
         this.velocityY = 0;
         this.jumpForce = -15;
@@ -62,17 +62,21 @@ export default class Player {
 
         this.#applyGravity();
 
+        this.isMoving = false;
+
         // Movimento lateral e atualização da direção
         if (this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
+                this.isMoving = true;
             }
         }
         if (this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";
+                this.isMoving = true;
             }
         }
 

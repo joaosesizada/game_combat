@@ -1,9 +1,10 @@
+// server.js
 import express from 'express';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Server } from 'socket.io';
-import Player from './models/Player.js';
+import GameRoom from './models/GameRoom.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,51 +16,100 @@ const io = new Server(server);
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'game.html'));
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
-const gameState = { players: {} };
-const FPS = 60;
+app.get('/room/:roomId', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'room.html'));
+});
 
-setInterval(() => {
-    Object.values(gameState.players).forEach(player => {
-        player.update(Object.values(gameState.players))
-    });
-
-    io.emit('update', gameState);
-}, 1000 / FPS);
+// Armazena todas as salas ativas
+const gameRooms = {};
+const socketToRoom = {};
 
 io.on("connection", (socket) => {
-    console.log(`Novo usuário conectado: ${socket.id}`);
-    console.log("------------------------------------")
+  
+  socket.on("createRoom", ({ roomId }) => {
 
-    // Limita o jogo a dois jogadores
-    if (Object.keys(gameState.players).length >= 2) {
-        socket.emit('erro', 'Jogo com dois jogadores já está em andamento.');
-        console.log(`Conexão rejeitada para ${socket.id} - limite de 2 jogadores atingido.`);
-        socket.disconnect();
-        return;
+    if (gameRooms[roomId]) {
+      socket.emit('erro', 'Sala já existe');
+      return;
     }
-    
-    // Ajusta a posição inicial do jogador, se necessário
-    const posicaoInicialX = Object.keys(gameState.players).length === 0 ? 0 : 500;
-    gameState.players[socket.id] = new Player(posicaoInicialX, 700, `Player ${socket.id}`, 'ninja');
-    
-    // Lógica de movimentação
-    socket.on("move", (dataKeys) => {
-        const player = gameState.players[socket.id];
-        if (!player) return;
 
-        player.keys = dataKeys
-    });
+    gameRooms[roomId] = new GameRoom(roomId, io); // estrutura real da sala
+    socket.join(roomId); 
 
-    socket.on("disconnect", () => {
-        console.log(`Usuário desconectado: ${socket.id}`);
-        delete gameState.players[socket.id];
-    });
+    socket.emit('connectToRoom', { roomId });
+  });
+
+  socket.on("joinRoom", ({ roomId }) => {
+
+    const roomExists = !!gameRooms[roomId];
+    if (!roomExists) {
+      socket.emit('erro', 'Sala não existe');
+      return;
+    }
+
+    socket.join(roomId); 
+    socket.emit('connectToRoom', { roomId });
+  });
+
+  socket.on("addPlayer", ({ roomId }) => {
+
+    if (!gameRooms[roomId]) {
+      socket.emit('erro', 'Sala não existe');
+      return;
+    }
+  
+    const room = gameRooms[roomId];
+    const success = room.addPlayer(socket.id);
+    socketToRoom[socket.id] = roomId; // salva a sala do jogador
+  
+    if (!success) {
+      socket.emit('erro', 'Sala cheia');
+      return;
+    }
+  
+    console.log(`player adicionado: ${roomId}`)
+    socketToRoom[socket.id] = roomId; 
+  });
+
+  // Evento de movimentação do jogador
+  socket.on("move", ({ roomId, ...dataKeys }) => {
+    if (!roomId || !gameRooms[roomId]) return;
+
+    const currentRoom = gameRooms[roomId];
+    const player = currentRoom.players[socket.id];
+    if (!player) return;
+
+    player.keys = dataKeys;
+  });
+
+  socket.on("disconnect", () => {
+    const roomId = socketToRoom[socket.id];
+  
+    if (!roomId) {
+      console.log(`👋 Jogador ${socket.id} saiu da home, nada a fazer.`);
+      return;
+    }
+  
+    const room = gameRooms[roomId];
+    if (room) {
+      room.removePlayer(socket.id);
+      console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
+  
+      if (Object.keys(room.players).length === 0) {
+        room.stopGame();
+        delete gameRooms[roomId];
+        console.log(`🗑️ Sala ${roomId} deletada por estar vazia.`);
+      }
+    }
+  
+    delete socketToRoom[socket.id]; // limpa o mapeamento
+  });  
 });
 
 const PORT = 3000;
 server.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });

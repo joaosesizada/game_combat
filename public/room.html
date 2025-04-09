@@ -5,213 +5,145 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sala de Jogo</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
-
-    body {
-      background-color: #556458;
-      /* Verde pastel */
-      font-family: "Jersey 15", sans-serif;
-      font-weight: 200;
-      font-style: normal;
-      font-size: 1.2rem;
-    }
-
-    .player-item {
-      background-color: #f5f9a3;
-      border: 3px solid #ced18a;
-      padding: 10px 15px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      /* Inicia invisível para a animação */
-      opacity: 0;
-      animation: fadeIn 0.8s forwards;
-    }
-
-    .player-item:hover {
-      transition: 0.5s;
-      transform: translateY(-5px);
-    }
-
-    /* Animação de fade-in com delay para cada item */
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    #infoSala {
-      background-color: #8bbd7a;
-      border-radius: 0;
-      border: #7ca86d solid 3px;
-      font-weight: 500;
-      font-size: 2rem;
-    }
-
-    #infoSala:hover {
-      transition: 0.5s;
-      transform: translateY(-5px);
-    }
-
-    #jogadoresText {
-      color: #212529;
-    }
-
-    #play {
-      display: none;
-      background-color: #804a43;
-      border-radius: 0;
-      font-size: 1.6rem;
-      border: 3px solid #5b342f;
-    }
-
-    #play:hover {
-      color: #212529;
-      transition: 0.5s;
-      transform: translateY(-5px);
-    }
-
-    #players {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    #players li {
-      padding: 50px;
-      width: 48%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #players li i {
-      width: 50px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    #trocaPlayer {
-      background-color: transparent;
-      border: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-    }
-
-    #carrousel {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100%;
-      background-color: rgb(0, 0, 0, 0.8);
-      display: none;
-    }
-
-    #close-carrousel {
-      position: fixed;
-      top: 0;
-      right: 0;
-    }
-  </style>
 </head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
 
+body {
+  background-color: #556458;
+  /* Verde pastel */
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 1.2rem;
+}
+
+.player-item {
+  background-color: #f5f9a3;
+  border: 3px solid #ced18a;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  /* Inicia invisível para a animação */
+  opacity: 0;
+  animation: fadeIn 0.8s forwards;
+}
+
+.player-item:hover {
+  transition: 0.5s;
+  transform: translateY(-5px);
+}
+
+/* Animação de fade-in com delay para cada item */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+#infoSala {
+  background-color: #8bbd7a;
+  border-radius: 0;
+  border: #7ca86d solid 3px;
+  font-weight: 500;
+  font-size: 2rem;
+}
+
+#infoSala:hover {
+  transition: 0.5s;
+  transform: translateY(-5px);
+}
+
+#jogadoresText {
+  color: #212529;
+}
+
+#play {
+  display: none;
+  background-color: #804a43;
+  border-radius: 0;
+  font-size: 1.6rem;
+  border: 3px solid #5b342f;
+}
+
+#play:hover {
+  color: #212529;
+  transition: 0.5s;
+  transform: translateY(-5px);
+}
+
+#players {
+  display: flex;
+  justify-content: space-between;
+}
+
+#players li {
+  padding: 50px;
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+#players li i {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+#trocaPlayer {
+  background-color: transparent;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+#carrousel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.8);
+  display: none;
+}
+
+#close-carrousel {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+</style>
 <body>
   <div class="container py-4">
     <h1 class="text-center mb-4 text-dark">Sala de Jogo</h1>
     <div class="alert alert-info text-center" id="infoSala">Carregando informações da sala...</div>
-    <h2 class="text-center mb-4" id="jogadoresText">Jogadores na sala:</h2>
-    <ul id="players" class="list-unstyled">
-      <!-- Lista de jogadores -->
-    </ul>
-    <div class="text-center">
-      <a id="linkButton">
-        <button id="play" type="button" class="btn custom-btn mt-3">
-          Jogar <i class="fas fa-play ms-2"></i>
-        </button>
-      </a>
-    </div>
-    <div id="carrousel">
-      <p id="close-carrousel">X</p>
-    </div>
   </div>
 
-  <!-- Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const socket = io();
-    const pathArray = window.location.pathname.split('/');
-    const codigoSala = pathArray[pathArray.length - 1];
 
-    let meuID = socket.id;
-    let idHost = null;
-    let protagonista = 'TROCAR PERSONAGEM'
-    let adversario = ''
+    socket.on('connect', () => {
+      const pathParts = window.location.pathname.split('/');
+      const roomId = pathParts[pathParts.length - 1];
 
-    socket.emit("acessar_sala", codigoSala, (resposta) => {
-      if (resposta.sucesso) {
-        idHost = resposta.host;
-        document.getElementById('infoSala').innerText = `Você entrou na sala ${codigoSala}`;
-        document.getElementById('infoSala').innerText += `\nHost: ${idHost}`;
-
-        // Se o usuário atual for o host, exibir botão de iniciar jogo
-        if (meuID === idHost) {
-          document.getElementById('play').style.display = "inline-block";
-        }
-      } else {
-        document.getElementById('infoSala').innerText = "Houve um problema ao acessar a sala.";
-      }
+      socket.emit("addPlayer", { roomId });
     });
 
-    socket.on("atualizar_sala", (usuarios) => {
-      console.log(`Usuários na sala ${codigoSala}:`, usuarios);
-      const ul = document.getElementById('players');
-      ul.innerHTML = "";
+    socket.on('updateRoom', ({ room }) => {
 
-      usuarios.forEach((id, index) => {
-        const li = document.createElement('li');
-        li.classList.add('player-item');
-        // Aplica um delay escalonado para a animação de cada item
-        li.style.animationDelay = `${index * 0.2}s`;
-        if(id == socket.id) {
-          li.innerHTML = `<button id="trocaPlayer">${protagonista} <i class="fa-solid fa-rotate-right fa-2xl me-2"></i> <p>${id}</p></button>`;
-        } else {
-          li.innerHTML = `${adversario} <i class="fa-solid fa-user fa-2xl me-2"></i> <p>${id}</p>`;
-        }
-        ul.appendChild(li);
-      });
-
-      if ((usuarios.length == 2) && (socket.id == idHost)) {
-        document.getElementById('play').style.display = "inline-block"
-      }
-
-      document.getElementById('play').addEventListener('click', () => {
-        if (socket.id === idHost) {
-          socket.emit("iniciar_jogo", codigoSala);
-        }
-      });
     });
-
-    // Quando o servidor emitir o evento para iniciar o jogo, redirecionar todos os jogadores
-    socket.on("redirecionar_para_jogo", (sala) => {
-      window.location.href = `http://localhost:3001/game/${sala}`;
-    });
-
-    document.getElementById('trocaPlayer').addEventListener('click', ()=>{
-      document.getElementById('carrousel').style.display = 'inline-block'
-    })
   </script>
-  <!-- Bootstrap JS (Bundle com Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

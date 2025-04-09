@@ -177,15 +177,20 @@ export default class Player {
     takeDamage(damage, players) {
         this.health -= damage;
         this.isDamaged = true;
+        console.log('socao');
+    
         setTimeout(() => {
             this.isDamaged = false;
         }, 100);
-
+    
         if (this.health <= 0) {
+            console.log('acertei');
+    
+            // Remover jogador morto do array
             const index = players.indexOf(this);
             if (index !== -1) {
                 players.splice(index, 1);
-            }
+            }    
         }
     }
 

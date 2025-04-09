@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
   
     console.log(`player adicionado: ${roomId}`)
     socketToRoom[socket.id] = roomId; 
+    console.log(room)
   });
 
   // Evento de movimentação do jogador
@@ -97,12 +98,6 @@ io.on("connection", (socket) => {
     if (room) {
       room.removePlayer(socket.id);
       console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
-  
-      if (Object.keys(room.players).length === 0) {
-        room.stopGame();
-        delete gameRooms[roomId];
-        console.log(`🗑️ Sala ${roomId} deletada por estar vazia.`);
-      }
     }
   
     delete socketToRoom[socket.id]; // limpa o mapeamento

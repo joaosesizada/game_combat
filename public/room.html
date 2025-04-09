@@ -140,8 +140,8 @@ body {
       socket.emit("addPlayer", { roomId });
     });
 
-    socket.on('updateRoom', ({ room }) => {
-
+    socket.on('updateRoom', () => {
+      console.log('Dados da sala recebidos:');
     });
   </script>
 </body>

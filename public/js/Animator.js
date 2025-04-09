@@ -5,6 +5,7 @@ export default class Animator {
     this.currentFrame = 0;
     this.elapsedTime = 0;
     this.frameDuration = 100; // 100 ms por frame
+    this.character = character;
 
     const animSetup = setup[character];
     if (!animSetup) {
@@ -37,22 +38,22 @@ export default class Animator {
       
       this.animations[animName] = {
         image: img,
-        frameWidth: animationData.framesWidth, // Certifique-se de usar a propriedade correta!
+        frameWidth: animationData.framesWidth,
         frameHeight: animationData.framesHeight,
         totalFrames: animationData.totalFrames || 1,
       };
-
-      console.log(`Carregando animação "${animName}" ->`, this.animations[animName]);
     }
   }
 
   setAnimation(animName) {
     if (this.animations[animName]) {
-      this.currentAnimation = animName;
-      this.currentFrame = 0;
-      this.elapsedTime = 0;
+      if (this.currentAnimation !== animName) {
+        this.currentAnimation = animName;
+        this.currentFrame = 0;
+        this.elapsedTime = 0;
+      }
     } else {
-      console.warn(`Animação "${animName}" não encontrada!`);
+      console.warn(`Animação "${animName}" não encontrada para ${this.character}!`);
     }
   }
 
@@ -66,7 +67,6 @@ export default class Animator {
     if (this.elapsedTime > this.frameDuration) {
       this.elapsedTime = 0;
       this.currentFrame = (this.currentFrame + 1) % animation.totalFrames;
-      console.log(`Frame da animação "${this.currentAnimation}":`, this.currentFrame);
     }
   }
 
@@ -81,7 +81,7 @@ export default class Animator {
     if (flip) {
       ctx.translate(x + width, y); // Move a origem para o canto direito do sprite
       ctx.scale(-1, 1);            // Espelha horizontalmente
-      x = 0; // Após o flip, o x será relativo à nova origem
+      x = 0; // Após o flip, x será relativo à nova origem
     } else {
       ctx.translate(x, y);
       x = 0; // Sem flip, x ainda será relativo ao novo contexto
@@ -98,7 +98,6 @@ export default class Animator {
     ctx.restore(); // Restaura o contexto original
   }
   
-
   drawPlayer(ctx, jogador) {
     const flip = jogador.facingDirection === "left";
   
@@ -119,13 +118,11 @@ export default class Animator {
     // Hitbox de ataque
     if (jogador.isAttacking) {
       const attackBox = this.getAttackHitbox(jogador);
-      ctx.fillStyle = "red";
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
       ctx.fillRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
     }
   }
-  
 
-  // Método para calcular a hitbox de ataque do jogador
   getAttackHitbox(jogador) {
     const attackX = jogador.facingDirection === "right"
       ? jogador.x + jogador.width

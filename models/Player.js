@@ -4,7 +4,7 @@ import { CombatManager } from "./CombatManager.js";
 const config = {
     ninja: {
         speed: 6.5,
-        attackDuration: 300,
+        attackDuration: 400,
         maxStamina: 100,
     },
     monge: {},
@@ -20,12 +20,12 @@ export default class Player {
         this.x = x;
         this.y = y;
         this.speed = this.config.speed || 5;
-        this.height = 120;
-        this.width = 80;
+        this.height =150;
+        this.width = 150;
         
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
-        this.canvasWidth = 1200;
+        this.canvasWidth = 1000;
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
 

@@ -1,21 +1,35 @@
 // Player.js
 import { CombatManager } from "./CombatManager.js";
 
+const config = {
+    ninja: {
+        speed: 6.5,
+        attackDuration: 300,
+        maxStamina: 100,
+    },
+    monge: {},
+    tedesco: {},
+    viking: {},
+}
+
 export default class Player {
-    constructor(x, y, id, sprite) {
+    constructor(x, y, id, person) {
+        this.config = config[person]
+        
         this.id = id;
         this.x = x;
         this.y = y;
-        this.speed = 3.5;
-        this.height = 100;
-        this.width = 60;
+        this.speed = this.config.speed || 5;
+        this.height = 120;
+        this.width = 80;
         
-        this.sprite = sprite;
+        this.sprite = this.config.sprite;
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
 
+        this.isMoving = false;
         this.isGrounded = true;
         this.velocityY = 0;
         this.jumpForce = -15;
@@ -23,16 +37,16 @@ export default class Player {
 
         this.isAttacking = false;
         this.attackCooldown = false;
-        this.attackDuration = 300;
+        this.attackDuration = this.config.attackDuration || 300;
         // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
         this.attackRange = { width: 40, height: 20 };
 
         // Propriedade para simular a vida do player
-        this.health = 100;
+        this.health = this.config.health || 100;
         this.isDamaged = false;
 
         // NOVO: Propriedades de stamina
-        this.maxStamina = 100;
+        this.maxStamina = this.config.maxStamina || 100;
         this.stamina = this.maxStamina;
         this.staminaRegenRate = 0.25; // Quantidade regenerada por frame (pode ajustar)
         this.attackStaminaCost = 10;
@@ -42,50 +56,27 @@ export default class Player {
         this.facingDirection = "right";
     }
 
-    draw(ctx, id) {
-        
-        ctx.fillStyle = this.isDamaged ? "orange" : playerColor;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-
-            ctx.fillStyle = 'blue'
-            ctx.fillRect(this.facingDirection == "right" ? this.x + 20 : this.x , this.y + 10, 40, 30);
-
-            // Exibe a vida do player acima dele (opcional)
-            ctx.fillStyle = "white";
-            ctx.font = "12px Arial";
-            ctx.fillText(`${this.health}`, this.x, this.y - 10);
-
-            // Exibe a stamina do player (opcional)
-            ctx.fillStyle = "blue";
-            ctx.fillRect(this.x, this.y - (this.height / 2), (this.stamina / this.maxStamina) * this.width, 5);
-            ctx.strokeStyle = "black";
-            ctx.strokeRect(this.x, this.y - (this.height / 2), this.width, 5);
-
-        // Se estiver atacando, desenha a área de ataque
-        if (this.isAttacking) {
-            const attackBox = this.getAttackHitbox();
-            ctx.fillStyle = "red";
-            ctx.fillRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
-        }
-    }
-
     update(players) {
         // Regenera stamina a cada frame (até o máximo)
         this.regenStamina();
 
         this.#applyGravity();
 
+        this.isMoving = false;
+
         // Movimento lateral e atualização da direção
         if (this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
+                this.isMoving = true;
             }
         }
         if (this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";
+                this.isMoving = true;
             }
         }
 
@@ -98,13 +89,15 @@ export default class Player {
             }
         }
 
+
         // Ataque (verifica se há stamina suficiente para atacar)
-        if (this.keys[" "]) {
+        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
                 this.attack(players);
             }
         }
+
     }
 
     attack(players) {

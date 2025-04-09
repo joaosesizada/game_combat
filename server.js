@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
     
     // Ajusta a posição inicial do jogador, se necessário
     const posicaoInicialX = Object.keys(gameState.players).length === 0 ? 0 : 500;
-    gameState.players[socket.id] = new Player(posicaoInicialX, 700, `Player ${socket.id}`);
+    gameState.players[socket.id] = new Player(posicaoInicialX, 700, `Player ${socket.id}`, 'ninja');
     
     // Lógica de movimentação
     socket.on("move", (dataKeys) => {

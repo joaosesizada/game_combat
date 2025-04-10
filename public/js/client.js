@@ -3,6 +3,8 @@ import Animator from './Animator.js';
 
 const socket = io();
 
+console.log('CLIENT')
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 

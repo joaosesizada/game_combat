@@ -3,11 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Jogo de Combate</title>
+    <script src="./js/client.js" type="module"></script>
+    <link rel="stylesheet" href="./css/room.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
+<div id="game">
     <canvas id="gameCanvas" width="1200" height="800"></canvas>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/client.js" type="module"></script>
+  </div>
+  <div class="container py-4" id="room">
+    <h1 class="text-center mb-4 text-dark">Sala de Jogo</h1>
+    <div class="alert alert-info text-center" id="infoSala">Carregando informações da sala...</div>
+    <button id="play">Play</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const infoSala = document.getElementById('infoSala')
+
+    const pathParts = window.location.pathname.split('/');
+    const roomId = pathParts[pathParts.length - 1];
+
+    socket.on('connect', () => {
+
+      setTimeout(() => {
+        socket.emit("addPlayer", { roomId });
+      }, 500);
+    });
+
+    const play = document.getElementById("play")
+
+    play.addEventListener("click", () => {
+      socket.emit("startGame", { roomId }) 
+    })
+
+    socket.on("goToGame", () => {
+      const game = document.getElementById("game")
+      const room = document.getElementById("room")
+
+      game.style.display = "block"
+      room.style.display = "none"
+    })
+
+    socket.on("updateRoom", ({ room }) => {
+      update(room) 
+    });
+
+    function update(room) {
+      infoSala.innerHTML = room.id
+    }
+  </script>
 </body>
 </html>

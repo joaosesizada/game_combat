@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/room/:roomId', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'room.html'));
+  res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
 // Armazena todas as salas ativas
@@ -72,8 +72,21 @@ io.on("connection", (socket) => {
   
     console.log(`player adicionado: ${roomId}`)
     socketToRoom[socket.id] = roomId; 
-    console.log(room)
+
+    socket.emit("updateRoom", {
+      room: {
+        id: room.idRoom,
+        players: Object.values(room.players).map(p => p.id),
+      }
+    })
   });
+
+  socket.on("startGame", ({ roomId }) => {
+    const room  = gameRooms[roomId]
+    room.startGame()
+
+    socket.emit("goToGame", {})
+  })
 
   // Evento de movimentação do jogador
   socket.on("move", ({ roomId, ...dataKeys }) => {

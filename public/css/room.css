@@ -1,0 +1,114 @@
+body {
+    height: 100vh;
+    width: 100%;
+    background-color: #556458;
+    font-family: "Jersey 15", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+    font-size: 1.2rem;
+}
+
+.player-item {
+    background-color: #f5f9a3;
+    border: 3px solid #ced18a;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    /* Inicia invisível para a animação */
+    opacity: 0;
+    animation: fadeIn 0.8s forwards;
+}
+
+.player-item:hover {
+    transition: 0.5s;
+    transform: translateY(-5px);
+}
+
+/* Animação de fade-in com delay para cada item */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+#infoSala {
+    background-color: #8bbd7a;
+    border-radius: 0;
+    border: #7ca86d solid 3px;
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+#infoSala:hover {
+    transition: 0.5s;
+    transform: translateY(-5px);
+}
+
+#jogadoresText {
+    color: #212529;
+}
+
+#play {
+    background-color: #804a43;
+    border-radius: 0;
+    font-size: 1.6rem;
+    border: 3px solid #5b342f;
+}
+
+#play:hover {
+    color: #212529;
+    transition: 0.5s;
+    transform: translateY(-5px);
+}
+
+#players {
+    display: flex;
+    justify-content: space-between;
+}
+
+#players li {
+    padding: 50px;
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+}
+
+#players li i {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#trocaPlayer {
+    background-color: transparent;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+lose-carrousel {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+#game {
+    height: 100vh;
+    width: 100%;
+    background-color: #212529;
+    display: none;
+}
+
+#gameCanvas {
+    background: url('../imgs/backgroundFight.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

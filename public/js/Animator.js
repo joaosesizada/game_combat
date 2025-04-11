@@ -104,19 +104,38 @@ export default class Animator {
 
     this.drawSprite(ctx, jogador.x, jogador.y, jogador.width, jogador.height, flip);
 
-
-    
-
     const barHeight = 6;
     const barOffset = 10;
     const spacing = 4;
     const borderWidth = 2;
 
-
-    // Vida (Barra vermelha)
     let lifeWidth = (jogador.health / 100) * jogador.width;
     let lifeY = jogador.y - barOffset - barHeight - spacing;
 
+    let idHost = null
+    let meuID = socket.id
+
+    let codigoSala
+
+    socket.emit("acessar_sala", codigoSala, (resposta) => {
+      if (resposta.sucesso) {
+        idHost = resposta.host;
+
+        // Se o usuário atual for o host, exibir botão de iniciar jogo
+        if (meuID === idHost) {
+          // Nome do player
+          ctx.fillStyle = "red";
+          ctx.font = "bold 12px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText(idHost, jogador.x + jogador.width / 2, lifeY - 15);
+        }
+      } else {
+        document.getElementById('infoSala').innerText = "Houve um problema ao acessar a sala.";
+      }
+    });
+
+
+    // Vida (Barra vermelha)
     ctx.fillStyle = "red";
     ctx.fillRect(jogador.x, lifeY, lifeWidth, barHeight);
     ctx.lineWidth = borderWidth;
@@ -136,12 +155,11 @@ export default class Animator {
     ctx.fillStyle = "white";
     ctx.font = "bold 10px Arial";
     ctx.textAlign = "center";
-    ctx.fillText(`${Math.floor(jogador.health)}/100`, jogador.x + jogador.width / 2, lifeY - 2);
+    ctx.fillText(`${Math.floor(jogador.health)}/100`, jogador.x + jogador.width / 2, lifeY - 3);
 
     if (jogador.health <= 0) {
       lifeWidth = 0
       lifeY = 0
-
 
       // Exibe a interface de Game Over
       ctx.fillStyle = "rgba(0, 0, 0, 0.7)";

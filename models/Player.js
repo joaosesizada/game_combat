@@ -186,4 +186,36 @@ export default class Player {
         this.x = x;
         this.y = y;
     }
+
+    getState() {
+        return {
+          id: this.id,
+          x: this.x,
+          y: this.y,
+          speed: this.speed,
+          height: this.height,
+          width: this.width,
+          sprite: this.sprite,
+          canvasHeight: this.canvasHeight,
+          canvasWidth: this.canvasWidth,
+          keys: this.keys,
+          isMoving: this.isMoving,
+          isGrounded: this.isGrounded,
+          velocityY: this.velocityY,
+          jumpForce: this.jumpForce,
+          gravity: this.gravity,
+          isAttacking: this.isAttacking,
+          attackCooldown: this.attackCooldown,
+          attackDuration: this.attackDuration,
+          attackRange: this.attackRange,
+          health: this.health,
+          isDamaged: this.isDamaged,
+          maxStamina: this.maxStamina,
+          stamina: this.stamina,
+          staminaRegenRate: this.staminaRegenRate,
+          attackStaminaCost: this.attackStaminaCost,
+          jumpStaminaCost: this.jumpStaminaCost,
+          facingDirection: this.facingDirection
+        };
+    }
 }

@@ -36,25 +36,26 @@ export default class GameRoom {
     }
   }
 
-  // Inicia o loop do jogo
+  getState() {
+    return {
+      id: this.idRoom,
+      players: Object.fromEntries(
+        Object.entries(this.players).map(([socketId, player]) => [
+          socketId,
+          player.getState()
+        ])
+      )
+    };
+  }
+
   startGame() {
-    if (this.gameInterval) {
-      console.log(`[GameRoom ${this.idRoom}] Jogo já está em andamento.`);
-      return;
-    }
-
-    console.log(`[GameRoom ${this.idRoom}] Iniciando o jogo...`);
-
+    if (this.gameInterval) return;
     this.gameInterval = setInterval(() => {
-      Object.values(this.players).forEach(player => {
-        // Atualiza a posição e o estado de cada jogador.
-        // Certifique-se de que o método update da classe Player lide com colisões,
-        // movimentações e demais lógicas necessárias.
-        player.update(Object.values(this.players));
-      });
+      // atualiza lógica de cada player
+      Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
 
-      // Envia uma atualização para todos os sockets da sala
-      this.broadcast('update', { players: this.players });
+      // emite só dados puros
+      this.io.to(this.idRoom).emit('update', this.getState().players);
     }, 1000 / this.FPS);
   }
 

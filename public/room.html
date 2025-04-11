@@ -24,42 +24,6 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const infoSala = document.getElementById('infoSala')
-
-    const pathParts = window.location.pathname.split('/');
-    const roomId = pathParts[pathParts.length - 1];
-
-    socket.on('connect', () => {
-
-      setTimeout(() => {
-        socket.emit("addPlayer", { roomId });
-      }, 500);
-    });
-
-    const play = document.getElementById("play")
-
-    play.addEventListener("click", () => {
-      socket.emit("startGame", { roomId }) 
-    })
-
-    socket.on("goToGame", () => {
-      const game = document.getElementById("game")
-      const room = document.getElementById("room")
-
-      game.style.display = "block"
-      room.style.display = "none"
-    })
-
-    socket.on("updateRoom", ({ room }) => {
-      update(room) 
-    });
-
-    function update(room) {
-      infoSala.innerHTML = room.id
-    }
-  </script>
 </body>
 
 </html>

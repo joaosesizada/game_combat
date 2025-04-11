@@ -10,7 +10,43 @@ let lastTimestamp = performance.now();
 
 const animator = new Animator(setup, 'ninja', 'idle');
 
-function draw({ players }, deltaTime) {
+// 
+const infoSala = document.getElementById('infoSala')
+
+const pathParts = window.location.pathname.split('/');
+const roomId = pathParts[pathParts.length - 1];
+
+socket.on('connect', () => {
+
+    setTimeout(() => {
+        socket.emit("addPlayer", { roomId });
+    }, 500);
+});
+
+const play = document.getElementById("play")
+
+play.addEventListener("click", () => {
+    socket.emit("startGame", { roomId })
+})
+
+socket.on("goToGame", () => {
+    const game = document.getElementById("game")
+    const room = document.getElementById("room")
+
+    game.style.display = "block"
+    room.style.display = "none"
+})
+
+socket.on("updateRoom", ({ room }) => {
+    update(room)
+});
+
+function update(room) {
+    infoSala.innerHTML = room.id
+}
+
+function draw(players, deltaTime) {
+    console.log(players)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (const jogador of Object.values(players)) {
@@ -25,22 +61,19 @@ function draw({ players }, deltaTime) {
     }
 }
 
-socket.on('update', (room) => {
+socket.on('update', (players) => {
+    console.log('update!', players);
     const now = performance.now();
-    const deltaTime = now - lastTimestamp;
+    draw(players, now - lastTimestamp);
     lastTimestamp = now;
-
-    draw(room, deltaTime);
 });
-
-
 
 const keys = { w: false, a: false, d: false, s: false, ' ': false };
 
 window.addEventListener("keydown", (event) => {
     const key = event.key;
 
-    if (keys.hasOwnProperty(key) ) {
+    if (keys.hasOwnProperty(key)) {
         keys[key] = true
         socket.emit('move', keys)
     };

@@ -59,49 +59,46 @@ io.on("connection", (socket) => {
   });
 
   socket.on("addPlayer", ({ roomId }) => {
-
-    if (!gameRooms[roomId]) {
-      socket.emit('erro', 'Sala não existe');
-      return;
-    }
-  
     const room = gameRooms[roomId];
+    if (!room) return socket.emit('erro', 'Sala não existe');
+  
     const success = room.addPlayer(socket.id);
-    socketToRoom[socket.id] = roomId; // salva a sala do jogador
+    if (!success) return socket.emit('erro', 'Sala cheia');
   
-    if (!success) {
-      socket.emit('erro', 'Sala cheia');
-      return;
-    }
+    // mapeia e inscreve na sala do Socket.IO
+    socketToRoom[socket.id] = roomId;
+    socket.join(roomId);        // <<=== ESSENCIAL
   
-    console.log(`player adicionado: ${roomId}`)
-    socketToRoom[socket.id] = roomId; 
-
-    socket.emit("updateRoom", {
-      room: {
-        id: room.idRoom,
-        players: Object.values(room.players),
-      }
-    })
-  });
+    // envia só para quem entrou, o estado da sala
+    socket.emit("updateRoom", { room: room.getState() });
+  });  
 
   socket.on("startGame", ({ roomId }) => {
-    const room  = gameRooms[roomId]
-    room.startGame()
-
-    socket.emit("goToGame", {})
-  })
+    const room = gameRooms[roomId];
+    if (!room) return;
+  
+    io.to(roomId).emit("goToGame");
+  
+    room.startGame();
+  });
+  
 
   // Evento de movimentação do jogador
-  socket.on("move", ({ roomId, ...dataKeys }) => {
-    if (!roomId || !gameRooms[roomId]) return;
+// server.js
+  socket.on("move", (keys) => {
+    const roomId = socketToRoom[socket.id];
+    if (!roomId) return;
 
-    const currentRoom = gameRooms[roomId];
-    const player = currentRoom.players[socket.id];
+    const room = gameRooms[roomId];
+    if (!room) return;
+
+    const player = room.players[socket.id];
     if (!player) return;
 
-    player.keys = dataKeys;
+    // atualiza as teclas pressionadas
+    player.keys = keys;
   });
+
 
   socket.on("disconnect", () => {
     const roomId = socketToRoom[socket.id];

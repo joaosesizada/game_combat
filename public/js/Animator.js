@@ -21,7 +21,7 @@ export default class Animator {
 
       const img = new Image();
       img.src = animationData.src;
-      
+
       // Log para depurar quando a imagem carrega
       img.onload = () => {
         console.log(`Imagem "${animName}" carregada:`, {
@@ -34,7 +34,7 @@ export default class Animator {
           console.log(`Calculado frameWidth para "${animName}":`, this.animations[animName].frameWidth);
         }
       };
-      
+
       this.animations[animName] = {
         image: img,
         frameWidth: animationData.framesWidth, // Certifique-se de usar a propriedade correta!
@@ -66,18 +66,18 @@ export default class Animator {
     if (this.elapsedTime > this.frameDuration) {
       this.elapsedTime = 0;
       this.currentFrame = (this.currentFrame + 1) % animation.totalFrames;
-      console.log(`Frame da animação "${this.currentAnimation}":`, this.currentFrame);
+      // console.log(`Frame da animação "${this.currentAnimation}":`, this.currentFrame);
     }
   }
 
   drawSprite(ctx, x, y, width, height, flip = false) {
     const anim = this.animations[this.currentAnimation];
     if (!anim || !anim.image.complete) return;
-  
+
     const frameX = this.currentFrame * anim.frameWidth;
-  
+
     ctx.save(); // Salva o estado atual do contexto
-  
+
     if (flip) {
       ctx.translate(x + width, y); // Move a origem para o canto direito do sprite
       ctx.scale(-1, 1);            // Espelha horizontalmente
@@ -86,7 +86,7 @@ export default class Animator {
       ctx.translate(x, y);
       x = 0; // Sem flip, x ainda será relativo ao novo contexto
     }
-  
+
     ctx.drawImage(
       anim.image,
       frameX, 0,
@@ -94,36 +94,85 @@ export default class Animator {
       x, 0, // desenha no (0, 0) do contexto temporário
       width, height
     );
-  
+
     ctx.restore(); // Restaura o contexto original
   }
-  
 
-  drawPlayer(ctx, jogador) {
+
+  drawPlayer(ctx, jogador, socket) {
     const flip = jogador.facingDirection === "left";
-  
+
     this.drawSprite(ctx, jogador.x, jogador.y, jogador.width, jogador.height, flip);
-  
-    // Vida
+
+
+    
+
+    const barHeight = 6;
+    const barOffset = 10;
+    const spacing = 4;
+    const borderWidth = 2;
+
+
+    // Vida (Barra vermelha)
+    let lifeWidth = (jogador.health / 100) * jogador.width;
+    let lifeY = jogador.y - barOffset - barHeight - spacing;
+
     ctx.fillStyle = "red";
-    ctx.font = "12px Arial";
-    ctx.fillText(`${jogador.health}`, jogador.x, jogador.y - 10);
-  
-    // Stamina
-    ctx.fillStyle = "blue";
-    const staminaWidth = (jogador.stamina / jogador.maxStamina) * jogador.width;
-    ctx.fillRect(jogador.x, jogador.y - (jogador.height / 2), staminaWidth, 5);
+    ctx.fillRect(jogador.x, lifeY, lifeWidth, barHeight);
+    ctx.lineWidth = borderWidth;
     ctx.strokeStyle = "black";
-    ctx.strokeRect(jogador.x, jogador.y - (jogador.height / 2), jogador.width, 5);
-  
+    ctx.strokeRect(jogador.x, lifeY, jogador.width, barHeight);
+
+    // Stamina (Barra azul)
+    const staminaWidth = (jogador.stamina / jogador.maxStamina) * jogador.width;
+    const staminaY = jogador.y - barOffset;
+
+    ctx.fillStyle = "blue";
+    ctx.fillRect(jogador.x, staminaY, staminaWidth, barHeight);
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(jogador.x, staminaY, jogador.width, barHeight);
+
+    // Texto de vida opcional (em cima da barra)
+    ctx.fillStyle = "white";
+    ctx.font = "bold 10px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(`${Math.floor(jogador.health)}/100`, jogador.x + jogador.width / 2, lifeY - 2);
+
+    if (jogador.health <= 0) {
+      lifeWidth = 0
+      lifeY = 0
+
+
+      // Exibe a interface de Game Over
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); // tela escura
+
+      ctx.fillStyle = "white";
+      ctx.font = "bold 48px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2);
+
+      ctx.font = "24px Arial";
+      ctx.fillText("Pressione R para reiniciar", ctx.canvas.width / 2, ctx.canvas.height / 2 + 40);
+
+      // Interrompe qualquer lógica adicional de jogo
+      return;
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key.toLowerCase() === "r") {
+        window.location.reload() // Isso faz o mesmo que um F5
+      }
+    });
+
     // Hitbox de ataque
     if (jogador.isAttacking) {
       const attackBox = this.getAttackHitbox(jogador);
-      ctx.fillStyle = "red";
+      ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
       ctx.fillRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height);
     }
   }
-  
+
 
   // Método para calcular a hitbox de ataque do jogador
   getAttackHitbox(jogador) {

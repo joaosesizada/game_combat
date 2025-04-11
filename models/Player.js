@@ -1,4 +1,5 @@
 // Player.js
+import { log } from "console";
 import { CombatManager } from "./CombatManager.js";
 
 const config = {

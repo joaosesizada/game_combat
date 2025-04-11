@@ -24,7 +24,7 @@ function draw(gameState, deltaTime) {
 
         animator.update(deltaTime);
 
-        animator.drawPlayer(ctx, jogador);
+        animator.drawPlayer(ctx, jogador, socket);
     }
 }
 

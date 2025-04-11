@@ -20,20 +20,20 @@ export default class Player {
         this.x = x;
         this.y = y;
         this.speed = this.config.speed || 5;
-        this.height =150;
-        this.width = 150;
+        this.height = 125;
+        this.width = 100;
         
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
-        this.canvasWidth = 1000;
+        this.canvasWidth = 1200;
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
 
         this.isMoving = false;
         this.isGrounded = true;
         this.velocityY = 0;
-        this.jumpForce = -15;
-        this.gravity = 0.3;
+        this.jumpForce = -21;
+        this.gravity = 1.1;
 
         this.isAttacking = false;
         this.attackCooldown = false;
@@ -104,12 +104,13 @@ export default class Player {
         if (!this.isAttacking && !this.attackCooldown) {
             this.isAttacking = true;
             this.attackCooldown = true;
-
+            this.width = 180
             // O CombatManager verifica se o ataque atingiu algum player
             CombatManager.handleAttack(this, players);
             
             setTimeout(() => {
                 this.isAttacking = false;
+                this.width = 100
             }, this.attackDuration);
 
             setTimeout(() => {

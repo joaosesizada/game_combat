@@ -89,7 +89,7 @@ socket.on('connect', () => {
 const keys = { w: false, a: false, d: false, s: false, ' ': false };
 
 window.addEventListener("keydown", (event) => {
-  const key = event.key;
+  const key = event.key.toLowerCase();
   if (keys.hasOwnProperty(key)) {
     keys[key] = true;
     
@@ -103,7 +103,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("keyup", (event) => {
-  const key = event.key;
+  const key = event.key.toLowerCase();
   if (keys.hasOwnProperty(key)) {
     keys[key] = false;
     socket.emit('move', keys);

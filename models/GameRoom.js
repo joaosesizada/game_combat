@@ -1,4 +1,4 @@
-import Player from './Player.js';
+import Player from './Player.js'; 
 
 export default class GameRoom {
   constructor(idRoom, io) {
@@ -18,6 +18,7 @@ export default class GameRoom {
       return false;
     }
 
+    // Distribuir a posição inicial: o primeiro na esquerda, o segundo na direita
     const positionInitX = Object.keys(this.players).length === 0 ? 0 : 500;
 
     const newPlayer = new Player(positionInitX, 700, `Player ${socketId}`, 'ninja');
@@ -46,9 +47,13 @@ export default class GameRoom {
 
     this.gameInterval = setInterval(() => {
       Object.values(this.players).forEach(player => {
+        // Atualiza a posição e o estado de cada jogador.
+        // Certifique-se de que o método update da classe Player lide com colisões,
+        // movimentações e demais lógicas necessárias.
         player.update(Object.values(this.players));
       });
 
+      // Envia uma atualização para todos os sockets da sala
       this.broadcast('update', { players: this.players });
     }, 1000 / this.FPS);
   }
@@ -65,6 +70,6 @@ export default class GameRoom {
   // Envia uma atualização para todos os sockets da sala
   broadcast(event, data) {
     console.log(`[GameRoom ${this.idRoom}] Broadcast: ${event}`);
-    this.io.to(this.idRoom).emit(event, data);
+    this.io.to(this.idRoom).emit(event, data);  
   }
 }

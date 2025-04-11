@@ -3,8 +3,6 @@ import Animator from './Animator.js';
 
 const socket = io();
 
-console.log('CLIENT')
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -12,30 +10,27 @@ let lastTimestamp = performance.now();
 
 const animator = new Animator(setup, 'ninja', 'idle');
 
-function draw(gameState, deltaTime) {
+function draw({ players }, deltaTime) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let id in gameState.players) {
-        const jogador = gameState.players[id];
-
+    for (const jogador of Object.values(players)) {
         if (jogador.isMoving && animator.currentAnimation !== 'run') {
             animator.setAnimation('run');
-          } else if (!jogador.isMoving && animator.currentAnimation !== 'idle') {
+        } else if (!jogador.isMoving && animator.currentAnimation !== 'idle') {
             animator.setAnimation('idle');
-          }          
+        }
 
         animator.update(deltaTime);
-
         animator.drawPlayer(ctx, jogador);
     }
 }
 
-socket.on('update', (gameState) => {
+socket.on('update', (room) => {
     const now = performance.now();
     const deltaTime = now - lastTimestamp;
     lastTimestamp = now;
 
-    draw(gameState, deltaTime);
+    draw(room, deltaTime);
 });
 
 

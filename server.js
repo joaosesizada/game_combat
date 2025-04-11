@@ -13,13 +13,17 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
 app.get('/room/:roomId', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'room.html'));
+});
+
+app.get('/game/:roomId', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
@@ -76,7 +80,7 @@ io.on("connection", (socket) => {
     socket.emit("updateRoom", {
       room: {
         id: room.idRoom,
-        players: Object.values(room.players).map(p => p.id),
+        players: Object.values(room.players),
       }
     })
   });

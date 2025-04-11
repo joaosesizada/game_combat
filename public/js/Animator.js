@@ -104,12 +104,8 @@ export default class Animator {
 
     this.drawSprite(ctx, jogador.x, jogador.y, jogador.width, jogador.height, flip);
 
-    // Texto de vida opcional (em cima da barra)
-    // ctx.fillStyle = "white";
-    // ctx.font = "bold 10px Arial";
-    // ctx.textAlign = "center";
-    // ctx.fillText(socket.id, jogador.x + jogador.width / 2, lifeY - 14); // <--- NOVO
-    // ctx.fillText(`${Math.floor(jogador.health)}/100`, jogador.x + jogador.width / 2, lifeY - 2);
+
+    
 
     const barHeight = 6;
     const barOffset = 10;

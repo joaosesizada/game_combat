@@ -1,15 +1,9 @@
 import Player from './Player.js';
+import { CombatManager } from './CombatManager.js';
 
 export default class Ninja extends Player {
     constructor(x, y, id) {
-        super(x, y, id, {
-            name: "ninja",
-            speed: 6.5,
-            attackDuration: 400,
-            maxStamina: 100,
-            health: 90,
-            sprite: "ninja-sprite.png",
-        });
+        super(x, y, id, "ninja");
     }
 
     attack(players) {

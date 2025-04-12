@@ -1,4 +1,4 @@
-import config from "./config";
+import config from "./config.js";
 
 export default class Player {
     constructor(x, y, id, person) {

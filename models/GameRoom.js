@@ -1,4 +1,6 @@
-import Player from './Player.js'; 
+import Ninja from './Ninja.js'; 
+
+const MAX_PLAYERS = 2;
 
 export default class GameRoom {
   constructor(idRoom, io) {
@@ -12,8 +14,8 @@ export default class GameRoom {
   }
 
   // Adiciona um jogador à sala
-  addPlayer(socketId) {
-    if (Object.keys(this.players).length >= 2) {
+  addPlayer(socketId, characterType = "ninja") {
+    if (Object.keys(this.players).length >= MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
       return false;
     }
@@ -21,9 +23,22 @@ export default class GameRoom {
     // Distribuir a posição inicial: o primeiro na esquerda, o segundo na direita
     const positionInitX = Object.keys(this.players).length === 0 ? 0 : 500;
 
-    const newPlayer = new Player(positionInitX, 700, `Player ${socketId}`, 'ninja');
-    this.players[socketId] = newPlayer;
+    let player;
+    // Um mapeamento ou if/else para instanciar a classe correta
+    switch (characterType) {
+      case "ninja":
+        player = new Ninja(positionInitX, 700, socketId);
+        break;
+      case "viking":
+        // player = new Viking(100, 500, socketId); // Exemplo
+        break;
+      // Adicione outros cases para outras classes, por exemplo "monge",     etc.
+      default:
+        // Pode instanciar o Player base ou o ninja como padrão
+        player = new Ninja(positionInitX, 700, socketId);
+    }
 
+    this.players[socketId] = player;
     console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado. Total de jogadores: ${Object.keys(this.players).length}`);
     return true;
   }

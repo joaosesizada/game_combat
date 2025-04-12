@@ -58,11 +58,11 @@ io.on("connection", (socket) => {
     socket.emit('connectToRoom', { roomId });
   });
 
-  socket.on("addPlayer", ({ roomId }) => {
+  socket.on("addPlayer", ({ roomId, characterType}) => {
     const room = gameRooms[roomId];
     if (!room) return socket.emit('erro', 'Sala não existe');
   
-    const success = room.addPlayer(socket.id);
+    const success = room.addPlayer(socket.id, characterType);
     if (!success) return socket.emit('erro', 'Sala cheia');
   
     // mapeia e inscreve na sala do Socket.IO

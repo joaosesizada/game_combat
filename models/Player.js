@@ -1,27 +1,15 @@
-// Player.js
-import { CombatManager } from "./CombatManager.js";
-
-const config = {
-    ninja: {
-        speed: 6.5,
-        attackDuration: 300,
-        maxStamina: 100,
-    },
-    monge: {},
-    tedesco: {},
-    viking: {},
-}
+import config from "./config";
 
 export default class Player {
     constructor(x, y, id, person) {
         this.config = config[person]
-        
+        this.person = person
         this.id = id;
         this.x = x;
         this.y = y;
         this.speed = this.config.speed || 5;
-        this.height = 120;
-        this.width = 80;
+        this.height = 125;
+        this.width = 100;
         
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
@@ -32,8 +20,8 @@ export default class Player {
         this.isMoving = false;
         this.isGrounded = true;
         this.velocityY = 0;
-        this.jumpForce = -15;
-        this.gravity = 0.3;
+        this.jumpForce = -21;
+        this.gravity = 1.1;
 
         this.isAttacking = false;
         this.attackCooldown = false;
@@ -100,47 +88,6 @@ export default class Player {
 
     }
 
-    attack(players) {
-        if (!this.isAttacking && !this.attackCooldown) {
-            this.isAttacking = true;
-            this.attackCooldown = true;
-
-            // O CombatManager verifica se o ataque atingiu algum player
-            CombatManager.handleAttack(this, players);
-            
-            setTimeout(() => {
-                this.isAttacking = false;
-            }, this.attackDuration);
-
-            setTimeout(() => {
-                this.attackCooldown = false;
-            }, this.attackDuration + 200);
-        }
-    }
-
-    getHitbox() {
-        return {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height
-        };
-    }
-
-    getAttackHitbox() {
-        // Define a posição do ataque baseada na direção do player
-        const attackX = this.facingDirection === "right"
-            ? this.x + this.width // Ataca para a direita
-            : this.x - this.attackRange.width; // Ataca para a esquerda
-
-        return {
-            x: attackX,
-            y: this.y + this.height / 2 - this.attackRange.height / 2,
-            width: this.attackRange.width,
-            height: this.attackRange.height
-        };
-    }
-
     #applyGravity() {
         if (!this.isGrounded) {
             this.velocityY += this.gravity;
@@ -170,15 +117,18 @@ export default class Player {
     takeDamage(damage, players) {
         this.health -= damage;
         this.isDamaged = true;
+    
         setTimeout(() => {
             this.isDamaged = false;
         }, 100);
-
+    
         if (this.health <= 0) {
+    
+            // Remover jogador morto do array
             const index = players.indexOf(this);
             if (index !== -1) {
                 players.splice(index, 1);
-            }
+            }    
         }
     }
 

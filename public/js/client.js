@@ -2,13 +2,29 @@ import setup from './setup.js';
 import Animator from './Animator.js';
 
 const socket = io();
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-
 let lastTimestamp = performance.now();
 
-const animator = new Animator(setup, 'ninja', 'idle');
+// Armazena animadores para cada jogador
+const animators = {};
+
+// Função para obter ou criar um animador para um jogador
+function getAnimatorForPlayer(playerId) {
+  if (!animators[playerId]) {
+    animators[playerId] = new Animator(setup, 'ninja', 'idle');
+  }
+  return animators[playerId];
+}
+
+// Função para limpar animadores de jogadores desconectados
+function cleanupAnimators(gameState) {
+  for (const playerId in animators) {
+    if (!gameState.players[playerId]) {
+      delete animators[playerId];
+    }
+  }
+}
 
 // 
 const infoSala = document.getElementById('infoSala')
@@ -80,9 +96,9 @@ window.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("keyup", (event) => {
-    const key = event.key;
-    if (keys.hasOwnProperty(key)) {
-        keys[key] = false
-        socket.emit('move', keys)
-    };
+  const key = event.key.toLowerCase();
+  if (keys.hasOwnProperty(key)) {
+    keys[key] = false;
+    socket.emit('move', keys);
+  }
 });

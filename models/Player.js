@@ -12,6 +12,7 @@ export default class Player {
         this.height = 125;
         this.renderWidth = this.width; // inicial igual à hitbox
         this.renderHeight = this.height;
+        this.hitBoxToDraw = {}
 
         
         this.sprite = this.config.sprite;
@@ -30,7 +31,8 @@ export default class Player {
         this.attackCooldown = false;
         this.attackDuration = this.config.attackDuration || 300;
         // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
-        this.attackRange = { width: 40, height: 20 };
+        this.attackBoxConfig  = this.config.attackBoxConfig  || { width: 40, height: 20 };
+        this.attackBoxToDraw = {}
 
         // Propriedade para simular a vida do player
         this.health = this.config.health || 100;
@@ -51,7 +53,7 @@ export default class Player {
         // Regenera stamina a cada frame (até o máximo)
         this.regenStamina();
 
-        this.#applyGravity();
+        this.applyGravity();
         	
         this.isMoving = false;
 
@@ -91,15 +93,15 @@ export default class Player {
 
     }
 
-    #applyGravity() {
+    applyGravity() {
         if (!this.isGrounded) {
             this.velocityY += this.gravity;
             this.y += this.velocityY;
         }
-        this.#checkCollisionWithGround();
+        this.checkCollisionWithGround();
     }
 
-    #checkCollisionWithGround() {
+    checkCollisionWithGround() {
         if (this.y + this.height >= this.canvasHeight) {
             this.y = this.canvasHeight - this.height;
             this.velocityY = 0;
@@ -148,6 +150,7 @@ export default class Player {
           speed: this.speed,
           height: this.height,
           width: this.width,
+          hitBoxToDraw: this.hitBoxToDraw,
           renderWidth: this.renderWidth,
           renderHeight: this.renderHeight,
           sprite: this.sprite,
@@ -162,7 +165,8 @@ export default class Player {
           isAttacking: this.isAttacking,
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,
-          attackRange: this.attackRange,
+          attackBoxConfig: this.attackBoxConfig,
+          attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
           isDamaged: this.isDamaged,
           maxStamina: this.maxStamina,

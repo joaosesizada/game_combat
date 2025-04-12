@@ -1,23 +1,25 @@
-// CombatManager.js
 export class CombatManager {
     // Verifica se o ataque de 'attacker' atingiu algum outro player na lista 'players'
     static handleAttack(attacker, players) {
-        const attackBox = attacker.getAttackHitbox();
+        const attackBoxes = attacker.getAttackHitbox(); // Agora retorna um array
 
         players.forEach(player => {
-            // Não verifica o próprio atacante
             if (player === attacker) return;
 
             const playerHitbox = player.getHitbox();
 
-            if (CombatManager.#checkCollision(attackBox, playerHitbox)) {
+            // Verifica se QUALQUER caixa de ataque colide com o player
+            const atingiu = attackBoxes.some(box => 
+                CombatManager.#checkCollision(box, playerHitbox)
+            );
 
+            if (atingiu) {
                 player.takeDamage(10, players);
             }
         });
     }
 
-    // Método privado que verifica colisão entre dois retângulos
+    // Verifica colisão entre dois retângulos
     static #checkCollision(rect1, rect2) {
         return (
             rect1.x < rect2.x + rect2.width &&

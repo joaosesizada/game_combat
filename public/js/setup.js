@@ -16,7 +16,7 @@ const setup = {
             src: "../imgs/ninja/attack1.png",
             framesWidth: 166,
             framesHeight: 70,
-            totalFrames: 4
+            totalFrames: 5
         }
     }
 }

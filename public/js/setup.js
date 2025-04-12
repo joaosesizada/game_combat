@@ -1,19 +1,19 @@
 const setup = {
     ninja: {
         idle: {
-            src: "../imgs/idle.png",
+            src: "../imgs/ninja/idle.png",
             framesWidth: 39,
             framesHeight: 52,
             totalFrames: 8
         },
         run: {
-            src: "../imgs/run.png",
+            src: "../imgs/ninja/run.png",
             framesWidth: 48,
             framesHeight: 52,
             totalFrames: 8
         },
         attack: {
-            src: "../imgs/Attack1.png",
+            src: "../imgs/ninja/attack1.png",
             framesWidth: 166,
             framesHeight: 70,
             totalFrames: 4

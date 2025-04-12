@@ -1,22 +1,9 @@
-// Player.js
-import { log } from "console";
-import { CombatManager } from "./CombatManager.js";
-
-const config = {
-    ninja: {
-        speed: 6.5,
-        attackDuration: 400,
-        maxStamina: 100,
-    },
-    monge: {},
-    tedesco: {},
-    viking: {},
-}
+import config from "./config";
 
 export default class Player {
     constructor(x, y, id, person) {
         this.config = config[person]
-        
+        this.person = person
         this.id = id;
         this.x = x;
         this.y = y;
@@ -101,48 +88,6 @@ export default class Player {
 
     }
 
-    attack(players) {
-        if (!this.isAttacking && !this.attackCooldown) {
-            this.isAttacking = true;
-            this.attackCooldown = true;
-            this.width = 180
-            // O CombatManager verifica se o ataque atingiu algum player
-            CombatManager.handleAttack(this, players);
-            
-            setTimeout(() => {
-                this.isAttacking = false;
-                this.width = 100
-            }, this.attackDuration);
-
-            setTimeout(() => {
-                this.attackCooldown = false;
-            }, this.attackDuration + 200);
-        }
-    }
-
-    getHitbox() {
-        return {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height
-        };
-    }
-
-    getAttackHitbox() {
-        // Define a posição do ataque baseada na direção do player
-        const attackX = this.facingDirection === "right"
-            ? this.x + this.width // Ataca para a direita
-            : this.x - this.attackRange.width; // Ataca para a esquerda
-
-        return {
-            x: attackX,
-            y: this.y + this.height / 2 - this.attackRange.height / 2,
-            width: this.attackRange.width,
-            height: this.attackRange.height
-        };
-    }
-
     #applyGravity() {
         if (!this.isGrounded) {
             this.velocityY += this.gravity;
@@ -172,14 +117,12 @@ export default class Player {
     takeDamage(damage, players) {
         this.health -= damage;
         this.isDamaged = true;
-        console.log('socao');
     
         setTimeout(() => {
             this.isDamaged = false;
         }, 100);
     
         if (this.health <= 0) {
-            console.log('acertei');
     
             // Remover jogador morto do array
             const index = players.indexOf(this);

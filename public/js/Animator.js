@@ -73,11 +73,11 @@ export default class Animator {
   drawSprite(ctx, x, y, width, height, flip = false) {
     const anim = this.animations[this.currentAnimation];
     if (!anim || !anim.image.complete) return;
-
+  
     const frameX = this.currentFrame * anim.frameWidth;
-
+  
     ctx.save(); // Salva o estado atual do contexto
-
+  
     if (flip) {
       ctx.translate(x + width, y); // Move a origem para o canto direito do sprite
       ctx.scale(-1, 1);            // Espelha horizontalmente
@@ -86,25 +86,30 @@ export default class Animator {
       ctx.translate(x, y);
       x = 0; // Sem flip, x ainda será relativo ao novo contexto
     }
-
+  
     ctx.drawImage(
       anim.image,
       frameX, 0,
       anim.frameWidth, anim.frameHeight,
       x, 0, // desenha no (0, 0) do contexto temporário
-      width, height
+      width, height // Use width e height de renderWidth e renderHeight aqui
     );
-
+  
     ctx.restore(); // Restaura o contexto original
-  }
+  }  
   
   drawPlayer(ctx, jogador) {
     const flip = jogador.facingDirection === "left";
 
-    this.drawSprite(ctx, jogador.x, jogador.y, jogador.width, jogador.height, flip);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(jogador.x, jogador.y, jogador.width, jogador.height);
 
-
-    
+    const offsetX = (jogador.renderWidth - jogador.width) / 2;
+    const offsetY = jogador.renderHeight - jogador.height;
+  
+    // Ajusta a posição para que o sprite fique centrado
+    this.drawSprite(ctx, jogador.x - offsetX, jogador.y - offsetY, jogador.renderWidth, jogador.renderHeight, flip);
 
     const barHeight = 6;
     const barOffset = 10;

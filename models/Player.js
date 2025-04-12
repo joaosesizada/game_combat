@@ -8,8 +8,11 @@ export default class Player {
         this.x = x;
         this.y = y;
         this.speed = this.config.speed || 5;
-        this.height = 125;
         this.width = 100;
+        this.height = 125;
+        this.renderWidth = this.width; // inicial igual à hitbox
+        this.renderHeight = this.height;
+
         
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
@@ -49,7 +52,7 @@ export default class Player {
         this.regenStamina();
 
         this.#applyGravity();
-
+        	
         this.isMoving = false;
 
         // Movimento lateral e atualização da direção
@@ -145,6 +148,8 @@ export default class Player {
           speed: this.speed,
           height: this.height,
           width: this.width,
+          renderWidth: this.renderWidth,
+          renderHeight: this.renderHeight,
           sprite: this.sprite,
           canvasHeight: this.canvasHeight,
           canvasWidth: this.canvasWidth,

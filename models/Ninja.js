@@ -3,6 +3,7 @@ import { CombatManager } from './CombatManager.js';
 
 export default class Ninja extends Player {
     constructor(x, y, id) {
+        // Passa "ninja" para que o construtor da classe base busque a configuração correta em config["ninja"]
         super(x, y, id, "ninja");
     }
 
@@ -10,20 +11,16 @@ export default class Ninja extends Player {
         if (!this.isAttacking && !this.attackCooldown) {
             this.isAttacking = true;
             this.attackCooldown = true;
-            if (this.person === "ninja") {
-                this.width = 300
-                this.height = 175
-            }
+            this.renderWidth = 300;
+            this.renderHeight = 175;
+
             // O CombatManager verifica se o ataque atingiu algum player
             CombatManager.handleAttack(this, players);
             
             setTimeout(() => {
                 this.isAttacking = false;
-                if (this.person === "ninja") {
-                    this.width = 100
-                    this.y += 50
-                    this.height = 125
-                }
+                this.renderWidth = this.width;
+                this.renderHeight = this.height;
             }, this.attackDuration);
     
             setTimeout(() => {

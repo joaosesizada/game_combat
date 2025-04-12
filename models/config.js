@@ -1,7 +1,7 @@
 const config = {
     ninja: {
         speed: 6.5,
-        attackDuration: 400,
+        attackDuration: 320,
         maxStamina: 100,
     },
     monge: {},

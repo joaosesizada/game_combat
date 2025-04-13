@@ -14,7 +14,6 @@ export default class Player {
         this.renderHeight = this.height;
         this.hitBoxToDraw = {}
 
-        
         this.sprite = this.config.sprite;
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -39,6 +38,7 @@ export default class Player {
         // Propriedade para simular a vida do player
         this.health = this.config.health || 100;
         this.isDamaged = false;
+        this.isAlive = true;
 
         // NOVO: Propriedades de stamina
         this.maxStamina = this.config.maxStamina || 100;
@@ -52,7 +52,7 @@ export default class Player {
     }
 
     update(players) {
-        // Regenera stamina a cada frame (até o máximo)
+
         this.regenStamina();
 
         this.applyGravity();
@@ -129,15 +129,15 @@ export default class Player {
     
         setTimeout(() => {
             this.isDamaged = false;
-        }, 100);
+        }, 350);
     
         if (this.health <= 0) {
-    
-            // Remover jogador morto do array
+            this.isAlive = false; 
+        
             const index = players.indexOf(this);
             if (index !== -1) {
-                players.splice(index, 1);
-            }    
+              players.splice(index, 1);
+            }
         }
     }
 
@@ -180,6 +180,7 @@ export default class Player {
           attackBoxConfig: this.attackBoxConfig,
           attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
+          isAlive: this.isAlive,
           isDamaged: this.isDamaged,
           maxStamina: this.maxStamina,
           stamina: this.stamina,

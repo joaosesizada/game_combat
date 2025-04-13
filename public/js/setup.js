@@ -16,10 +16,10 @@ const setup = {
             src: "../imgs/ninja/attack1.png",
             framesWidth: 166,
             framesHeight: 70,
-            totalFrames: 5
+            totalFrames: 6
         },
         jump: {
-            src: "../imgs/ninja/jump2.png",
+            src: "../imgs/ninja/jump.png",
             framesWidth: 40,
             framesHeight: 53,
             totalFrames: 1
@@ -30,6 +30,18 @@ const setup = {
             framesHeight: 56,
             totalFrames: 4
         },
+        hurt: {
+            src: "../imgs/ninja/hurt.png",
+            framesWidth: 50,
+            framesHeight: 54,
+            totalFrames: 4
+        },
+        death: {
+            src: "../imgs/ninja/death.png",
+            framesWidth: 51,
+            framesHeight: 53,
+            totalFrames: 6
+        },  
     }
 }
 

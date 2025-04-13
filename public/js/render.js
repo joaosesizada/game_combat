@@ -26,8 +26,12 @@ function renderPlayers(deltaTime) {
   for (let id in players) {
     const player = players[id];
     const animator = getAnimator(id, player);
-
-    if (player.isAttacking) {
+    
+    if (!player.isAlive) {
+      animator.setAnimation('death');
+    } else if (player.isDamaged) {
+      animator.setAnimation('hurt');
+    } else if (player.isAttacking) {
       animator.setAnimation('attack');
     } else if (player.rising) {
       animator.setAnimation('jump');
@@ -39,8 +43,7 @@ function renderPlayers(deltaTime) {
       animator.setAnimation('idle');
     }    
 
-    if (animator.currentAnimation === 'attack' &&
-        animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
+    if (animator.currentAnimation === 'attack' && animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
       animator.setAnimation(player.isMoving ? 'run' : 'idle');
       player.isAttacking = false;
     }

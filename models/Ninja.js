@@ -93,6 +93,7 @@ export default class Ninja extends Player {
     }
 
     update(players) {
+
         this.regenStamina();
 
         this.updateVerticalDirection()

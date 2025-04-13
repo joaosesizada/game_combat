@@ -163,27 +163,6 @@ export default class Animator {
       jogador.x + jogador.width / 2,
       lifeY - 2
     );
-
-    if (jogador.health <= 0) {
-      lifeWidth = 0;
-      lifeY = 0;
-
-      // Exibe a interface de Game Over
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); // tela escura
-
-      ctx.fillStyle = "white";
-      ctx.font = "bold 48px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2);
-
-      ctx.font = "24px Arial";
-      ctx.fillText(
-        "Pressione R para reiniciar",
-        ctx.canvas.width / 2,
-        ctx.canvas.height / 2 + 40
-      );
-    }
   }
 
   drawPlayer(ctx, jogador) {

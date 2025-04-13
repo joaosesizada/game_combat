@@ -1,7 +1,8 @@
 export class CombatManager {
     // Verifica se o ataque de 'attacker' atingiu algum outro player na lista 'players'
     static handleAttack(attacker, players) {
-        const attackBoxes = attacker.getAttackHitbox(); // Agora retorna um array
+        const attackBoxes = attacker.getAttackHitbox(); 
+        const attackDamage = attacker.attackDamage
 
         players.forEach(player => {
             if (player === attacker) return;
@@ -14,7 +15,7 @@ export class CombatManager {
             );
 
             if (atingiu) {
-                player.takeDamage(10, players);
+                player.takeDamage(attackDamage, players);
             }
         });
     }

@@ -44,12 +44,13 @@ export default class Animator {
           );
         }
       };
-
+      console.log(animationData)
       this.animations[animName] = {
         image: img,
         frameWidth: animationData.framesWidth,
         frameHeight: animationData.framesHeight,
         totalFrames: animationData.totalFrames || 1,
+        loop: animationData.loop
       };
     }
   }
@@ -71,15 +72,23 @@ export default class Animator {
   update(deltaTime) {
     const animation = this.animations[this.currentAnimation];
     if (!animation) return;
-
     if (animation.totalFrames <= 1) return;
-
     this.elapsedTime += deltaTime;
+
     if (this.elapsedTime > this.frameDuration) {
       this.elapsedTime = 0;
-      this.currentFrame = (this.currentFrame + 1) % animation.totalFrames;
+      
+      if (animation.loop === false) {
+
+        if (this.currentFrame < animation.totalFrames - 1) {
+          this.currentFrame++;
+        }
+      } else {
+        this.currentFrame = (this.currentFrame + 1) % animation.totalFrames;
+      }
     }
   }
+  
 
   drawSprite(ctx, x, y, width, height, flip = false) {
     const anim = this.animations[this.currentAnimation];

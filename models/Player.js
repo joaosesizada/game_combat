@@ -28,6 +28,7 @@ export default class Player {
         this.falling = false;
         this.rising = false;
 
+        this.attackDamage = 25
         this.isAttacking = false;
         this.attackCooldown = false;
         this.attackDuration = this.config.attackDuration || 300;
@@ -53,6 +54,8 @@ export default class Player {
 
     update(players) {
 
+        if(!this.isAlive) return
+        
         this.regenStamina();
 
         this.applyGravity();
@@ -133,11 +136,6 @@ export default class Player {
     
         if (this.health <= 0) {
             this.isAlive = false; 
-        
-            const index = players.indexOf(this);
-            if (index !== -1) {
-              players.splice(index, 1);
-            }
         }
     }
 
@@ -174,6 +172,7 @@ export default class Player {
           gravity: this.gravity,
           falling: this.falling,
           rising: this.rising,
+          attackDamage: this.attackDamage,
           isAttacking: this.isAttacking,
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,

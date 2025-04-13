@@ -5,7 +5,7 @@ export default class Ninja extends Player {
     constructor(x, y, id) {
         // Passa "ninja" para que o construtor da classe base busque a configuração correta em config["ninja"]
         super(x, y, id, "ninja");
-
+        this.attackDamage = 25
     }
 
     attack(players) {
@@ -87,6 +87,7 @@ export default class Ninja extends Player {
     }
 
     updateVerticalDirection() {
+        if (this.isAttacking && this.attackCooldown) return
         this.rising = this.velocityY < 0;
         this.falling = this.velocityY > 0;
         this.renderHeight = this.falling ? 150 : this.height;

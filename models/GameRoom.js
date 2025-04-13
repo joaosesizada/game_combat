@@ -68,18 +68,36 @@ export default class GameRoom {
     this.gameInterval = setInterval(() => {
       // atualiza lógica de cada player
       Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
-
-      // emite só dados puros
       this.io.to(this.idRoom).emit('update', this.getState().players);
+
+      this.checkGameOver();
     }, 1000 / this.FPS);
   }
 
-  // Para o loop se necessário
+  checkGameOver() {
+    const alivePlayers = Object.values(this.players).filter(player => player.isAlive);
+    if (alivePlayers.length <= 1) {
+      const winner = alivePlayers[0] || null;
+      // Emite evento "gameOver" para todos os sockets na sala
+      this.io.to(this.idRoom).emit("gameOver", { winnerId: winner ? winner.id : null});
+      
+      setTimeout(() => {
+        this.stopGame();
+      }, 5000); 
+    }
+}
+
   stopGame() {
     if (this.gameInterval) {
       clearInterval(this.gameInterval);
       this.gameInterval = null;
       console.log(`[GameRoom ${this.idRoom}] Jogo encerrado.`);
+
+      Object.keys(this.players).forEach(socketId => {
+        delete this.players[socketId];
+      });
+
+      this.io.to(this.idRoom).emit("goToLobby")
     }
   }
 

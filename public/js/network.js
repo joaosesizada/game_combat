@@ -6,6 +6,9 @@ const animators = {};
 let players = {};
 let lastTimestamp = performance.now();
 
+let gameOver = false;
+let gameOverData = null;
+
 export function initSocket(onConnected) {
   socket.on('connect', () => {
     const roomId = getRoomIdFromURL();
@@ -27,6 +30,23 @@ export function initSocket(onConnected) {
   socket.on("updateRoom", ({ room }) => {
     document.getElementById('infoSala').innerHTML = room.id;
   });
+
+  socket.on("gameOver", (data) => {
+    gameOver = true;
+    gameOverData = data;
+  });
+  
+  socket.on("goToLobby", () => {
+    window.location.href = '/';
+  })
+}
+
+export function isGameOver() {
+  return gameOver;
+}
+
+export function getGameOverData() {
+  return gameOverData;
 }
 
 export function getSocket() {

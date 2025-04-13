@@ -17,7 +17,19 @@ const setup = {
             framesWidth: 166,
             framesHeight: 70,
             totalFrames: 5
-        }
+        },
+        jump: {
+            src: "../imgs/ninja/jump2.png",
+            framesWidth: 40,
+            framesHeight: 53,
+            totalFrames: 1
+        },
+        fall: {
+            src: "../imgs/ninja/fall.png",
+            framesWidth: 48,
+            framesHeight: 56,
+            totalFrames: 4
+        },
     }
 }
 

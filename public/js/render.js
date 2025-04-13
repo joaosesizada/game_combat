@@ -29,11 +29,15 @@ function renderPlayers(deltaTime) {
 
     if (player.isAttacking) {
       animator.setAnimation('attack');
+    } else if (player.rising) {
+      animator.setAnimation('jump');
+    } else if (player.falling) {
+      animator.setAnimation('fall');
     } else if (player.isMoving) {
       animator.setAnimation('run');
     } else {
       animator.setAnimation('idle');
-    }
+    }    
 
     if (animator.currentAnimation === 'attack' &&
         animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {

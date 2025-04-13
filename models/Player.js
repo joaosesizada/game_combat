@@ -26,6 +26,8 @@ export default class Player {
         this.velocityY = 0;
         this.jumpForce = -21;
         this.gravity = 1.1;
+        this.falling = false;
+        this.rising = false;
 
         this.isAttacking = false;
         this.attackCooldown = false;
@@ -54,6 +56,8 @@ export default class Player {
         this.regenStamina();
 
         this.applyGravity();
+
+        this.updateVerticalDirection()
         	
         this.isMoving = false;
 
@@ -137,6 +141,12 @@ export default class Player {
         }
     }
 
+    updateVerticalDirection() {
+        this.rising = this.velocityY < 0;
+        this.falling = this.velocityY > 0;
+    }
+    
+
     setPosition(x, y) {
         this.x = x;
         this.y = y;
@@ -162,6 +172,8 @@ export default class Player {
           velocityY: this.velocityY,
           jumpForce: this.jumpForce,
           gravity: this.gravity,
+          falling: this.falling,
+          rising: this.rising,
           isAttacking: this.isAttacking,
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,

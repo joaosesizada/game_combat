@@ -190,7 +190,6 @@ export default class Animator {
     const flip = jogador.facingDirection === "left";
 
     const hitbox = jogador.hitBoxToDraw;
-    console.log(hitbox);
     ctx.lineWidth = 2;
     ctx.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 

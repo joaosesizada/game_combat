@@ -86,10 +86,19 @@ export default class Ninja extends Player {
         };
     }
 
+    updateVerticalDirection() {
+        this.rising = this.velocityY < 0;
+        this.falling = this.velocityY > 0;
+        this.renderHeight = this.falling ? 150 : this.height;
+    }
+
     update(players) {
         this.regenStamina();
 
+        this.updateVerticalDirection()
+
         this.applyGravity();
+
         this.attackBoxToDraw = this.getAttackHitbox();
         this.hitBoxToDraw = this.getHitbox();
         	

@@ -13,17 +13,15 @@ export default class Ninja extends Player {
       
             this.isAttacking = true;
             this.attackCooldown = true;
-            this.renderWidth = 300;
-            this.renderHeight = 175;
-            this.attackBoxToDraw = this.getAttackHitbox(); 
+            this.renderWidth = 300
+            this.renderHeight = 175
 
             CombatManager.handleAttack(this, players);
-            
+
             setTimeout(() => {
               this.isAttacking = false;
               this.renderWidth = this.width;
               this.renderHeight = this.height;
-              this.attackBoxToDraw = null; 
               
             }, this.attackDuration);
         
@@ -94,6 +92,8 @@ export default class Ninja extends Player {
     }
 
     update(players) {
+
+        if(!this.isAlive) return
 
         this.regenStamina();
 

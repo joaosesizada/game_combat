@@ -41,6 +41,8 @@ function renderPlayers(deltaTime) {
     
     if (!player.isAlive) {
       animator.setAnimation('death');
+    } else if (player.attackClash) {
+      animator.setAnimation('attackClash');
     } else if (player.isDamaged) {
       animator.setAnimation('hurt');
     } else if (player.isAttacking) {

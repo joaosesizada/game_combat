@@ -175,7 +175,7 @@ export default class Animator {
 
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
-    // Ajusta a posição para que o sprite fique centrado
+
     this.drawSprite(
       ctx,
       jogador.x - offsetX,

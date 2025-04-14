@@ -1,32 +1,59 @@
 export class CombatManager {
-    // Verifica se o ataque de 'attacker' atingiu algum outro player na lista 'players'
+    // Chama handleAttack a cada frame, para cada jogador
     static handleAttack(attacker, players) {
-        const attackBoxes = attacker.getAttackHitbox(); 
-        const attackDamage = attacker.attackDamage
-
-        players.forEach(player => {
-            if (player === attacker) return;
-
-            const playerHitbox = player.getHitbox();
-
-            // Verifica se QUALQUER caixa de ataque colide com o player
-            const atingiu = attackBoxes.some(box => 
-                CombatManager.#checkCollision(box, playerHitbox)
-            );
-
-            if (atingiu) {
-                player.takeDamage(attackDamage, players);
-            }
-        });
+      const atkBoxes = attacker.getAttackHitbox();      
+      const atkDir   = attacker.facingDirection;        
+      const atkDmg   = attacker.attackDamage;
+  
+      players.forEach(player => {
+        if (player === attacker) return;
+  
+        if (attacker.isAttacking && player.isAttacking) {
+            
+          if (
+            CombatManager.#oppositeDirections(attacker, player) &&
+            CombatManager.#attacksCollide(attacker, player)
+          ) {
+            console.log('Clash! ataques colidiram em direções opostas.');
+            attacker.onAttackClash?.(player);
+            player.onAttackClash?.(attacker);
+          }
+          
+        }
+  
+        // Caso padrão: apenas o attacker ataca
+        if (attacker.isAttacking) {
+          const plyHitbox = player.getHitbox();
+          const hit = atkBoxes.some(ab => 
+            CombatManager.#checkCollision(ab, plyHitbox)
+          );
+          if (hit) {
+            player.takeDamage(atkDmg, attacker);
+          }
+        }
+      });
     }
 
-    // Verifica colisão entre dois retângulos
-    static #checkCollision(rect1, rect2) {
-        return (
-            rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y
+    static #oppositeDirections(a, b) {
+        return a.facingDirection !== b.facingDirection;
+    }
+  
+    
+    static #attacksCollide(a, b) {
+        return a.getAttackHitbox().some(ab =>
+          b.getAttackHitbox().some(pb =>
+            CombatManager.#checkCollision(ab, pb)
+          )
         );
+      }
+    // Verifica colisão entre dois retângulos (AABB)
+    static #checkCollision(r1, r2) {
+      return (
+        r1.x < r2.x + r2.width &&
+        r1.x + r1.width  > r2.x &&
+        r1.y < r2.y + r2.height &&
+        r1.y + r1.height > r2.y
+      );
     }
-}
+  }
+  

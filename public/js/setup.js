@@ -48,7 +48,14 @@ const setup = {
             framesHeight: 53,
             totalFrames: 6,
             loop: false
-        },  
+        },
+        attackClash: {
+            src: "../imgs/ninja/attackClash.png",
+            framesWidth: 48,
+            framesHeight: 54,
+            totalFrames: 4,
+            loop: false
+        }  
     }
 }
 

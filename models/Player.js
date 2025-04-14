@@ -32,9 +32,9 @@ export default class Player {
         this.isAttacking = false;
         this.attackCooldown = false;
         this.attackDuration = this.config.attackDuration || 300;
+        this.attackClash = false
         // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
         this.attackBoxConfig  = this.config.attackBoxConfig  || { width: 40, height: 20 };
-        this.attackBoxToDraw = {}
 
         // Propriedade para simular a vida do player
         this.health = this.config.health || 100;
@@ -144,6 +144,17 @@ export default class Player {
         this.falling = this.velocityY > 0;
     }
     
+    onAttackClash() {
+        setTimeout(() => {
+            this.attackClash = true;
+            this.renderWidth = this.width;
+            this.renderHeight = this.height;
+        }, 200)
+        
+        setTimeout(() => {
+            this.attackClash = false;
+        }, 900);
+    }
 
     setPosition(x, y) {
         this.x = x;
@@ -172,12 +183,12 @@ export default class Player {
           gravity: this.gravity,
           falling: this.falling,
           rising: this.rising,
+          attackClash: this.attackClash,
           attackDamage: this.attackDamage,
           isAttacking: this.isAttacking,
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
-          attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,

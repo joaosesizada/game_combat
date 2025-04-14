@@ -62,7 +62,7 @@ export default class GameRoom {
       )
     };
   }
-
+  
   startGame() {
     if (this.gameInterval) return;
     this.gameInterval = setInterval(() => {

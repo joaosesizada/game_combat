@@ -30,21 +30,13 @@ export default class Animator {
 
       // Log para depurar quando a imagem carrega
       img.onload = () => {
-        console.log(`Imagem "${animName}" carregada:`, {
-          width: img.width,
-          height: img.height,
-        });
+
         // Se frameWidth não estiver definido, calcular automaticamente
         if (!animationData.framesWidth) {
           this.animations[animName].frameWidth =
             img.width / animationData.totalFrames;
-          console.log(
-            `Calculado frameWidth para "${animName}":`,
-            this.animations[animName].frameWidth
-          );
         }
       };
-      console.log(animationData)
       this.animations[animName] = {
         image: img,
         frameWidth: animationData.framesWidth,

@@ -7,3 +7,4 @@ export function initUI() {
     getSocket().emit("startGame", { roomId });
   });
 }
+

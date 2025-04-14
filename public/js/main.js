@@ -1,4 +1,4 @@
-import { initSocket, getSocket } from './network.js';
+import { initSocket } from './network.js';
 import { setupInputListeners } from './input.js';
 import { startRenderLoop } from './render.js';
 import { initUI } from './ui.js';

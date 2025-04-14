@@ -3,6 +3,7 @@ import Animator from './Animator.js';
 
 const socket = io();
 const animators = {};
+
 let players = {};
 let lastTimestamp = performance.now();
 
@@ -17,7 +18,7 @@ export function initSocket(onConnected) {
     }, 500);
     onConnected();
   });
-
+  
   socket.on('update', (serverPlayers) => {
     players = serverPlayers;
   });

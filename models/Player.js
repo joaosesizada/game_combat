@@ -45,7 +45,7 @@ export default class Player {
         this.maxStamina = this.config.maxStamina || 100;
         this.stamina = this.maxStamina;
         this.staminaRegenRate = 0.25; // Quantidade regenerada por frame (pode ajustar)
-        this.attackStaminaCost = 10;
+        this.attackStaminaCost = 20;
         this.jumpStaminaCost = 15;
 
         // Propriedade para controlar a direção que o player está olhando (left ou right)

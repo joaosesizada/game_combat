@@ -7,7 +7,7 @@ const config = {
             lHeight: 160,    
             lThickness: 40  
         },      
-        maxStamina: 100,
+        maxStamina: 30,
     },
 }
 

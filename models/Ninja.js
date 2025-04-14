@@ -5,7 +5,7 @@ export default class Ninja extends Player {
     constructor(x, y, id) {
         // Passa "ninja" para que o construtor da classe base busque a configuração correta em config["ninja"]
         super(x, y, id, "ninja");
-        this.attackDamage = 25
+        this.attackDamage = 20
     }
 
     attack(players) {

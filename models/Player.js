@@ -53,7 +53,10 @@ export default class Player {
 
     update(players) {
 
-        if(!this.isAlive) return
+        if(!this.isAlive) {
+            this.updateAnimationState()
+            return
+        }
         
         this.regenStamina();
         this.applyGravity();

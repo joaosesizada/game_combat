@@ -34,7 +34,7 @@ export function initSocket(onConnected) {
   });
 
   socket.on("gameOver", (data) => {
-    gameOver = true;
+    gameOver = false;
     gameOverData = data;
   });
   

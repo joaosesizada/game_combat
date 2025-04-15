@@ -11,17 +11,33 @@ export class CombatManager {
         if (player === attacker) return;
   
         if (attacker.isAttacking && player.isAttacking) {
-            
-          if (
-            CombatManager.#oppositeDirections(attacker, player) &&
-            CombatManager.#attacksCollide(attacker, player)
-          ) {
-            console.log('Clash! ataques colidiram em direções opostas.');
-            attacker.onAttackClash?.(player);
-            player.onAttackClash?.(attacker);
-            const gameRoom = GameRoom.getGameRoom();
-            gameRoom.addEffect({ type: "clash", x: 50, y: 50, width: 128, height: 128, duration: 4000 });            
+          if (CombatManager.#oppositeDirections(attacker, player)) {
+            const collision = CombatManager.#findFirstIntersection(
+              attacker.getAttackHitbox(),
+              player.getAttackHitbox()
+            );
+
+            if (collision) {
+              // collision: { x, y, width, height }
+              const centerX = collision.x + collision.width  / 2;
+              const centerY = collision.y + collision.height / 2;
+  
+              attacker.onAttackClash?.(player);
+              player.onAttackClash?.(attacker);
+  
+              const gameRoom = GameRoom.getGameRoom();
+              gameRoom.addEffect({
+                type:     "clash",
+                // centraliza a animação no ponto de colisão
+                x:        centerX  - 64, // se sua animação tem 128px de largura
+                y:        centerY  - 64, // e 128px de altura
+                width:    128,
+                height:   128,
+                duration: 750
+              });
+            }
           }
+
           
         }
   
@@ -36,6 +52,22 @@ export class CombatManager {
           }
         }
       });
+    }
+
+    static #findFirstIntersection(boxesA, boxesB) {
+      for (let a of boxesA) {
+        for (let b of boxesB) {
+          if (CombatManager.#checkCollision(a, b)) {
+            // calcula interseção A ∩ B
+            const ix = Math.max(a.x, b.x);
+            const iy = Math.max(a.y, b.y);
+            const iw = Math.min(a.x + a.width,  b.x + b.width)  - ix;
+            const ih = Math.min(a.y + a.height, b.y + b.height) - iy;
+            return { x: ix, y: iy, width: iw, height: ih };
+          }
+        }
+      }
+      return null;
     }
 
     static #oppositeDirections(a, b) {

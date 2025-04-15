@@ -5,7 +5,7 @@ const socket = io();
 const animators = {};
 
 let players = {};
-let lastTimestamp = performance.now();
+let effects = []; 
 
 let gameOver = false;
 let gameOverData = null;
@@ -19,8 +19,9 @@ export function initSocket(onConnected) {
     onConnected();
   });
   
-  socket.on('update', (serverPlayers) => {
+  socket.on('update', (serverPlayers, serverEffects) => {
     players = serverPlayers;
+    effects = serverEffects || [];
   });
 
   socket.on('goToGame', () => {
@@ -56,6 +57,10 @@ export function getSocket() {
 
 export function getPlayers() {
   return players;
+}
+
+export function getEffects() {
+  return effects;
 }
 
 export function getAnimator(playerId, playerData) {

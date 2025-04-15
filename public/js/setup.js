@@ -56,6 +56,9 @@ const setup = {
             totalFrames: 4,
             loop: false
         }  
+    },
+   effects: {
+        clash: { src: "../imgs/effects/clash.png", totalFrames: 8, frameWidth: 50, frameHeight: 68, loop: true },
     }
 }
 

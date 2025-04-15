@@ -12,9 +12,8 @@ export default class Player {
         this.height = 125;
         this.renderWidth = this.width; // inicial igual à hitbox
         this.renderHeight = this.height;
-        this.hitBoxToDraw = {}
+        this.currentAnimation = 'idle'
 
-        this.sprite = this.config.sprite;
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
 
@@ -57,9 +56,7 @@ export default class Player {
         if(!this.isAlive) return
         
         this.regenStamina();
-
         this.applyGravity();
-
         this.updateVerticalDirection()
         	
         this.isMoving = false;
@@ -86,6 +83,7 @@ export default class Player {
                 this.stamina -= this.jumpStaminaCost;
                 this.velocityY = this.jumpForce;
                 this.isGrounded = false;
+                
             }
         }
 
@@ -98,6 +96,27 @@ export default class Player {
             }
         }
 
+        this.updateAnimationState()
+    }
+
+    updateAnimationState() {
+        if (!this.isAlive) { 
+          this.currentAnimation = 'death';
+        } else if (this.attackClash) {
+          this.currentAnimation = 'attackClash';
+        } else if (this.isDamaged) {
+          this.currentAnimation = 'hurt';
+        } else if (this.isAttacking) {
+          this.currentAnimation = 'attack';
+        } else if (this.rising) {
+          this.currentAnimation = 'jump';
+        } else if (this.falling) {
+          this.currentAnimation = 'fall';
+        } else if (this.isMoving) {
+          this.currentAnimation = 'run';
+        } else {
+          this.currentAnimation = 'idle';
+        }
     }
 
     applyGravity() {
@@ -129,7 +148,8 @@ export default class Player {
     takeDamage(damage, players) {
         this.health -= damage;
         this.isDamaged = true;
-    
+        
+
         setTimeout(() => {
             this.isDamaged = false;
         }, 350);
@@ -145,6 +165,8 @@ export default class Player {
     }
     
     onAttackClash() {
+        this.isAttacking = false
+
         setTimeout(() => {
             this.attackClash = true;
             this.renderWidth = this.width;
@@ -172,7 +194,7 @@ export default class Player {
           hitBoxToDraw: this.hitBoxToDraw,
           renderWidth: this.renderWidth,
           renderHeight: this.renderHeight,
-          sprite: this.sprite,
+          currentAnimation: this.currentAnimation,
           canvasHeight: this.canvasHeight,
           canvasWidth: this.canvasWidth,
           keys: this.keys,

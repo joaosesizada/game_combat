@@ -13,15 +13,11 @@ export default class Ninja extends Player {
       
             this.isAttacking = true;
             this.attackCooldown = true;
-            this.renderWidth = 300
-            this.renderHeight = 175
 
             CombatManager.handleAttack(this, players);
 
             setTimeout(() => {
               this.isAttacking = false;
-              this.renderWidth = this.width;
-              this.renderHeight = this.height;
               
             }, this.attackDuration);
         
@@ -88,7 +84,6 @@ export default class Ninja extends Player {
         if (this.isAttacking && this.attackCooldown) return
         this.rising = this.velocityY < 0;
         this.falling = this.velocityY > 0;
-        this.renderHeight = this.falling ? 150 : this.height;
     }
 
     update(players) {
@@ -101,7 +96,6 @@ export default class Ninja extends Player {
 
         this.applyGravity();
 
-        this.attackBoxToDraw = this.getAttackHitbox();
         this.hitBoxToDraw = this.getHitbox();
         	
         this.isMoving = false;
@@ -140,6 +134,19 @@ export default class Ninja extends Player {
             }
         }
 
+        this.updateAnimationState()
+        this.updateRender()
+    }
+    
+    updateRender() {
+        if(this.currentAnimation !== "attack" && this.currentAnimation !== "fall") {
+            this.renderHeight = this.height
+            this.renderWidth = this.width
+            return
+        }
+
+        this.renderWidth = this.falling ? this.height : 300
+        this.renderHeight = this.falling ? 150 : 175
     }
 }
 

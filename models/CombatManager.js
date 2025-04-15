@@ -1,3 +1,5 @@
+import GameRoom from "./GameRoom.js";
+
 export class CombatManager {
     // Chama handleAttack a cada frame, para cada jogador
     static handleAttack(attacker, players) {
@@ -17,6 +19,8 @@ export class CombatManager {
             console.log('Clash! ataques colidiram em direções opostas.');
             attacker.onAttackClash?.(player);
             player.onAttackClash?.(attacker);
+            const gameRoom = GameRoom.getGameRoom();
+            gameRoom.addEffect({ type: "clash", x: 50, y: 50, width: 128, height: 128, duration: 4000 });            
           }
           
         }

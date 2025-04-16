@@ -53,7 +53,10 @@ export default class Player {
 
     update(players) {
 
-        if(!this.isAlive) return
+        if (!this.isAlive) {
+            this.updateAnimationState();
+            return; // retorna depois de atualizar a animação de morte
+        }
         
         this.regenStamina();
         this.applyGravity();
@@ -95,8 +98,12 @@ export default class Player {
                 this.attack(players);
             }
         }
-
         this.updateAnimationState()
+        this.customUpdate(players);
+    }
+
+    customUpdate(players) {
+
     }
 
     updateAnimationState() {

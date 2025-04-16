@@ -86,56 +86,10 @@ export default class Ninja extends Player {
         this.falling = this.velocityY > 0;
     }
 
-    update(players) {
-
-        if(!this.isAlive) return
-
-        this.regenStamina();
-
-        this.updateVerticalDirection()
-
-        this.applyGravity();
-
+    customUpdate(players) {
         this.hitBoxToDraw = this.getHitbox();
-        	
-        this.isMoving = false;
-
-        // Movimento lateral e atualização da direção
-        if (this.keys.a) {
-            if (this.x > 0) {
-                this.x -= this.speed;
-                this.facingDirection = "left";
-                this.isMoving = true;
-            }
-        }
-        if (this.keys.d) {
-            if (this.x < this.canvasWidth - this.width) {
-                this.x += this.speed;
-                this.facingDirection = "right";
-                this.isMoving = true;
-            }
-        }
-
-        // Pulo (verifica se há stamina suficiente para pular)
-        if (this.keys.w && this.isGrounded) {
-            if (this.stamina >= this.jumpStaminaCost) {
-                this.stamina -= this.jumpStaminaCost;
-                this.velocityY = this.jumpForce;
-                this.isGrounded = false;
-            }
-        }
-
-
-        // Ataque (verifica se há stamina suficiente para atacar)
-        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attack(players);
-            }
-        }
-
-        this.updateAnimationState()
-        this.updateRender()
+        
+        this.updateRender();
     }
     
     updateRender() {
@@ -145,7 +99,7 @@ export default class Ninja extends Player {
             return
         }
 
-        this.renderWidth = this.falling ? this.height : 300
+        this.renderWidth = this.falling ? this.width : 300
         this.renderHeight = this.falling ? 150 : 175
     }
 }

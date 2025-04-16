@@ -3,16 +3,24 @@ import Ninja from './Ninja.js';
 const MAX_PLAYERS = 2;
 
 export default class GameRoom {
+
+  static currentGameRoom = null;
+
   constructor(idRoom, io) {
     this.idRoom = idRoom;
     this.io = io; // referência para o socket.io para poder emitir eventos
     this.players = {};  // armazenaremos os jogadores com socket.id como chave
+    this.effects = []
     this.FPS = 60;      // atualizações por segundo
     this.gameInterval = null;
 
     console.log(`[GameRoom] Sala criada: ${idRoom}`);
+    GameRoom.currentGameRoom = this;
   }
 
+  static getGameRoom() {
+    return GameRoom.currentGameRoom;
+  }
   // Adiciona um jogador à sala
   addPlayer(socketId, characterType = "ninja") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
@@ -59,7 +67,8 @@ export default class GameRoom {
           socketId,
           player.getState()
         ])
-      )
+      ),
+      effects: this.effects
     };
   }
   
@@ -68,7 +77,8 @@ export default class GameRoom {
     this.gameInterval = setInterval(() => {
       // atualiza lógica de cada player
       Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
-      this.io.to(this.idRoom).emit('update', this.getState().players);
+      this.cleanUpEffects()
+      this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects);
 
       this.checkGameOver();
     }, 1000 / this.FPS);
@@ -101,6 +111,17 @@ export default class GameRoom {
     }
   }
 
+  addEffect(effectData) {
+    effectData.created = Date.now();
+    this.effects.push(effectData);
+  }
+
+  cleanUpEffects() {
+    const now = Date.now();
+    this.effects = this.effects.filter(effect => {
+      return !effect.duration || (now - effect.created < effect.duration);
+    });
+  }
   // Envia uma atualização para todos os sockets da sala
   broadcast(event, data) {
     console.log(`[GameRoom ${this.idRoom}] Broadcast: ${event}`);

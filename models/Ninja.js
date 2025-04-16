@@ -13,15 +13,11 @@ export default class Ninja extends Player {
       
             this.isAttacking = true;
             this.attackCooldown = true;
-            this.renderWidth = 300
-            this.renderHeight = 175
 
             CombatManager.handleAttack(this, players);
 
             setTimeout(() => {
               this.isAttacking = false;
-              this.renderWidth = this.width;
-              this.renderHeight = this.height;
               
             }, this.attackDuration);
         
@@ -88,58 +84,23 @@ export default class Ninja extends Player {
         if (this.isAttacking && this.attackCooldown) return
         this.rising = this.velocityY < 0;
         this.falling = this.velocityY > 0;
-        this.renderHeight = this.falling ? 150 : this.height;
     }
 
-    update(players) {
-
-        if(!this.isAlive) return
-
-        this.regenStamina();
-
-        this.updateVerticalDirection()
-
-        this.applyGravity();
-
-        this.attackBoxToDraw = this.getAttackHitbox();
+    customUpdate(players) {
         this.hitBoxToDraw = this.getHitbox();
-        	
-        this.isMoving = false;
-
-        // Movimento lateral e atualização da direção
-        if (this.keys.a) {
-            if (this.x > 0) {
-                this.x -= this.speed;
-                this.facingDirection = "left";
-                this.isMoving = true;
-            }
-        }
-        if (this.keys.d) {
-            if (this.x < this.canvasWidth - this.width) {
-                this.x += this.speed;
-                this.facingDirection = "right";
-                this.isMoving = true;
-            }
+        
+        this.updateRender();
+    }
+    
+    updateRender() {
+        if(this.currentAnimation !== "attack" && this.currentAnimation !== "fall") {
+            this.renderHeight = this.height
+            this.renderWidth = this.width
+            return
         }
 
-        // Pulo (verifica se há stamina suficiente para pular)
-        if (this.keys.w && this.isGrounded) {
-            if (this.stamina >= this.jumpStaminaCost) {
-                this.stamina -= this.jumpStaminaCost;
-                this.velocityY = this.jumpForce;
-                this.isGrounded = false;
-            }
-        }
-
-
-        // Ataque (verifica se há stamina suficiente para atacar)
-        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attack(players);
-            }
-        }
-
+        this.renderWidth = this.falling ? this.width : 300
+        this.renderHeight = this.falling ? 150 : 175
     }
 }
 

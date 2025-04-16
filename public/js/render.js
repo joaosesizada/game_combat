@@ -1,9 +1,14 @@
-import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket } from './network.js';
+import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects } from './network.js';
+import EffectAnimator from './EffectAnimator.js';
+import setup from './setup.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let lastTimestamp = performance.now();
 let timerLobby = 5;
+
+// Cria (única) instância para animar efeitos – agora ela é única e reutilizada.
+let effectAnimatorInstance = new EffectAnimator(setup);
 
 export function startRenderLoop() {
   requestAnimationFrame(loop);
@@ -14,16 +19,18 @@ function loop() {
   const deltaTime = now - lastTimestamp;
   lastTimestamp = now;
 
+  // Limpa a tela antes de desenhar
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   renderPlayers(deltaTime);
+  renderEffects(); // chamamos a renderização dos efeitos
 
   if (isGameOver()) {
     const gameOverData = getGameOverData();
-  
     if (timerLobby > 0) {
       timerLobby -= deltaTime / 1000;
       if (timerLobby < 0) timerLobby = 0;
     }
-
     renderGameOverOverlay(ctx, gameOverData);
   }
 
@@ -32,59 +39,50 @@ function loop() {
 
 function renderPlayers(deltaTime) {
   const players = getPlayers();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   cleanupAnimators(players);
 
   for (let id in players) {
     const player = players[id];
     const animator = getAnimator(id, player);
     
-    if (!player.isAlive) {
-      animator.setAnimation('death');
-    } else if (player.attackClash) {
-      animator.setAnimation('attackClash');
-    } else if (player.isDamaged) {
-      animator.setAnimation('hurt');
-    } else if (player.isAttacking) {
-      animator.setAnimation('attack');
-    } else if (player.rising) {
-      animator.setAnimation('jump');
-    } else if (player.falling) {
-      animator.setAnimation('fall');
-    } else if (player.isMoving) {
-      animator.setAnimation('run');
-    } else {
-      animator.setAnimation('idle');
-    }    
-
+    // Usa o currentAnimation do player, já definido pelo próprio objeto
+    animator.setAnimation(player.currentAnimation);
+    
+    // Se a animação de ataque atingiu o fim, volta ao estado default
     if (animator.currentAnimation === 'attack' && animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
       animator.setAnimation(player.isMoving ? 'run' : 'idle');
       player.isAttacking = false;
     }
-
+    
     animator.update(deltaTime);
     animator.drawPlayer(ctx, player);
   }
 }
+
+function renderEffects() {
+  const effects = getEffects();
+  console.log("Efeitos recebidos:", effects);
+  const currentTime = Date.now();
+  effects.forEach(effect => {
+    effectAnimatorInstance.drawEffect(ctx, effect, currentTime);
+  });
+}
+
 function renderGameOverOverlay(ctx, gameOverData) {
   const players = getPlayers();
   const socketId = getSocket().id;
   const winnerId = gameOverData?.winnerId;
   const winner = players[winnerId];
 
-  // Desenha uma tela escura semi-transparente
   ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  // Texto principal
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
 
-  // "GAME OVER"
   ctx.font = "bold 56px Arial";
   ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2 - 100);
 
-  // Mensagem personalizada de vitória/derrota
   ctx.font = "32px Arial";
   if (winnerId === socketId) {
     ctx.fillText("Parabéns! Você venceu a partida!", ctx.canvas.width / 2, ctx.canvas.height / 2 - 40);
@@ -94,7 +92,6 @@ function renderGameOverOverlay(ctx, gameOverData) {
     ctx.fillText("A partida terminou.", ctx.canvas.width / 2, ctx.canvas.height / 2 - 40);
   }
 
-  // Contador de tempo para retornar ao lobby
   ctx.font = "20px Arial";
   ctx.fillStyle = "#ccc";
   ctx.fillText(`Retornando ao lobby em ${Math.ceil(timerLobby)} segundos...`, ctx.canvas.width / 2, ctx.canvas.height / 2 + 50);

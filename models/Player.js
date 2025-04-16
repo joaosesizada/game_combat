@@ -172,13 +172,13 @@ export default class Player {
     }
     
     onAttackClash() {
-        this.isAttacking = false
-
+        
         setTimeout(() => {
+            this.isAttacking = false
             this.attackClash = true;
             this.renderWidth = this.width;
             this.renderHeight = this.height;
-        }, 200)
+        }, 400)
         
         setTimeout(() => {
             this.attackClash = false;

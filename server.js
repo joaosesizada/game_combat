@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    gameRooms[roomId] = new GameRoom(roomId, io); // estrutura real da sala
+    gameRooms[roomId] = new GameRoom(roomId, io, 'floresta'); // estrutura real da sala
     socket.join(roomId); 
 
     socket.emit('connectToRoom', { roomId });

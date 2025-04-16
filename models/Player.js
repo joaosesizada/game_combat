@@ -1,3 +1,4 @@
+import GameRoom from "./GameRoom.js";
 import config from "./config.js";
 
 export default class Player {
@@ -51,13 +52,18 @@ export default class Player {
         this.facingDirection = "right";
     }
 
+
+
     update(players) {
 
         if(!this.isAlive) return
-        
+
+    
         this.regenStamina();
         this.applyGravity();
         this.updateVerticalDirection()
+
+        
         	
         this.isMoving = false;
 
@@ -98,6 +104,8 @@ export default class Player {
 
         this.updateAnimationState()
     }
+
+   
 
     updateAnimationState() {
         if (!this.isAlive) { 

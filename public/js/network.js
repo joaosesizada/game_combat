@@ -6,6 +6,7 @@ const animators = {};
 
 let players = {};
 let effects = []; 
+let mapa = [];
 
 let gameOver = false;
 let gameOverData = null;
@@ -19,9 +20,10 @@ export function initSocket(onConnected) {
     onConnected();
   });
   
-  socket.on('update', (serverPlayers, serverEffects) => {
+  socket.on('update', (serverPlayers, serverEffects, severMapa) => {
     players = serverPlayers;
     effects = serverEffects || [];
+    mapa = severMapa;
   });
 
   socket.on('goToGame', () => {
@@ -61,6 +63,10 @@ export function getPlayers() {
 
 export function getEffects() {
   return effects;
+}
+
+export function getMapa(){
+  return mapa;
 }
 
 export function getAnimator(playerId, playerData) {

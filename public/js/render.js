@@ -1,4 +1,4 @@
-import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects } from './network.js';
+import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects, getMapa } from './network.js';
 import EffectAnimator from './EffectAnimator.js';
 import setup from './setup.js';
 
@@ -24,6 +24,7 @@ function loop() {
 
   renderPlayers(deltaTime);
   renderEffects(); // chamamos a renderização dos efeitos
+  renderPlataforms(ctx);
 
   if (isGameOver()) {
     const gameOverData = getGameOverData();
@@ -66,6 +67,16 @@ function renderEffects() {
   effects.forEach(effect => {
     effectAnimatorInstance.drawEffect(ctx, effect, currentTime);
   });
+}
+
+function renderPlataforms(ctx){
+  const mapa = getMapa()
+  const plataforms = mapa.platforms
+  console.log(mapa)
+  ctx.fillStyle = 'black'
+  plataforms.forEach(plataform =>{
+    ctx.fillRect(plataform.x, plataform.y, plataform.width, plataform.height)
+  })
 }
 
 function renderGameOverOverlay(ctx, gameOverData) {

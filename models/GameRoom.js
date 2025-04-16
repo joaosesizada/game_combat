@@ -1,4 +1,5 @@
 import Ninja from './Ninja.js'; 
+import mapas  from  './mapa.js';
 
 const MAX_PLAYERS = 2;
 
@@ -6,16 +7,23 @@ export default class GameRoom {
 
   static currentGameRoom = null;
 
-  constructor(idRoom, io) {
+  constructor(idRoom, io, currentMapa) {
     this.idRoom = idRoom;
     this.io = io; // referência para o socket.io para poder emitir eventos
     this.players = {};  // armazenaremos os jogadores com socket.id como chave
     this.effects = []
     this.FPS = 60;      // atualizações por segundo
     this.gameInterval = null;
+    this.currentMapa = currentMapa
+    this.mapas = mapas
+    
 
     console.log(`[GameRoom] Sala criada: ${idRoom}`);
     GameRoom.currentGameRoom = this;
+  }
+
+  static getMapa(){
+    return mapas[GameRoom.currentGameRoom.currentMapa];
   }
 
   static getGameRoom() {
@@ -78,7 +86,7 @@ export default class GameRoom {
       // atualiza lógica de cada player
       Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
       this.cleanUpEffects()
-      this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects);
+      this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects, this.mapas[this.currentMapa] );
 
       this.checkGameOver();
     }, 1000 / this.FPS);

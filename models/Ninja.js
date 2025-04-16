@@ -1,5 +1,7 @@
 import Player from './Player.js';
 import { CombatManager } from './CombatManager.js';
+import GameRoom from "./GameRoom.js";
+
 
 export default class Ninja extends Player {
     constructor(x, y, id) {
@@ -8,68 +10,83 @@ export default class Ninja extends Player {
         this.attackDamage = 20
     }
 
+
+    //
+    checkPlataforma(platforms) {
+        for (let platform of platforms) {
+            const withinX = this.x + this.width > platform.x && this.x < platform.x + platform.width
+            const touchingTop = this.y + this.height >= platform.y && this.y + this.height <= platform.y + this.velocityY
+
+            if (withinX && touchingTop && this.velocityY >= 0) {
+                this.y = platform.y - this.height
+                this.velocityY = 0
+                this.isGrounded = true
+            }
+        }
+    }
+
     attack(players) {
         if (!this.isAttacking && !this.attackCooldown) {
-      
+
             this.isAttacking = true;
             this.attackCooldown = true;
 
             CombatManager.handleAttack(this, players);
 
             setTimeout(() => {
-              this.isAttacking = false;
-              
+                this.isAttacking = false;
+
             }, this.attackDuration);
-        
+
             setTimeout(() => {
-              this.attackCooldown = false;
+                this.attackCooldown = false;
             }, this.attackDuration + 600);
         }
-      }
-    
+    }
+
     getAttackHitbox() {
         const cfg = this.attackBoxConfig;
-      
+
         const hitboxes = [];
-      
+
         const baseX = this.x;
         const baseY = this.y;
         const facingRight = this.facingDirection === "right";
         const bodyWidth = this.width;
         const bodyHeight = this.height;
-      
+
         // Parte horizontal (acima e à frente do player)
         const horizontalBox = {
-          x: baseX,
-          y: baseY - 50,
-          width: cfg.lWidth,
-          height: cfg.lThickness
+            x: baseX,
+            y: baseY - 50,
+            width: cfg.lWidth,
+            height: cfg.lThickness
         };
-      
+
         // Parte vertical (descendo da frente do player)
         const verticalBox = {
-          x: facingRight
-            ?  baseX + bodyWidth
-            : baseX - 40,
-          y: baseY - 50,
-          width: cfg.lThickness,
-          height: cfg.lHeight
+            x: facingRight
+                ? baseX + bodyWidth
+                : baseX - 40,
+            y: baseY - 50,
+            width: cfg.lThickness,
+            height: cfg.lHeight
         };
 
         const verticalBoxTwo = {
             x: facingRight
-            ?  baseX + bodyWidth + cfg.lThickness
-            : baseX - 55 - cfg.lThickness,
-          y: baseY - 30,
-          width: 55,
-          height: 130
+                ? baseX + bodyWidth + cfg.lThickness
+                : baseX - 55 - cfg.lThickness,
+            y: baseY - 30,
+            width: 55,
+            height: 130
         }
-      
+
         hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
-      
+
         return hitboxes;
-    }      
-    
+    }
+
     getHitbox() {
         const facingRight = this.facingDirection === "right";
         return {
@@ -88,7 +105,7 @@ export default class Ninja extends Player {
 
     update(players) {
 
-        if(!this.isAlive) return
+        if (!this.isAlive) return
 
         this.regenStamina();
 
@@ -97,9 +114,11 @@ export default class Ninja extends Player {
         this.applyGravity();
 
         this.hitBoxToDraw = this.getHitbox();
-        	
-        this.isMoving = false;
 
+        const mapas = GameRoom.getMapa()
+        
+        this.isMoving = false;
+        
         // Movimento lateral e atualização da direção
         if (this.keys.a) {
             if (this.x > 0) {
@@ -115,7 +134,7 @@ export default class Ninja extends Player {
                 this.isMoving = true;
             }
         }
-
+        
         // Pulo (verifica se há stamina suficiente para pular)
         if (this.keys.w && this.isGrounded) {
             if (this.stamina >= this.jumpStaminaCost) {
@@ -124,7 +143,7 @@ export default class Ninja extends Player {
                 this.isGrounded = false;
             }
         }
-
+        
 
         // Ataque (verifica se há stamina suficiente para atacar)
         if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
@@ -133,18 +152,20 @@ export default class Ninja extends Player {
                 this.attack(players);
             }
         }
-
+        this.isGrounded = false
+        this.checkPlataforma(mapas.platforms)
+        
         this.updateAnimationState()
         this.updateRender()
     }
-    
+
     updateRender() {
-        if(this.currentAnimation !== "attack" && this.currentAnimation !== "fall") {
+        if (this.currentAnimation !== "attack" && this.currentAnimation !== "fall") {
             this.renderHeight = this.height
             this.renderWidth = this.width
             return
         }
-
+        
         this.renderWidth = this.falling ? this.height : 300
         this.renderHeight = this.falling ? 150 : 175
     }

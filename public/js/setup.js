@@ -59,6 +59,7 @@ const setup = {
     },
    effects: {
         clash: { src: "../imgs/effects/clash.png", totalFrames: 8, frameWidth: 50, frameHeight: 68, loop: true },
+        smokeDust: { src: "../imgs/effects/smokeDust.png", totalFrames: 9, frameWidth: 47, frameHeight: 42, loop: false },
     }
 }
 

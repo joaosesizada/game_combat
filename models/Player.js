@@ -1,3 +1,4 @@
+import GameRoom from "./GameRoom.js";
 import config from "./config.js";
 
 export default class Player {
@@ -47,6 +48,7 @@ export default class Player {
         this.attackStaminaCost = 20;
         this.jumpStaminaCost = 15;
 
+        this.knockbackResistance = 0.8;
         // Propriedade para controlar a direção que o player está olhando (left ou right)
         this.facingDirection = "right";
     }
@@ -54,15 +56,25 @@ export default class Player {
     update(players) {
 
         if (!this.isAlive) {
+            this.renderHeight = this.height
+            this.renderWidth = this.width
             this.updateAnimationState();
             return; // retorna depois de atualizar a animação de morte
         }
-        
+
         this.regenStamina();
         this.applyGravity();
         this.updateVerticalDirection()
         	
         this.isMoving = false;
+
+        if (this.knockbackActive) {
+            this.processKnockback();
+            this.updateAnimationState();
+            this.updateRender();
+            this.customUpdate(players);
+            return;
+        }
 
         // Movimento lateral e atualização da direção
         if (this.keys.a) {
@@ -90,7 +102,6 @@ export default class Player {
             }
         }
 
-
         // Ataque (verifica se há stamina suficiente para atacar)
         if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
@@ -98,6 +109,7 @@ export default class Player {
                 this.attack(players);
             }
         }
+
         this.updateAnimationState()
         this.customUpdate(players);
     }
@@ -152,18 +164,27 @@ export default class Player {
         }
     }
 
-    takeDamage(damage, players) {
+    takeDamage(damage, attacker) {
         this.health -= damage;
         this.isDamaged = true;
         
+        const knockbackStrength = 30 * this.knockbackResistance; // Aplicar resistência ao knockback
+        const knockbackY = -15 * this.knockbackResistance; // Pequeno impulso vertical
+        
+        // Determinar direção do knockback com base na posição relativa
+        const direction = attacker.x > this.x ? -1 : 1;
+        
+        // Iniciar knockback
+        this.startKnockback(direction * knockbackStrength, knockbackY);
+
+        if (this.health <= 0) {
+            this.isAlive = false; 
+        }
 
         setTimeout(() => {
             this.isDamaged = false;
         }, 350);
     
-        if (this.health <= 0) {
-            this.isAlive = false; 
-        }
     }
 
     updateVerticalDirection() {
@@ -171,18 +192,72 @@ export default class Player {
         this.falling = this.velocityY > 0;
     }
     
-    onAttackClash() {
-        
+    onAttackClash(gameRoom) {
+        const knockbackStrength = 30 * this.knockbackResistance; // Aplicar resistência ao knockback
+        const direction = this.facingDirection === "right" ? -1 : 1;
+    
+        this.startKnockback(direction * knockbackStrength, 0);
+        // dimensões do efeito
+        const eW = 128, eH = 128;
+        // posição dos pés
+        const footCenterX = this.facingDirection === "left" ? this.x + (this.width * 2): this.x - this.width;
+        const footY = this.y + this.height / 2;
+        // aplica offsets para centralizar
+        const effectX = footCenterX - eW / 2;
+        const effectY = footY - eH / 2 + 10;
+
+        gameRoom.addEffect({
+            type: "smokeDust",
+            x: effectX,
+            y: effectY,
+            width: eW,
+            height: eH,
+            duration: 500,
+            flip: this.facingDirection === "left"
+        });
+
         setTimeout(() => {
             this.isAttacking = false
             this.attackClash = true;
             this.renderWidth = this.width;
             this.renderHeight = this.height;
-        }, 400)
+        }, 350)
         
         setTimeout(() => {
             this.attackClash = false;
-        }, 900);
+        }, 1000);
+    }
+
+    startKnockback(velocityX, velocityY) {
+        this.knockbackVelocity = { x: velocityX, y: velocityY };
+        this.knockbackActive = true;
+        this.knockbackTimer = 0;
+    }
+    
+    // NOVO: Processa o movimento de knockback (sobrescreve o método da classe base)
+    processKnockback() {
+        // Aplicar velocidade de knockback
+        this.x += this.knockbackVelocity.x;
+        
+        // Se estiver no chão, aplicar um pequeno salto durante o knockback
+        if (this.isGrounded && this.knockbackVelocity.y < 0) {
+            this.isGrounded = false;
+            this.velocityY = this.knockbackVelocity.y;
+        }
+        
+        // Aplicar fricção/resistência ao knockback
+        this.knockbackVelocity.x *= 0.8;
+        
+        // Checar limites da tela
+        if (this.x < 0) this.x = 0;
+        if (this.x > this.canvasWidth - this.width) this.x = this.canvasWidth - this.width;
+        
+        // Gerenciar timer de knockback
+        this.knockbackTimer += 16; // Aproximadamente 16ms por frame em 60fps
+        if (this.knockbackTimer >= this.knockbackDuration || Math.abs(this.knockbackVelocity.x) < 0.5) {
+            this.knockbackActive = false;
+            this.knockbackVelocity = { x: 0, y: 0 };
+        }
     }
 
     setPosition(x, y) {

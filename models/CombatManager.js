@@ -22,19 +22,22 @@ export class CombatManager {
               const centerX = collision.x + collision.width  / 2;
               const centerY = collision.y + collision.height / 2;
   
-              attacker.onAttackClash?.(player);
-              player.onAttackClash?.(attacker);
-  
               const gameRoom = GameRoom.getGameRoom();
+              
+              attacker.onAttackClash?.(gameRoom);
+              player.onAttackClash?.(gameRoom);
+              
               gameRoom.addEffect({
                 type:     "clash",
-                // centraliza a animação no ponto de colisão
                 x:        centerX  - 64, // se sua animação tem 128px de largura
                 y:        centerY  - 64, // e 128px de altura
                 width:    128,
                 height:   128,
-                duration: 750
+                duration: 750,
+                flip: false
               });
+
+
             }
           }
 

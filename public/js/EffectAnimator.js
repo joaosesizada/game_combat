@@ -57,37 +57,44 @@ export default class EffectAnimator {
    */
   drawEffect(ctx, effect, currentTime) {
     const config = this.effectsConfig[effect.type];
-    if (!config || !config.image.complete) {
-      console.warn("Efeito não pronto:", { config });
+    if (!config || !config.image.complete) return;
+
+    // Calcula o frame
+    const elapsed = currentTime - effect.created;
+    let frameIndex = Math.floor(elapsed / this.frameDuration);
+    if (config.loop) {
+      frameIndex %= config.totalFrames;
+    } else {
+      frameIndex = Math.min(frameIndex, config.totalFrames - 1);
+    }
+    const sx = frameIndex * config.frameWidth;
+
+    // Se não há flip, desenha normalmente
+    if (!effect.flip) {
+      ctx.drawImage(
+        config.image,
+        sx, 0,
+        config.frameWidth, config.frameHeight,
+        effect.x, effect.y,
+        effect.width, effect.height
+      );
       return;
     }
 
-    // Calcular o tempo decorrido desde a criação
-    const elapsed = currentTime - effect.created;
-    let frameIndex = Math.floor(elapsed / this.frameDuration);
-
-    if (!config.loop) {
-      // Se o efeito não for loop, clamp no último frame
-      if (frameIndex >= config.totalFrames) {
-        frameIndex = config.totalFrames - 1;
-      }
-    } else {
-      // Se for loop, repete
-      frameIndex = frameIndex % config.totalFrames;
-    }
-
-    const frameX = frameIndex * config.frameWidth;
-
+    // --- caso flip === true: inverte no eixo X ---
+    ctx.save();
+    // move a origem até a borda direita do sprite
+    ctx.translate(effect.x + effect.width, effect.y);
+    // inverte horizontalmente
+    ctx.scale(-1, 1);
+    // desenha em (0,0) — que agora é (effect.x+width, effect.y) mas com X espelhado
     ctx.drawImage(
       config.image,
-      frameX,
-      0,
-      config.frameWidth,
-      config.frameHeight,
-      effect.x,
-      effect.y,
-      effect.width,
-      effect.height
+      sx, 0,
+      config.frameWidth, config.frameHeight,
+      0, 0,
+      effect.width, effect.height
     );
+    ctx.restore();
   }
 }

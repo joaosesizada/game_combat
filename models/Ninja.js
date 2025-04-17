@@ -10,10 +10,9 @@ export default class Ninja extends Player {
 
     attack(players) {
         if (!this.isAttacking && !this.attackCooldown) {
-      
+
             this.isAttacking = true;
             this.attackCooldown = true;
-
             CombatManager.handleAttack(this, players);
 
             setTimeout(() => {
@@ -93,14 +92,22 @@ export default class Ninja extends Player {
     }
     
     updateRender() {
-        if(this.currentAnimation !== "attack" && this.currentAnimation !== "fall") {
-            this.renderHeight = this.height
-            this.renderWidth = this.width
-            return
-        }
-
-        this.renderWidth = this.falling ? this.width : 300
-        this.renderHeight = this.falling ? 150 : 175
-    }
+      switch (this.currentAnimation) {
+        case "attack":
+          // sempre força o tamanho de ataque, independentemente de `falling`
+          this.renderWidth  = 300;
+          this.renderHeight = 175;
+          break;
+        case "fall":
+          // tamanho de queda
+          this.renderWidth  = this.width;
+          this.renderHeight = 150;
+          break;
+        default:
+          // qualquer outra animação volta ao padrão
+          this.renderWidth  = this.width;
+          this.renderHeight = this.height;
+      }
+    }    
 }
 

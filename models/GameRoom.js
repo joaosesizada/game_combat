@@ -1,4 +1,5 @@
 import Ninja from './Ninja.js'; 
+import Huntress from './Huntress.js';
 
 const MAX_PLAYERS = 2;
 
@@ -22,32 +23,43 @@ export default class GameRoom {
     return GameRoom.currentGameRoom;
   }
   // Adiciona um jogador à sala
-  addPlayer(socketId, characterType = "ninja") {
+  addPlayer(socketId, characterType = "huntress") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
       return false;
     }
 
-    // Distribuir a posição inicial: o primeiro na esquerda, o segundo na direita
     const positionInitX = Object.keys(this.players).length === 0 ? 0 : 500;
 
     let player;
-    // Um mapeamento ou if/else para instanciar a classe correta
-    switch (characterType) {
+
+    const type = characterType
+    ? characterType
+    : (Object.keys(this.players).length === 0 ? "huntress" : "ninja");
+
+    switch (type) {
       case "ninja":
         player = new Ninja(positionInitX, 700, socketId);
         break;
-      case "viking":
-        // player = new Viking(100, 500, socketId); // Exemplo
+      case "huntress":
+        player = new Huntress(positionInitX, 700, socketId);
         break;
-      // Adicione outros cases para outras classes, por exemplo "monge",     etc.
       default:
-        // Pode instanciar o Player base ou o ninja como padrão
         player = new Ninja(positionInitX, 700, socketId);
     }
 
     this.players[socketId] = player;
-    console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado. Total de jogadores: ${Object.keys(this.players).length}`);
+    console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado como ${type}. Total: ${Object.keys(this.players).length}/${MAX_PLAYERS}`);
+
+    // Se atingiu o número máximo de jogadores, inicia a partida
+    if (Object.keys(this.players).length === MAX_PLAYERS) {
+      console.log(`[GameRoom ${this.idRoom}] Número máximo de jogadores alcançado. Iniciando jogo.`);
+      // Notifica todos os clientes para ir à tela de jogo
+      this.io.to(this.idRoom).emit('goToGame');
+      // Inicia o loop de atualização
+      this.startGame();
+    }
+
     return true;
   }
 
@@ -60,6 +72,10 @@ export default class GameRoom {
   }
 
   getState() {
+    console.log('[GameRoom] getState players:', Object.fromEntries(
+      Object.entries(this.players).map(([id, p]) => [id, p.person])
+    ));
+    
     return {
       id: this.idRoom,
       players: Object.fromEntries(

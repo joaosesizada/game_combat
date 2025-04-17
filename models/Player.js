@@ -273,6 +273,7 @@ export default class Player {
           speed: this.speed,
           height: this.height,
           width: this.width,
+          person: this.person,
           hitBoxToDraw: this.hitBoxToDraw,
           renderWidth: this.renderWidth,
           renderHeight: this.renderHeight,

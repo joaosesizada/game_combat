@@ -62,25 +62,25 @@ io.on("connection", (socket) => {
     const room = gameRooms[roomId];
     if (!room) return socket.emit('erro', 'Sala não existe');
   
+    socket.join(roomId);        // <<=== ESSENCIAL
     const success = room.addPlayer(socket.id, characterType);
     if (!success) return socket.emit('erro', 'Sala cheia');
   
     // mapeia e inscreve na sala do Socket.IO
     socketToRoom[socket.id] = roomId;
-    socket.join(roomId);        // <<=== ESSENCIAL
   
     // envia só para quem entrou, o estado da sala
     socket.emit("updateRoom", { room: room.getState() });
   });  
 
-  socket.on("startGame", ({ roomId }) => {
-    const room = gameRooms[roomId];
-    if (!room) return;
+  // socket.on("startGame", ({ roomId }) => {
+  //   const room = gameRooms[roomId];
+  //   if (!room) return;
   
-    io.to(roomId).emit("goToGame");
+  //   io.to(roomId).emit("goToGame");
   
-    room.startGame();
-  });
+  //   room.startGame();
+  // });
   
 
   // Evento de movimentação do jogador

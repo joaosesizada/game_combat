@@ -12,10 +12,6 @@ let gameOverData = null;
 
 export function initSocket(onConnected) {
   socket.on('connect', () => {
-    const roomId = getRoomIdFromURL();
-    setTimeout(() => {
-      socket.emit('addPlayer', { roomId });
-    }, 500);
     onConnected();
   });
   

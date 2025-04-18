@@ -12,10 +12,6 @@ let gameOverData = null;
 
 export function initSocket(onConnected) {
   socket.on('connect', () => {
-    const roomId = getRoomIdFromURL();
-    setTimeout(() => {
-      socket.emit('addPlayer', { roomId });
-    }, 500);
     onConnected();
   });
   
@@ -76,9 +72,4 @@ export function cleanupAnimators() {
       delete animators[playerId];
     }
   }
-}
-
-function getRoomIdFromURL() {
-  const pathParts = window.location.pathname.split('/');
-  return pathParts[pathParts.length - 1];
 }

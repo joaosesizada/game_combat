@@ -57,7 +57,65 @@ const setup = {
             loop: false
         }  
     },
-   effects: {
+    heroKnight: {
+        idle: {
+            src: "../imgs/heroKnight/idle.png",
+            framesWidth: 47,
+            framesHeight: 51,
+            totalFrames: 10,
+            loop: true
+        },
+        run: {
+            src: "../imgs/heroKnight/run.png",
+            framesWidth: 42,
+            framesHeight: 55,
+            totalFrames: 8,
+            loop: true
+        },
+        attack: {
+            src: "../imgs/heroKnight/attack.png",
+            framesWidth: 315,
+            framesHeight: 204,
+            totalFrames: 5,
+            loop: true
+        },
+        jump: {
+            src: "../imgs/heroKnight/jump.png",
+            framesWidth: 35,
+            framesHeight: 56,
+            totalFrames: 3,
+            loop: true
+        },
+        fall: {
+            src: "../imgs/heroKnight/fall.png",
+            framesWidth: 38,
+            framesHeight: 65,
+            totalFrames: 3,
+            loop: true
+        },
+        hurt: {
+            src: "../imgs/heroKnight/hurt.png",
+            framesWidth: 52,
+            framesHeight: 51,
+            totalFrames: 4,
+            loop: true
+        },
+        death: {
+            src: "../imgs/heroKnight/death.png",
+            framesWidth: 76,
+            framesHeight: 56,
+            totalFrames: 10,
+            loop: false
+        },
+        attackClash: {
+            src: "../imgs/heroKnight/attackClash.png",
+            framesWidth: 52,
+            framesHeight: 51,
+            totalFrames: 3,
+            loop: false
+        }
+    },
+    effects: {
         clash: { src: "../imgs/effects/clash.png", totalFrames: 8, frameWidth: 50, frameHeight: 68, loop: true },
         smokeDust: { src: "../imgs/effects/smokeDust.png", totalFrames: 9, frameWidth: 47, frameHeight: 42, loop: false },
     }

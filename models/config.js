@@ -9,9 +9,9 @@ const config = {
         },      
         maxStamina: 30,
     },
-    huntress: {
+    heroKnight: {
         speed: 6.5,
-        attackDuration: 400,
+        attackDuration: 500,
         attackBoxConfig: {
             lWidth: 100,       
             lHeight: 160,    

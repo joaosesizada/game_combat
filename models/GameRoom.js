@@ -1,5 +1,5 @@
 import Ninja from './Ninja.js'; 
-import Huntress from './Huntress.js';
+import Huntress from './HeroKnight.js';
 
 const MAX_PLAYERS = 2;
 
@@ -23,7 +23,7 @@ export default class GameRoom {
     return GameRoom.currentGameRoom;
   }
   // Adiciona um jogador à sala
-  addPlayer(socketId, characterType = "huntress") {
+  addPlayer(socketId, characterType = "heroKnight") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
       return false;
@@ -35,13 +35,13 @@ export default class GameRoom {
 
     const type = characterType
     ? characterType
-    : (Object.keys(this.players).length === 0 ? "huntress" : "ninja");
+    : (Object.keys(this.players).length === 0 ? "heroKnight" : "ninja");
 
     switch (type) {
       case "ninja":
         player = new Ninja(positionInitX, 700, socketId);
         break;
-      case "huntress":
+      case "heroKnight":
         player = new Huntress(positionInitX, 700, socketId);
         break;
       default:
@@ -72,10 +72,6 @@ export default class GameRoom {
   }
 
   getState() {
-    console.log('[GameRoom] getState players:', Object.fromEntries(
-      Object.entries(this.players).map(([id, p]) => [id, p.person])
-    ));
-    
     return {
       id: this.idRoom,
       players: Object.fromEntries(

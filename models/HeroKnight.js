@@ -1,10 +1,10 @@
 import Player from './Player.js';
 import { CombatManager } from './CombatManager.js';
 
-export default class Huntress extends Player {
+export default class HeroKnight extends Player {
     constructor(x, y, id) {
         // Passa "ninja" para que o construtor da classe base busque a configuração correta em config["ninja"]
-        super(x, y, id, "huntress");
+        super(x, y, id, "heroKnight");
         this.attackDamage = 20
     }    
 
@@ -95,8 +95,8 @@ export default class Huntress extends Player {
       switch (this.currentAnimation) {
         case "attack":
           // sempre força o tamanho de ataque, independentemente de `falling`
-          this.renderWidth  = 300;
-          this.renderHeight = 175;
+          this.renderWidth  = 200;
+          this.renderHeight = 165;
           break;
         case "fall":
           // tamanho de queda

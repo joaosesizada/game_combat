@@ -57,61 +57,61 @@ const setup = {
             loop: false
         }  
     },
-    huntress: {
+    heroKnight: {
         idle: {
-            src: "../imgs/huntress/idle.png",
-            framesWidth: 32,
-            framesHeight: 43,
-            totalFrames: 8,
+            src: "../imgs/heroKnight/idle.png",
+            framesWidth: 47,
+            framesHeight: 51,
+            totalFrames: 10,
             loop: true
         },
         run: {
-            src: "../imgs/ninja/run.png",
-            framesWidth: 48,
-            framesHeight: 52,
+            src: "../imgs/heroKnight/run.png",
+            framesWidth: 42,
+            framesHeight: 55,
             totalFrames: 8,
             loop: true
         },
         attack: {
-            src: "../imgs/ninja/attack1.png",
-            framesWidth: 166,
-            framesHeight: 70,
-            totalFrames: 6,
+            src: "../imgs/heroKnight/attack.png",
+            framesWidth: 315,
+            framesHeight: 204,
+            totalFrames: 5,
             loop: true
         },
         jump: {
-            src: "../imgs/ninja/jump.png",
-            framesWidth: 40,
-            framesHeight: 53,
-            totalFrames: 1,
+            src: "../imgs/heroKnight/jump.png",
+            framesWidth: 35,
+            framesHeight: 56,
+            totalFrames: 3,
             loop: true
         },
         fall: {
-            src: "../imgs/ninja/fall.png",
-            framesWidth: 48,
-            framesHeight: 56,
-            totalFrames: 4,
+            src: "../imgs/heroKnight/fall.png",
+            framesWidth: 38,
+            framesHeight: 65,
+            totalFrames: 3,
             loop: true
         },
         hurt: {
-            src: "../imgs/ninja/hurt.png",
-            framesWidth: 50,
-            framesHeight: 54,
+            src: "../imgs/heroKnight/hurt.png",
+            framesWidth: 52,
+            framesHeight: 51,
             totalFrames: 4,
             loop: true
         },
         death: {
-            src: "../imgs/ninja/death.png",
-            framesWidth: 51,
-            framesHeight: 53,
-            totalFrames: 6,
+            src: "../imgs/heroKnight/death.png",
+            framesWidth: 76,
+            framesHeight: 56,
+            totalFrames: 10,
             loop: false
         },
         attackClash: {
-            src: "../imgs/ninja/attackClash.png",
-            framesWidth: 48,
-            framesHeight: 54,
-            totalFrames: 4,
+            src: "../imgs/heroKnight/attackClash.png",
+            framesWidth: 52,
+            framesHeight: 51,
+            totalFrames: 3,
             loop: false
         }
     },

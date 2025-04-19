@@ -11,7 +11,7 @@ const config = {
     },
     heroKnight: {
         speed: 6.5,
-        attackDuration: 500,
+        attackDuration: 400,
         attackBoxConfig: {
             lWidth: 100,       
             lHeight: 160,    

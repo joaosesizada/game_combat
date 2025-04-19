@@ -74,9 +74,9 @@ const setup = {
         },
         attack: {
             src: "../imgs/heroKnight/attack.png",
-            framesWidth: 315,
-            framesHeight: 204,
-            totalFrames: 5,
+            framesWidth: 162,
+            framesHeight: 67,
+            totalFrames: 6,
             loop: true
         },
         jump: {

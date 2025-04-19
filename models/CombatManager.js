@@ -1,7 +1,6 @@
 import GameRoom from "./GameRoom.js";
 
 export class CombatManager {
-    // Chama handleAttack a cada frame, para cada jogador
     static handleAttack(attacker, players) {
       const atkBoxes = attacker.getAttackHitbox();      
       const atkDir   = attacker.facingDirection;        
@@ -18,7 +17,6 @@ export class CombatManager {
             );
 
             if (collision) {
-              // collision: { x, y, width, height }
               const centerX = collision.x + collision.width  / 2;
               const centerY = collision.y + collision.height / 2;
   
@@ -29,8 +27,8 @@ export class CombatManager {
               
               gameRoom.addEffect({
                 type:     "clash",
-                x:        centerX  - 64, // se sua animação tem 128px de largura
-                y:        centerY  - 64, // e 128px de altura
+                x:        centerX  - 64, 
+                y:        centerY  - 64, 
                 width:    128,
                 height:   128,
                 duration: 750,

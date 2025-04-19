@@ -3,7 +3,6 @@ import { CombatManager } from './CombatManager.js';
 
 export default class HeroKnight extends Player {
     constructor(x, y, id) {
-        // Passa "ninja" para que o construtor da classe base busque a configuração correta em config["ninja"]
         super(x, y, id, "heroKnight");
         this.attackDamage = 20
     }    
@@ -26,7 +25,7 @@ export default class HeroKnight extends Player {
         }
       }
     
-    getAttackHitbox() {
+      getAttackHitbox() {
         const cfg = this.attackBoxConfig;
       
         const hitboxes = [];
@@ -35,7 +34,6 @@ export default class HeroKnight extends Player {
         const baseY = this.y;
         const facingRight = this.facingDirection === "right";
         const bodyWidth = this.width;
-        const bodyHeight = this.height;
       
         // Parte horizontal (acima e à frente do player)
         const horizontalBox = {
@@ -65,16 +63,17 @@ export default class HeroKnight extends Player {
         }
       
         hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
-      
+        
+        this.attackBoxToDraw = hitboxes
         return hitboxes;
-    }      
+    }   
     
     getHitbox() {
         const facingRight = this.facingDirection === "right";
         return {
-            x: facingRight ? this.x + 30 : this.x,
+            x: this.x,
             y: this.y,
-            width: 70,
+            width: this.width,
             height: this.height
         };
     }
@@ -94,17 +93,14 @@ export default class HeroKnight extends Player {
     updateRender() {
       switch (this.currentAnimation) {
         case "attack":
-          // sempre força o tamanho de ataque, independentemente de `falling`
-          this.renderWidth  = 200;
-          this.renderHeight = 165;
+          this.renderWidth  = 325;
+          this.renderHeight = 155
           break;
         case "fall":
-          // tamanho de queda
           this.renderWidth  = this.width;
           this.renderHeight = 150;
           break;
         default:
-          // qualquer outra animação volta ao padrão
           this.renderWidth  = this.width;
           this.renderHeight = this.height;
       }

@@ -4,7 +4,7 @@ export default class Animator {
     this.currentAnimation = defaultAnim;
     this.currentFrame = 0;
     this.elapsedTime = 0;
-    this.frameDuration = 100; // 100 ms por frame
+    this.frameDuration = 100; 
     this.character = character;
 
     const animSetup = setup[character];
@@ -28,10 +28,8 @@ export default class Animator {
       const img = new Image();
       img.src = animationData.src;
 
-      // Log para depurar quando a imagem carrega
       img.onload = () => {
 
-        // Se frameWidth não estiver definido, calcular automaticamente
         if (!animationData.framesWidth) {
           this.animations[animName].frameWidth =
             img.width / animationData.totalFrames;
@@ -175,6 +173,17 @@ export default class Animator {
 
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
+
+    // const attackBoxes = jogador.attackBoxToDraw;
+    // if (jogador.isAttacking) {
+    //   ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    //   ctx.strokeStyle = "red";
+  
+    //   attackBoxes.forEach(box => {
+    //     ctx.fillRect(box.x, box.y, box.width, box.height);
+    //     ctx.strokeRect(box.x, box.y, box.width, box.height);
+    //   });
+    // }
 
     this.drawSprite(
       ctx,

@@ -1,4 +1,3 @@
-import GameRoom from "./GameRoom.js";
 import config from "./config.js";
 
 export default class Player {
@@ -11,7 +10,7 @@ export default class Player {
         this.speed = this.config.speed || 5;
         this.width = 100;
         this.height = 125;
-        this.renderWidth = this.width; // inicial igual à hitbox
+        this.renderWidth = this.width; 
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
 
@@ -28,28 +27,25 @@ export default class Player {
         this.falling = false;
         this.rising = false;
 
-        this.attackDamage = 25
+        this.attackDamage = this.config.attackDamage
         this.isAttacking = false;
         this.attackCooldown = false;
-        this.attackDuration = this.config.attackDuration || 300;
+        this.attackDuration = this.config.attackDuration;
         this.attackClash = false
-        // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
-        this.attackBoxConfig  = this.config.attackBoxConfig  || { width: 40, height: 20 };
+        this.attackBoxToDraw = []
+        this.attackBoxConfig  = this.config.attackBoxConfig;
 
-        // Propriedade para simular a vida do player
-        this.health = this.config.health || 100;
+        this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
 
-        // NOVO: Propriedades de stamina
-        this.maxStamina = this.config.maxStamina || 100;
+        this.maxStamina = this.config.maxStamina;
         this.stamina = this.maxStamina;
-        this.staminaRegenRate = 0.25; // Quantidade regenerada por frame (pode ajustar)
+        this.staminaRegenRate = 0.25; 
         this.attackStaminaCost = 20;
         this.jumpStaminaCost = 15;
 
         this.knockbackResistance = 0.8;
-        // Propriedade para controlar a direção que o player está olhando (left ou right)
         this.facingDirection = "right";
     }
 
@@ -59,7 +55,7 @@ export default class Player {
             this.renderHeight = this.height
             this.renderWidth = this.width
             this.updateAnimationState();
-            return; // retorna depois de atualizar a animação de morte
+            return; 
         }
 
         this.regenStamina();
@@ -76,7 +72,6 @@ export default class Player {
             return;
         }
 
-        // Movimento lateral e atualização da direção
         if (this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
@@ -92,7 +87,6 @@ export default class Player {
             }
         }
 
-        // Pulo (verifica se há stamina suficiente para pular)
         if (this.keys.w && this.isGrounded) {
             if (this.stamina >= this.jumpStaminaCost) {
                 this.stamina -= this.jumpStaminaCost;
@@ -102,7 +96,11 @@ export default class Player {
             }
         }
 
-        // Ataque (verifica se há stamina suficiente para atacar)
+        if(this.keys.x && this.keys.y) {
+            this.isMoving = false
+            this.updateAnimationState()
+        }
+
         if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
@@ -154,7 +152,6 @@ export default class Player {
         }
     }
 
-    // Método que regenera a stamina
     regenStamina() {
         if (this.stamina < this.maxStamina) {
             this.stamina += this.staminaRegenRate;
@@ -164,17 +161,15 @@ export default class Player {
         }
     }
 
-    takeDamage(damage, attacker) {
+    takeDamage(damage, attacker, gameRoom) {
         this.health -= damage;
         this.isDamaged = true;
         
-        const knockbackStrength = 30 * this.knockbackResistance; // Aplicar resistência ao knockback
-        const knockbackY = -15 * this.knockbackResistance; // Pequeno impulso vertical
+        const knockbackStrength = 30 * this.knockbackResistance; 
+        const knockbackY = -15 * this.knockbackResistance; 
         
-        // Determinar direção do knockback com base na posição relativa
         const direction = attacker.x > this.x ? -1 : 1;
         
-        // Iniciar knockback
         this.startKnockback(direction * knockbackStrength, knockbackY);
 
         if (this.health <= 0) {
@@ -193,16 +188,15 @@ export default class Player {
     }
     
     onAttackClash(gameRoom) {
-        const knockbackStrength = 30 * this.knockbackResistance; // Aplicar resistência ao knockback
+        const knockbackStrength = 30 * this.knockbackResistance; 
         const direction = this.facingDirection === "right" ? -1 : 1;
     
         this.startKnockback(direction * knockbackStrength, 0);
-        // dimensões do efeito
         const eW = 128, eH = 128;
-        // posição dos pés
+
         const footCenterX = this.facingDirection === "left" ? this.x + (this.width * 2): this.x - this.width;
         const footY = this.y + this.height / 2;
-        // aplica offsets para centralizar
+
         const effectX = footCenterX - eW / 2;
         const effectY = footY - eH / 2 + 10;
 
@@ -234,26 +228,20 @@ export default class Player {
         this.knockbackTimer = 0;
     }
     
-    // NOVO: Processa o movimento de knockback (sobrescreve o método da classe base)
     processKnockback() {
-        // Aplicar velocidade de knockback
         this.x += this.knockbackVelocity.x;
         
-        // Se estiver no chão, aplicar um pequeno salto durante o knockback
         if (this.isGrounded && this.knockbackVelocity.y < 0) {
             this.isGrounded = false;
             this.velocityY = this.knockbackVelocity.y;
         }
         
-        // Aplicar fricção/resistência ao knockback
         this.knockbackVelocity.x *= 0.8;
         
-        // Checar limites da tela
         if (this.x < 0) this.x = 0;
         if (this.x > this.canvasWidth - this.width) this.x = this.canvasWidth - this.width;
         
-        // Gerenciar timer de knockback
-        this.knockbackTimer += 16; // Aproximadamente 16ms por frame em 60fps
+        this.knockbackTimer += 16; 
         if (this.knockbackTimer >= this.knockbackDuration || Math.abs(this.knockbackVelocity.x) < 0.5) {
             this.knockbackActive = false;
             this.knockbackVelocity = { x: 0, y: 0 };
@@ -294,6 +282,7 @@ export default class Player {
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
+          attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,

@@ -170,6 +170,7 @@ export default class Player {
         
         const direction = attacker.x > this.x ? -1 : 1;
         
+        this.smokeDust(gameRoom)
         this.startKnockback(direction * knockbackStrength, knockbackY);
 
         if (this.health <= 0) {
@@ -192,23 +193,7 @@ export default class Player {
         const direction = this.facingDirection === "right" ? -1 : 1;
     
         this.startKnockback(direction * knockbackStrength, 0);
-        const eW = 128, eH = 128;
-
-        const footCenterX = this.facingDirection === "left" ? this.x + (this.width * 2): this.x - this.width;
-        const footY = this.y + this.height / 2;
-
-        const effectX = footCenterX - eW / 2;
-        const effectY = footY - eH / 2 + 10;
-
-        gameRoom.addEffect({
-            type: "smokeDust",
-            x: effectX,
-            y: effectY,
-            width: eW,
-            height: eH,
-            duration: 500,
-            flip: this.facingDirection === "left"
-        });
+        this.smokeDust(gameRoom)
 
         setTimeout(() => {
             this.isAttacking = false
@@ -226,6 +211,26 @@ export default class Player {
         this.knockbackVelocity = { x: velocityX, y: velocityY };
         this.knockbackActive = true;
         this.knockbackTimer = 0;
+    }
+
+    smokeDust(gameRoom) {
+        const eW = 128, eH = 128;
+
+        const footCenterX = this.facingDirection === "left" ? this.x + (this.width * 2): this.x - this.width;
+        const footY = this.y + this.height / 2;
+
+        const effectX = footCenterX - eW / 2;
+        const effectY = footY - eH / 2 + 10;
+
+        gameRoom.addEffect({
+            type: "smokeDust",
+            x: effectX,
+            y: effectY,
+            width: eW,
+            height: eH,
+            duration: 500,
+            flip: this.facingDirection === "left"
+        });
     }
     
     processKnockback() {

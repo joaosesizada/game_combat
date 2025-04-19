@@ -3,7 +3,6 @@ import GameRoom from "./GameRoom.js";
 export class CombatManager {
     static handleAttack(attacker, players) {
       const atkBoxes = attacker.getAttackHitbox();      
-      const atkDir   = attacker.facingDirection;        
       const atkDmg   = attacker.attackDamage;
   
       players.forEach(player => {
@@ -34,22 +33,18 @@ export class CombatManager {
                 duration: 750,
                 flip: false
               });
-
-
             }
           }
-
-          
         }
-  
-        // Caso padrão: apenas o attacker ataca
+        
         if (attacker.isAttacking) {
           const plyHitbox = player.getHitbox();
           const hit = atkBoxes.some(ab => 
             CombatManager.#checkCollision(ab, plyHitbox)
           );
           if (hit) {
-            player.takeDamage(atkDmg, attacker);
+            const gameRoom = GameRoom.getGameRoom();
+            player.takeDamage(atkDmg, attacker, gameRoom);
           }
         }
       });

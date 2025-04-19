@@ -4,7 +4,6 @@ import { CombatManager } from './CombatManager.js';
 export default class Ninja extends Player {
     constructor(x, y, id) {
         super(x, y, id, "ninja");
-        this.attackDamage = 20
     }
 
     attack(players) {
@@ -12,7 +11,10 @@ export default class Ninja extends Player {
 
             this.isAttacking = true;
             this.attackCooldown = true;
-            CombatManager.handleAttack(this, players);
+            
+            setTimeout(() => {
+              CombatManager.handleAttack(this, players);
+            }, 200);
 
             setTimeout(() => {
               this.isAttacking = false;

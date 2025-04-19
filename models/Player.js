@@ -1,4 +1,3 @@
-import GameRoom from "./GameRoom.js";
 import config from "./config.js";
 
 export default class Player {
@@ -11,7 +10,7 @@ export default class Player {
         this.speed = this.config.speed || 5;
         this.width = 100;
         this.height = 125;
-        this.renderWidth = this.width; // inicial igual à hitbox
+        this.renderWidth = this.width; 
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
 
@@ -28,19 +27,19 @@ export default class Player {
         this.falling = false;
         this.rising = false;
 
-        this.attackDamage = 25
+        this.attackDamage = this.config.attackDamage
         this.isAttacking = false;
         this.attackCooldown = false;
-        this.attackDuration = this.config.attackDuration || 300;
+        this.attackDuration = this.config.attackDuration;
         this.attackClash = false
         this.attackBoxToDraw = []
-        this.attackBoxConfig  = this.config.attackBoxConfig  || { width: 40, height: 20 };
+        this.attackBoxConfig  = this.config.attackBoxConfig;
 
-        this.health = this.config.health || 100;
+        this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
 
-        this.maxStamina = this.config.maxStamina || 100;
+        this.maxStamina = this.config.maxStamina;
         this.stamina = this.maxStamina;
         this.staminaRegenRate = 0.25; 
         this.attackStaminaCost = 20;
@@ -162,7 +161,7 @@ export default class Player {
         }
     }
 
-    takeDamage(damage, attacker) {
+    takeDamage(damage, attacker, gameRoom) {
         this.health -= damage;
         this.isDamaged = true;
         

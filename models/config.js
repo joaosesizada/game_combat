@@ -1,7 +1,9 @@
 const config = {
     ninja: {
-        speed: 6.5,
+        speed: 8,
         attackDuration: 400,
+        health: 80,
+        attackDamage: 35,
         attackBoxConfig: {
             lWidth: 100,       
             lHeight: 160,    
@@ -12,6 +14,8 @@ const config = {
     heroKnight: {
         speed: 6.5,
         attackDuration: 400,
+        health: 120,
+        attackDamage: 25,
         attackBoxConfig: {
             lWidth: 100,       
             lHeight: 160,    

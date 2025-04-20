@@ -14,7 +14,7 @@ export default class Ninja extends Player {
             
             setTimeout(() => {
               CombatManager.handleAttack(this, players);
-            }, 200);
+            }, 120);
 
             setTimeout(() => {
               this.isAttacking = false;

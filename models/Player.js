@@ -72,14 +72,14 @@ export default class Player {
             return;
         }
 
-        if (this.keys.a) {
+        if (this.keys.lastKey === 'a' && this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
                 this.isMoving = true;
             }
         }
-        if (this.keys.d) {
+        if (this.keys.lastKey === 'd' && this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";

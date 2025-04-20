@@ -4,8 +4,12 @@ export default class Animator {
     this.currentAnimation = defaultAnim;
     this.currentFrame = 0;
     this.elapsedTime = 0;
-    this.frameDuration = 100; 
+    this.frameDuration = 100;
     this.character = character;
+
+    // NOVO: Controlar quando a animação de morte terminou
+    this.deathAnimationCompleted = false;
+    this.animationFinishedCallbacks = {};
 
     const animSetup = setup[character];
     if (!animSetup) {
@@ -29,18 +33,18 @@ export default class Animator {
       img.src = animationData.src;
 
       img.onload = () => {
-
         if (!animationData.framesWidth) {
           this.animations[animName].frameWidth =
             img.width / animationData.totalFrames;
         }
       };
+
       this.animations[animName] = {
         image: img,
         frameWidth: animationData.framesWidth,
         frameHeight: animationData.framesHeight,
         totalFrames: animationData.totalFrames || 1,
-        loop: animationData.loop
+        loop: animationData.loop !== undefined ? animationData.loop : true,
       };
     }
   }
@@ -48,6 +52,11 @@ export default class Animator {
   setAnimation(animName) {
     if (this.animations[animName]) {
       if (this.currentAnimation !== animName) {
+        // Reset da flag de morte completada ao trocar animações
+        if (animName === "death") {
+          this.deathAnimationCompleted = false;
+        }
+
         this.currentAnimation = animName;
         this.currentFrame = 0;
         this.elapsedTime = 0;
@@ -63,22 +72,53 @@ export default class Animator {
     const animation = this.animations[this.currentAnimation];
     if (!animation) return;
     if (animation.totalFrames <= 1) return;
+
     this.elapsedTime += deltaTime;
 
     if (this.elapsedTime > this.frameDuration) {
       this.elapsedTime = 0;
-      
-      if (animation.loop === false) {
 
+      if (animation.loop === false) {
+        // Para animações não-loop (como morte), verificar se chegou ao último frame
         if (this.currentFrame < animation.totalFrames - 1) {
           this.currentFrame++;
+
+          // NOVO: Se for o último frame da animação de morte, marcar como completa
+          if (
+            this.currentAnimation === "death" &&
+            this.currentFrame === animation.totalFrames - 1
+          ) {
+            this.deathAnimationCompleted = true;
+            this.triggerAnimationFinished("death");
+          }
         }
       } else {
         this.currentFrame = (this.currentFrame + 1) % animation.totalFrames;
       }
     }
   }
-  
+
+  // NOVO: Método para registrar callbacks quando uma animação terminar
+  onAnimationFinished(animName, callback) {
+    if (!this.animationFinishedCallbacks[animName]) {
+      this.animationFinishedCallbacks[animName] = [];
+    }
+    this.animationFinishedCallbacks[animName].push(callback);
+  }
+
+  // NOVO: Disparar callbacks quando uma animação terminar
+  triggerAnimationFinished(animName) {
+    if (this.animationFinishedCallbacks[animName]) {
+      this.animationFinishedCallbacks[animName].forEach((callback) =>
+        callback()
+      );
+    }
+  }
+
+  // NOVO: Verificar se a animação de morte terminou
+  isDeathAnimationCompleted() {
+    return this.deathAnimationCompleted;
+  }
 
   drawSprite(ctx, x, y, width, height, flip = false) {
     const anim = this.animations[this.currentAnimation];
@@ -129,6 +169,9 @@ export default class Animator {
   }
 
   drawHud(ctx, jogador) {
+    // Não desenhar HUD se o jogador estiver morto
+    if (!jogador.isAlive) return;
+
     const barHeight = 6;
     const barOffset = 10;
     const spacing = 4;
@@ -167,9 +210,19 @@ export default class Animator {
   drawPlayer(ctx, jogador) {
     const flip = jogador.facingDirection === "left";
 
-    const hitbox = jogador.hitBoxToDraw;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+    // Desenhar hitbox para debug (opcional)
+    if (jogador.hitBoxToDraw) {
+      ctx.strokeStyle = jogador.isAlive
+        ? "rgba(0, 255, 0, 0.5)"
+        : "rgba(255, 0, 0, 0.5)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        jogador.hitBoxToDraw.x,
+        jogador.hitBoxToDraw.y,
+        jogador.hitBoxToDraw.width,
+        jogador.hitBoxToDraw.height
+      );
+    }
 
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
@@ -178,7 +231,7 @@ export default class Animator {
     // if (jogador.isAttacking) {
     //   ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
     //   ctx.strokeStyle = "red";
-  
+
     //   attackBoxes.forEach(box => {
     //     ctx.fillRect(box.x, box.y, box.width, box.height);
     //     ctx.strokeRect(box.x, box.y, box.width, box.height);
@@ -193,6 +246,7 @@ export default class Animator {
       jogador.renderHeight,
       flip
     );
+
     this.drawHud(ctx, jogador);
     return;
   }

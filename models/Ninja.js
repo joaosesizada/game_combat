@@ -17,15 +17,15 @@ export default class Ninja extends Player {
             }, 120);
 
             setTimeout(() => {
-              this.isAttacking = false;
+                this.isAttacking = false;
               
             }, this.attackDuration);
         
             setTimeout(() => {
-              this.attackCooldown = false;
+                this.attackCooldown = false;
             }, this.attackDuration + 600);
         }
-      }
+    }
     
     getAttackHitbox() {
         const cfg = this.attackBoxConfig;
@@ -39,10 +39,10 @@ export default class Ninja extends Player {
       
         // Parte horizontal (acima e à frente do player)
         const horizontalBox = {
-          x: baseX,
-          y: baseY - 50,
-          width: cfg.lWidth,
-          height: cfg.lThickness
+            x: baseX,
+            y: baseY - 50,
+            width: cfg.lWidth,
+            height: cfg.lThickness
         };
       
         // Parte vertical (descendo da frente do player)
@@ -57,12 +57,12 @@ export default class Ninja extends Player {
 
         const verticalBoxTwo = {
             x: facingRight
-            ?  baseX + bodyWidth + cfg.lThickness
-            : baseX - 55 - cfg.lThickness,
-          y: baseY - 30,
-          width: 55,
-          height: 130
-        }
+                ? baseX + bodyWidth + cfg.lThickness
+                : baseX - 55 - cfg.lThickness,
+            y: baseY - 30,
+            width: 55,
+            height: 130
+        };
       
         hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
         
@@ -81,7 +81,7 @@ export default class Ninja extends Player {
     }
 
     updateVerticalDirection() {
-        if (this.isAttacking && this.attackCooldown) return
+        if (this.isAttacking && this.attackCooldown) return;
         this.rising = this.velocityY < 0;
         this.falling = this.velocityY > 0;
     }

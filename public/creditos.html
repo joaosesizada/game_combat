@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Créditos do Projeto - Game Escolar</title>
+
+    <!-- NES.css via CDN -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+
+    <!-- Fonte Pixelada (Press Start 2P) -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- Estilos customizados -->
+    <style>
+        /* Animação de background com cores vibrantes */
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Animação de pulsar para a logo (devagar) */
+        @keyframes pulseSlow {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #66a6ff);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite, fadeIn 1s ease-in;
+            color: #fff;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        /* Animação de fadeIn para todo o conteúdo */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            /* Fundo semitransparente */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 30px;
+        }
+
+        /* Estilo para a logo pulsante */
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            animation: pulseSlow 4s infinite;
+        }
+
+        /* Grid para os integrantes */
+        .team-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-member {
+            width: 150px;
+            text-align: center;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .team-member:hover {
+            transform: scale(1.05);
+            color: #ffea00;
+        }
+
+        .team-photo {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            /* border: 3px solid #66fcf1; */
+            image-rendering: pixelated;
+            margin-bottom: 10px;
+
+            /* Redondo sem suavização */
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        /* Efeito pop-in dos containers */
+        .nes-container.with-title {
+            position: relative;
+            overflow: hidden;
+            animation: popIn 0.8s ease-out;
+            margin-top: 30px;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Títulos com cores personalizadas */
+        .nes-container.with-title .title {
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            color: #66fcf1;
+        }
+
+        /* Rodapé pulsante */
+        footer {
+            margin-top: 40px;
+            animation: pulseSlow 4s infinite;
+        }
+
+        /* Links personalizados */
+        a {
+            color: #66FCF1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #ffea00;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="./imgs/logo.png" alt="Logo do Projeto" class="logo">
+    <div class="container">
+        <!-- Cabeçalho com Logo -->
+        <header>
+            <h1 class="nes-text is-primary">Eternal Nexus</h1>
+            <p>Créditos do Projeto</p>
+        </header>
+
+        <!-- Sessão: Equipe Principal com fotos -->
+        <section class="nes-container with-title">
+            <p class="title">Equipe Principal</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="./imgs/cunha.png" alt="Foto de Cunha" class="team-photo">
+                    <p><strong>Cunha</strong><br>Coça Saco dos otros</p>
+                </div>
+                <div class="team-member">
+                    <img src="./imgs/bryan.png" alt="Foto de Bryan" class="team-photo">
+                    <p><strong>Bryan</strong><br>CTO</p>
+                </div>
+                <div class="team-member">
+                    <img src="./imgs/yan.png" alt="Foto de Yan" class="team-photo">
+                    <p><strong>Yan</strong><br>Zelador</p>
+                </div>
+                <div class="team-member">
+                    <img src="./imgs/prim.png" alt="Foto de Prim" class="team-photo">
+                    <p><strong>Prim</strong><br>Empregado ruim, botei 8 funções e achou ruim</p>
+                </div>
+                <div class="team-member">
+                    <img src="./imgs/santos.png" alt="Foto de João Santos" class="team-photo">
+                    <p><strong>João Santos</strong><br>Pet</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sessão: Agradecimentos Especiais -->
+        <section class="nes-container with-title">
+            <p class="title">Agradecimentos Especiais</p>
+            <p>Agradecemos aos professores, orientadores e a todos que contribuíram para fazer deste projeto um sucesso!
+            </p>
+        </section>
+
+        <!-- Sessão: Ferramentas Utilizadas -->
+        <section class="nes-container with-title">
+            <p class="title">Ferramentas Utilizadas</p>
+            <ul class="nes-list is-disc">
+                <li>HTML5, CSS3 e JavaScript</li>
+                <li>Express socket.io</li>
+                <li>Canvas API e API do DOM</li>
+            </ul>
+        </section>
+
+        <!-- Sessão: Detalhes do Projeto -->
+        <section class="nes-container with-title">
+            <p class="title">Detalhes do Projeto</p>
+            <p><strong>Data:</strong> 2025-03-23 - Atual</p>
+            <p><strong>Instituição:</strong> Escola SESI - Tijucas</p>
+        </section>
+
+        <!-- Rodapé -->
+        <footer>
+            <p>Projeto feito com <span class="nes-icon is-small heart"></span> e muita nostalgia!</p>
+        </footer>
+    </div>
+
+    <!-- Exemplo simples de interatividade com JavaScript -->
+    <script>
+        // Altera o título do cabeçalho ao clicar, apenas para demonstrar interatividade
+        const headerTitle = document.querySelector('header h1');
+        headerTitle.addEventListener('click', () => {
+            headerTitle.textContent = "Créditos Atualizados!";
+        });
+    </script>
+</body>
+
+</html>

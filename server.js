@@ -16,6 +16,10 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
@@ -82,9 +86,6 @@ io.on("connection", (socket) => {
   //   room.startGame();
   // });
   
-
-  // Evento de movimentação do jogador
-// server.js
   socket.on("move", (keys) => {
     const roomId = socketToRoom[socket.id];
     if (!roomId) return;
@@ -95,7 +96,6 @@ io.on("connection", (socket) => {
     const player = room.players[socket.id];
     if (!player) return;
 
-    // atualiza as teclas pressionadas
     player.keys = keys;
   });
 
@@ -114,7 +114,7 @@ io.on("connection", (socket) => {
       console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
     }
   
-    delete socketToRoom[socket.id]; // limpa o mapeamento
+    delete socketToRoom[socket.id]; //
   });  
 });
 

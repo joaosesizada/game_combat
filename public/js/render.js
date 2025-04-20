@@ -10,6 +10,11 @@ let timerLobby = 5;
 // Cria (única) instância para animar efeitos – agora ela é única e reutilizada.
 let effectAnimatorInstance = new EffectAnimator(setup);
 
+// NOVO: Variáveis para controlar estado de game over
+let showGameOverScreen = false;
+let deadPlayerIds = new Set();
+let gameOverTriggered = false;
+
 export function startRenderLoop() {
   requestAnimationFrame(loop);
 }
@@ -25,13 +30,15 @@ function loop() {
   renderPlayers(deltaTime);
   renderEffects(); // chamamos a renderização dos efeitos
 
-  if (isGameOver()) {
-    const gameOverData = getGameOverData();
+  // MODIFICADO: Processamento do game over
+  checkGameOverCondition();
+  
+  if (showGameOverScreen) {
     if (timerLobby > 0) {
       timerLobby -= deltaTime / 1000;
       if (timerLobby < 0) timerLobby = 0;
     }
-    renderGameOverOverlay(ctx, gameOverData);
+    renderGameOverOverlay(ctx, getGameOverData());
   }
 
   requestAnimationFrame(loop);
@@ -48,6 +55,24 @@ function renderPlayers(deltaTime) {
     // Usa o currentAnimation do player, já definido pelo próprio objeto
     animator.setAnimation(player.currentAnimation);
     
+    // NOVO: Para jogadores mortos, verificar se a animação de morte terminou
+    if (!player.isAlive) {
+      // Adicionar handler só uma vez para cada jogador morto
+      if (!deadPlayerIds.has(id)) {
+        deadPlayerIds.add(id);
+        
+        // Registrar callback quando animação de morte terminar
+        animator.onAnimationFinished('death', () => {
+          player.deathAnimationComplete = true;
+          
+          // Se for nosso jogador, iniciar game over
+          if (id === getSocket().id) {
+            showGameOverScreen = true;
+          }
+        });
+      }
+    }
+    
     // Se a animação de ataque atingiu o fim, volta ao estado default
     if (animator.currentAnimation === 'attack' && animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
       animator.setAnimation(player.isMoving ? 'run' : 'idle');
@@ -59,9 +84,37 @@ function renderPlayers(deltaTime) {
   }
 }
 
+// NOVO: Verificar condições para mostrar game over
+function checkGameOverCondition() {
+  // Se já recebemos evento de game over do servidor
+  if (isGameOver() && !gameOverTriggered) {
+    gameOverTriggered = true;
+    const players = getPlayers();
+    const myId = getSocket().id;
+    
+    // Verificar se somos o único jogador vivo (vitória)
+    let amITheOnlyOneAlive = true;
+    let amIAlive = false;
+    
+    for (let id in players) {
+      if (id === myId) {
+        amIAlive = players[id].isAlive;
+      } else if (players[id].isAlive) {
+        amITheOnlyOneAlive = false;
+      }
+    }
+    
+    // Mostrar game over imediatamente em caso de vitória
+    if (amIAlive && amITheOnlyOneAlive) {
+      showGameOverScreen = true;
+    }
+    
+    // Caso eu esteja morto, esperamos a animação terminar via callback
+  }
+}
+
 function renderEffects() {
   const effects = getEffects();
-  console.log("Efeitos recebidos:", effects);
   const currentTime = Date.now();
   effects.forEach(effect => {
     effectAnimatorInstance.drawEffect(ctx, effect, currentTime);

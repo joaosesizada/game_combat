@@ -18,6 +18,7 @@ export default class Player {
         this.canvasWidth = 1200;
 
         this.keys = { w: false, a: false, d: false, s: false, ' ': false };
+        this.lastKey = null;
 
         this.isMoving = false;
         this.isGrounded = true;
@@ -52,9 +53,7 @@ export default class Player {
     update(players) {
 
         if (!this.isAlive) {
-            this.renderHeight = this.height
-            this.renderWidth = this.width
-            this.updateAnimationState();
+            this.resetRenderSize()
             return; 
         }
 
@@ -71,41 +70,19 @@ export default class Player {
             this.customUpdate(players);
             return;
         }
-
-        if (this.keys.a) {
-            if (this.x > 0) {
-                this.x -= this.speed;
-                this.facingDirection = "left";
-                this.isMoving = true;
-            }
-        }
-        if (this.keys.d) {
-            if (this.x < this.canvasWidth - this.width) {
-                this.x += this.speed;
-                this.facingDirection = "right";
-                this.isMoving = true;
-            }
+        
+        this.isMoving = false;
+        const dir = this.getMovementDirection();
+        if (dir && this.canMove(dir)) {
+          this.move(dir);
         }
 
-        if (this.keys.w && this.isGrounded) {
-            if (this.stamina >= this.jumpStaminaCost) {
-                this.stamina -= this.jumpStaminaCost;
-                this.velocityY = this.jumpForce;
-                this.isGrounded = false;
-                
-            }
-        }
-
-        if(this.keys.x && this.keys.y) {
-            this.isMoving = false
-            this.updateAnimationState()
-        }
-
-        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attack(players);
-            }
+        if (this.shouldJump()) {
+            this.performJump();
+          }
+      
+        if (this.shouldAttack()) {
+            this.performAttack(players);
         }
 
         this.updateAnimationState()
@@ -115,6 +92,53 @@ export default class Player {
     customUpdate(players) {
 
     }
+
+    resetRenderSize() {
+        this.renderHeight = this.height;
+        this.renderWidth = this.width;
+
+        this.updateAnimationState()
+    };
+
+    getMovementDirection() {
+        if (this.keys.a && this.keys.d) {
+          return this.lastKey === 'a' ? 'left' : 'right';
+        }
+        if (this.keys.a) return 'left';
+        if (this.keys.d) return 'right';
+        return null;
+    }
+    
+    canMove(direction) {
+        if (direction === 'left')  return this.x > 0;
+        if (direction === 'right') return this.x < this.canvasWidth - this.width;
+        return false;
+    }
+    
+    move(direction) {
+        this.x += direction === 'left' ? -this.speed : this.speed;
+        this.facingDirection = direction;
+        this.isMoving = true;
+    }
+    
+    shouldJump() {
+        return this.keys.w && this.isGrounded && this.stamina >= this.jumpStaminaCost;
+    }
+    
+    performJump() {
+        this.stamina -= this.jumpStaminaCost;
+        this.velocityY = this.jumpForce;
+        this.isGrounded = false;
+    }
+    
+    shouldAttack() {
+        return this.keys[' '] && !this.isAttacking && !this.attackCooldown && this.stamina >= this.attackStaminaCost;
+    }
+    
+    performAttack(players) {
+        this.stamina -= this.attackStaminaCost;
+        this.attack(players);
+    }    
 
     updateAnimationState() {
         if (!this.isAlive) { 
@@ -170,12 +194,13 @@ export default class Player {
         
         const direction = attacker.x > this.x ? -1 : 1;
         
-        this.smokeDust(gameRoom)
-        this.startKnockback(direction * knockbackStrength, knockbackY);
-
         if (this.health <= 0) {
             this.isAlive = false; 
+            return
         }
+
+        this.smokeDust(gameRoom)
+        this.startKnockback(direction * knockbackStrength, knockbackY);
 
         setTimeout(() => {
             this.isDamaged = false;

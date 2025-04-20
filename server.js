@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
     const success = room.addPlayer(socket.id, characterType);
     if (!success) return socket.emit('erro', 'Sala cheia');
   
-    // mapeia e inscreve na sala do Socket.IO
     socketToRoom[socket.id] = roomId;
   
     // envia só para quem entrou, o estado da sala
@@ -83,9 +82,7 @@ io.on("connection", (socket) => {
   // });
   
 
-  // Evento de movimentação do jogador
-// server.js
-  socket.on("move", (keys) => {
+  socket.on("move", ({ keys, lastKey }) => {
     const roomId = socketToRoom[socket.id];
     if (!roomId) return;
 
@@ -95,8 +92,8 @@ io.on("connection", (socket) => {
     const player = room.players[socket.id];
     if (!player) return;
 
-    // atualiza as teclas pressionadas
     player.keys = keys;
+    player.lastKey = lastKey;
   });
 
 

@@ -22,7 +22,7 @@ export default class GameRoom {
   static getGameRoom() {
     return GameRoom.currentGameRoom;
   }
-  // Adiciona um jogador à sala
+
   addPlayer(socketId, characterType = "heroKnight") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
@@ -51,19 +51,15 @@ export default class GameRoom {
     this.players[socketId] = player;
     console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado como ${type}. Total: ${Object.keys(this.players).length}/${MAX_PLAYERS}`);
 
-    // Se atingiu o número máximo de jogadores, inicia a partida
     if (Object.keys(this.players).length === MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Número máximo de jogadores alcançado. Iniciando jogo.`);
-      // Notifica todos os clientes para ir à tela de jogo
       this.io.to(this.idRoom).emit('goToGame');
-      // Inicia o loop de atualização
       this.startGame();
     }
 
     return true;
   }
 
-  // Remove o jogador da sala
   removePlayer(socketId) {
     if (this.players[socketId]) {
       delete this.players[socketId];
@@ -87,7 +83,6 @@ export default class GameRoom {
   startGame() {
     if (this.gameInterval) return;
     this.gameInterval = setInterval(() => {
-      // atualiza lógica de cada player
       Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
       this.cleanUpEffects()
       this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects);
@@ -100,7 +95,6 @@ export default class GameRoom {
     const alivePlayers = Object.values(this.players).filter(player => player.isAlive);
     if (alivePlayers.length <= 1) {
       const winner = alivePlayers[0] || null;
-      // Emite evento "gameOver" para todos os sockets na sala
       this.io.to(this.idRoom).emit("gameOver", { winnerId: winner ? winner.id : null});
       
       setTimeout(() => {

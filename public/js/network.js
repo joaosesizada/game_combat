@@ -1,5 +1,6 @@
 import setup from './setup.js';
 import Animator from './Animator.js';
+import { setupInputListeners } from './input.js';
 
 const socket = io();
 const animators = {};
@@ -23,6 +24,7 @@ export function initSocket(onConnected) {
   socket.on('goToGame', () => {
     document.getElementById("game").style.display = "block";
     document.getElementById("room").style.display = "none";
+    setupInputListeners();
   });
 
   socket.on("updateRoom", ({ room }) => {

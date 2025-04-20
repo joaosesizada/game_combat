@@ -31,7 +31,6 @@ app.get('/game/:roomId', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
-// Armazena todas as salas ativas
 const gameRooms = {};
 const socketToRoom = {};
 
@@ -44,7 +43,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    gameRooms[roomId] = new GameRoom(roomId, io); // estrutura real da sala
+    gameRooms[roomId] = new GameRoom(roomId, io); 
     socket.join(roomId); 
 
     socket.emit('connectToRoom', { roomId });
@@ -66,14 +65,12 @@ io.on("connection", (socket) => {
     const room = gameRooms[roomId];
     if (!room) return socket.emit('erro', 'Sala não existe');
   
-    socket.join(roomId);        // <<=== ESSENCIAL
+    socket.join(roomId);    
     const success = room.addPlayer(socket.id, characterType);
     if (!success) return socket.emit('erro', 'Sala cheia');
   
-    // mapeia e inscreve na sala do Socket.IO
     socketToRoom[socket.id] = roomId;
   
-    // envia só para quem entrou, o estado da sala
     socket.emit("updateRoom", { room: room.getState() });
   });  
 

@@ -101,9 +101,18 @@ export default class Player {
             this.updateAnimationState()
         }
 
-        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
+        if (this.keys.mouseLeft && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
+                console.log('attack on1')
+                this.attack(players);
+            }
+        }
+
+        if (this.keys.mouseRight && !this.isAttacking && !this.attackCooldown) {
+            if (this.stamina >= this.attackStaminaCost) {
+                this.stamina -= this.attackStaminaCost;
+                console.log('attack 2')
                 this.attack(players);
             }
         }

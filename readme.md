@@ -1,4 +1,3 @@
-
 # Eternal Nexus - Jogo de Luta Online Indie
 
 ![Logo do Eternal Nexus](public/imgs/assets/menu.png)

@@ -3,7 +3,7 @@ import GameRoom from "./GameRoom.js";
 export class CombatManager {
     static handleAttack(attacker, players) {
       const atkBoxes = attacker.getAttackHitbox();      
-      const atkDmg   = attacker.attackDamage;
+      const atkDmg = attacker.attacksConfig[attacker.attackAnimCurrent].damage;
   
       players.forEach(player => {
         if (player === attacker) return;
@@ -25,11 +25,11 @@ export class CombatManager {
               player.onAttackClash?.(gameRoom);
               
               gameRoom.addEffect({
-                type:     "clash",
-                x:        centerX  - 64, 
-                y:        centerY  - 64, 
-                width:    128,
-                height:   128,
+                type: "clash",
+                x: centerX  - 64, 
+                y: centerY  - 64, 
+                width: 128,
+                height: 128,
                 duration: 750,
                 flip: false
               });

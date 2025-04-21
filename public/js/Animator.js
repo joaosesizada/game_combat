@@ -227,16 +227,16 @@ export default class Animator {
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
 
-    // const attackBoxes = jogador.attackBoxToDraw;
-    // if (jogador.isAttacking) {
-    //   ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-    //   ctx.strokeStyle = "red";
+    const attackBoxes = jogador.attackBoxToDraw;
+    if (jogador.isAttacking) {
+      ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+      ctx.strokeStyle = "red";
 
-    //   attackBoxes.forEach(box => {
-    //     ctx.fillRect(box.x, box.y, box.width, box.height);
-    //     ctx.strokeRect(box.x, box.y, box.width, box.height);
-    //   });
-    // }
+      attackBoxes.forEach(box => {
+        ctx.fillRect(box.x, box.y, box.width, box.height);
+        ctx.strokeRect(box.x, box.y, box.width, box.height);
+      });
+    }
 
     this.drawSprite(
       ctx,

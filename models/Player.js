@@ -1,4 +1,5 @@
 import config from "./config.js";
+import { CombatManager } from './CombatManager.js';
 
 export default class Player {
     constructor(x, y, id, person) {
@@ -27,13 +28,9 @@ export default class Player {
         this.falling = false;
         this.rising = false;
 
-        this.attackDamage = this.config.attackDamage
-        this.isAttacking = false;
-        this.attackCooldown = false;
-        this.attackDuration = this.config.attackDuration;
+        this.attacksConfig = this.config.attacks;
         this.attackClash = false
         this.attackBoxToDraw = []
-        this.attackBoxConfig  = this.config.attackBoxConfig;
         this.attackAnimCurrent = null
 
         this.health = this.config.health;
@@ -42,8 +39,7 @@ export default class Player {
 
         this.maxStamina = this.config.maxStamina;
         this.stamina = this.maxStamina;
-        this.staminaRegenRate = 0.25; 
-        this.attackStaminaCost = 20;
+        this.staminaRegenRate = this.config.staminaRegenRate;
         this.jumpStaminaCost = 15;
 
         this.knockbackResistance = 0.8;
@@ -97,21 +93,8 @@ export default class Player {
             }
         }
 
-        if (this.keys.mouseLeft && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attackAnimCurrent = 'attack1'
-                this.firstAttack(players);
-            }
-        }
-
-        if (this.keys.mouseRight && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attackAnimCurrent = 'attack2'
-                this.secondAttack(players);
-            }
-        }
+        if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
+        if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
         this.updateAnimationState()
         this.customUpdate(players);
@@ -119,6 +102,23 @@ export default class Player {
 
     customUpdate(players) {
 
+    }
+
+    requestAttack(type, players) {
+        const atk = this.attacksConfig[type];
+        if (!atk || this.isAttacking || this.attackCooldown) return;
+        if (this.stamina < atk.staminaCost) return;
+    
+        this.stamina -= atk.staminaCost;
+        this.isAttacking = true;
+        this.attackCooldown = true;
+        this.attackAnimCurrent = type;
+    
+        setTimeout(() => CombatManager.handleAttack(this, players), 120);
+    
+        setTimeout(() => { this.isAttacking = false; }, atk.duration);
+    
+        setTimeout(() => { this.attackCooldown = false; }, atk.duration + atk.cooldown);
     }
 
     updateAnimationState() {

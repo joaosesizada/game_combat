@@ -5,51 +5,8 @@ export default class HeroKnight extends Player {
     constructor(x, y, id) {
         super(x, y, id, "heroKnight");
     }    
-
-    firstAttack(players) {
-        if (!this.isAttacking && !this.attackCooldown) {
-
-            this.isAttacking = true;
-            this.attackCooldown = true;
-            
-            setTimeout(() => {
-              CombatManager.handleAttack(this, players);
-            }, 120);
-
-            setTimeout(() => {
-              this.isAttacking = false;
-              
-            }, this.attackDuration);
-        
-            setTimeout(() => {
-              this.attackCooldown = false;
-            }, this.attackDuration + 600);
-        }
-      }
-
-    secondAttack(players) {
-        if (!this.isAttacking && !this.attackCooldown) {
-
-            this.isAttacking = true;
-            this.attackCooldown = true;
-            
-            setTimeout(() => {
-              CombatManager.handleAttack(this, players);
-            }, 120);
-
-            setTimeout(() => {
-              this.isAttacking = false;
-              
-            }, this.attackDuration);
-        
-            setTimeout(() => {
-              this.attackCooldown = false;
-            }, this.attackDuration + 600);
-        }
-      }
-    
       getAttackHitbox() {
-        const cfg = this.attackBoxConfig;
+        const cfg = this.attacksConfig[this.attackAnimCurrent].boxConfig;
       
         const hitboxes = [];
       
@@ -92,7 +49,6 @@ export default class HeroKnight extends Player {
     }   
     
     getHitbox() {
-        const facingRight = this.facingDirection === "right";
         return {
             x: this.x,
             y: this.y,

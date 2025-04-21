@@ -80,17 +80,17 @@ const setup = {
             loop: true
         },
         attack1: {
-            src: "../imgs/heroKnight/attack.png",
+            src: "../imgs/heroKnight/attack1.png",
             framesWidth: 162,
             framesHeight: 67,
             totalFrames: 6,
             loop: true
         },
         attack2: {
-            src: "../imgs/heroKnight/attack.png",
-            framesWidth: 162,
-            framesHeight: 67,
-            totalFrames: 6,
+            src: "../imgs/heroKnight/attack2.png",
+            framesWidth: 150,
+            framesHeight: 80,
+            totalFrames: 8,
             loop: true
         },
         jump: {

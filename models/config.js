@@ -49,7 +49,7 @@ const config = {
               attack2: {
                 staminaCost: 25,
                 damage: 50,
-                duration: 500,
+                duration: 700,
                 cooldown: 800,
                 boxConfig: {
                     lWidth: 100,       

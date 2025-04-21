@@ -32,7 +32,24 @@ O projeto foi desenvolvido por uma equipe apaixonada por jogos e tecnologia, com
 
 Este projeto foi construído com as seguintes tecnologias e ferramentas:
 
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Canvas API](https://img.shields.io/badge/Canvas_API-000000?style=for-the-badge)
+![DOM API](https://img.shields.io/badge/DOM_API-43853D?style=for-the-badge)
+
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
+![PM2](https://img.shields.io/badge/PM2-2B037A?style=for-the-badge&logo=npm&logoColor=white)
+![NGINX](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+---
+
+### 🔧 Estrutura do Projeto
 
 - **Frontend:**
   - HTML5, CSS3 e JavaScript

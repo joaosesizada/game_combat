@@ -2,8 +2,9 @@ import GameRoom from "./GameRoom.js";
 
 export class CombatManager {
     static handleAttack(attacker, players) {
-      const atkBoxes = attacker.getAttackHitbox();      
-      const atkDmg = attacker.attacksConfig[attacker.attackAnimCurrent].damage;
+      const attackName = attacker.attackAnimCurrent
+      const atkBoxes = attacker.getAttackHitbox(attackName);      
+      const atkDmg = attacker.attacksConfig[attackName].damage;
   
       players.forEach(player => {
         if (player === attacker) return;

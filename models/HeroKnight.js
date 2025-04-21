@@ -1,11 +1,10 @@
 import Player from './Player.js';
-import { CombatManager } from './CombatManager.js';
 
 export default class HeroKnight extends Player {
     constructor(x, y, id) {
         super(x, y, id, "heroKnight");
     }    
-      getAttackHitbox() {
+      getAttackHitbox(attackName) {
         const cfg = this.attacksConfig[this.attackAnimCurrent].boxConfig;
       
         const hitboxes = [];
@@ -15,35 +14,64 @@ export default class HeroKnight extends Player {
         const facingRight = this.facingDirection === "right";
         const bodyWidth = this.width;
       
-        // Parte horizontal (acima e à frente do player)
-        const horizontalBox = {
-          x: baseX,
-          y: baseY - 50,
-          width: cfg.lWidth,
-          height: cfg.lThickness
-        };
-      
-        // Parte vertical (descendo da frente do player)
-        const verticalBox = {
-          x: facingRight
-            ?  baseX + bodyWidth
-            : baseX - 40,
-          y: baseY - 50,
-          width: cfg.lThickness,
-          height: cfg.lHeight
-        };
-
-        const verticalBoxTwo = {
-            x: facingRight
-            ?  baseX + bodyWidth + cfg.lThickness
-            : baseX - 55 - cfg.lThickness,
-          y: baseY - 30,
-          width: 55,
-          height: 130
-        }
-      
-        hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
+        if (attackName === 'attack1') {
+          const horizontalBox = {
+            x: baseX,
+            y: baseY - 50,
+            width: cfg.lWidth,
+            height: cfg.lThickness
+          };
         
+          // Parte vertical (descendo da frente do player)
+          const verticalBox = {
+            x: facingRight
+              ?  baseX + bodyWidth
+              : baseX - 40,
+            y: baseY - 50,
+            width: cfg.lThickness,
+            height: cfg.lHeight
+          };
+  
+          const verticalBoxTwo = {
+              x: facingRight
+              ?  baseX + bodyWidth + cfg.lThickness
+              : baseX - 55 - cfg.lThickness,
+            y: baseY - 30,
+            width: 55,
+            height: 130
+          }
+        
+          hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
+        } else {
+          const horizontalBox = {
+            x: facingRight ? baseX - 65 : baseX,
+            y: baseY - 80,
+            width: cfg.lWidth + 15,
+            height: cfg.lThickness + 45
+          };
+        
+          // Parte vertical (descendo da frente do player)
+          const verticalBox = {
+            x: facingRight
+              ?  baseX + bodyWidth
+              : baseX - cfg.lThickness,
+            y: baseY - 50,
+            width: cfg.lThickness,
+            height: cfg.lHeight + 10
+          };
+  
+          const verticalBoxTwo = {
+              x: facingRight
+              ?  baseX + bodyWidth + cfg.lThickness
+              : baseX - (cfg.lThickness * 2) + 20,
+            y: baseY - 30,
+            width: 20,
+            height: 150
+          }
+        
+          hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
+        }
+
         this.attackBoxToDraw = hitboxes
         return hitboxes;
     }   
@@ -77,7 +105,7 @@ export default class HeroKnight extends Player {
           break;
         case "attack2":
             this.renderWidth  = 325;
-            this.renderHeight = 155
+            this.renderHeight = 200
             break;
         case "fall":
           this.renderWidth  = this.width;

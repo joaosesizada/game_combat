@@ -19,12 +19,12 @@ const config = {
               attack2: {
                 staminaCost: 25,
                 damage: 50,
-                duration: 500,
+                duration: 550,
                 cooldown: 800,
                 boxConfig: {
                     lWidth: 100,       
-                    lHeight: 160,    
-                    lThickness: 40  
+                    lHeight: 135,    
+                    lThickness: 82.5  
                 }
               }
         },
@@ -38,7 +38,7 @@ const config = {
             attack1: {
                 staminaCost: 20,
                 damage: 35,
-                duration: 400,
+                duration: 550,
                 cooldown: 600,
                 boxConfig: {
                     lWidth: 100,
@@ -49,10 +49,10 @@ const config = {
               attack2: {
                 staminaCost: 25,
                 damage: 50,
-                duration: 700,
+                duration: 780,
                 cooldown: 800,
                 boxConfig: {
-                    lWidth: 100,       
+                    lWidth: 150,       
                     lHeight: 160,    
                     lThickness: 40  
                 }

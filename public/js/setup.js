@@ -91,7 +91,7 @@ const setup = {
             framesWidth: 150,
             framesHeight: 80,
             totalFrames: 8,
-            loop: true
+            loop: false
         },
         jump: {
             src: "../imgs/heroKnight/jump.png",

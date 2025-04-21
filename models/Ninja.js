@@ -5,7 +5,7 @@ export default class Ninja extends Player {
         super(x, y, id, "ninja");
     }
     
-    getAttackHitbox() {
+    getAttackHitbox(attackName) {
         const cfg = this.attacksConfig[this.attackAnimCurrent].boxConfig;
       
         const hitboxes = [];
@@ -15,34 +15,56 @@ export default class Ninja extends Player {
         const facingRight = this.facingDirection === "right";
         const bodyWidth = this.width;
       
-        // Parte horizontal (acima e à frente do player)
-        const horizontalBox = {
+        if (attackName === 'attack1') {
+          const horizontalBox = {
             x: baseX,
             y: baseY - 50,
             width: cfg.lWidth,
             height: cfg.lThickness
-        };
+          };
       
         // Parte vertical (descendo da frente do player)
-        const verticalBox = {
-          x: facingRight
-            ?  baseX + bodyWidth
-            : baseX - 40,
-          y: baseY - 50,
-          width: cfg.lThickness + 5,
-          height: cfg.lHeight
-        };
-
-        const verticalBoxTwo = {
+          const verticalBox = {
             x: facingRight
-                ? baseX + bodyWidth + cfg.lThickness
-                : baseX - 55 - cfg.lThickness,
-            y: baseY - 30,
-            width: 55,
-            height: 130
-        };
+              ?  baseX + bodyWidth
+              : baseX - 40,
+            y: baseY - 50,
+            width: cfg.lThickness + 5,
+            height: cfg.lHeight
+          };
+
+          const verticalBoxTwo = {
+              x: facingRight
+                  ? baseX + bodyWidth + cfg.lThickness
+                  : baseX - 55 - cfg.lThickness,
+              y: baseY - 30,
+              width: 55,
+              height: 130
+          };
+        
+          hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
+        } else {
+          const horizontalBox = {
+            x: baseX,
+            y: baseY + this.height / 4,
+            width: cfg.lWidth,
+            height: cfg.lThickness
+          };
       
-        hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
+        // Parte vertical (descendo da frente do player)
+          const verticalBox = {
+            x: facingRight
+              ?  baseX + bodyWidth
+              : baseX - bodyWidth + 8,
+            y: baseY - 20,
+            width: cfg.lThickness + 5,
+            height: cfg.lHeight
+          };
+        
+          hitboxes.push(horizontalBox, verticalBox);
+        }
+
+
         
         this.attackBoxToDraw = hitboxes
         return hitboxes;

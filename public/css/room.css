@@ -39,7 +39,7 @@ body {
 
 /* GAME CANVAS */
 #gameCanvas {
-  background: url('../imgs/backgroundFight.png');
+  background: url('../imgs/maps/backgroundFight.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

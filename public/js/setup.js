@@ -14,11 +14,18 @@ const setup = {
             totalFrames: 8,
             loop: true
         },
-        attack: {
+        attack1: {
             src: "../imgs/ninja/attack1.png",
             framesWidth: 166,
             framesHeight: 70,
             totalFrames: 6,
+            loop: true
+        },
+        attack2: {
+            src: "../imgs/ninja/attack2.png",
+            framesWidth: 160,
+            framesHeight: 63,
+            totalFrames: 4,
             loop: true
         },
         jump: {
@@ -72,7 +79,14 @@ const setup = {
             totalFrames: 8,
             loop: true
         },
-        attack: {
+        attack1: {
+            src: "../imgs/heroKnight/attack.png",
+            framesWidth: 162,
+            framesHeight: 67,
+            totalFrames: 6,
+            loop: true
+        },
+        attack2: {
             src: "../imgs/heroKnight/attack.png",
             framesWidth: 162,
             framesHeight: 67,

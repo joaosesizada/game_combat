@@ -6,7 +6,28 @@ export default class HeroKnight extends Player {
         super(x, y, id, "heroKnight");
     }    
 
-    attack(players) {
+    firstAttack(players) {
+        if (!this.isAttacking && !this.attackCooldown) {
+
+            this.isAttacking = true;
+            this.attackCooldown = true;
+            
+            setTimeout(() => {
+              CombatManager.handleAttack(this, players);
+            }, 120);
+
+            setTimeout(() => {
+              this.isAttacking = false;
+              
+            }, this.attackDuration);
+        
+            setTimeout(() => {
+              this.attackCooldown = false;
+            }, this.attackDuration + 600);
+        }
+      }
+
+    secondAttack(players) {
         if (!this.isAttacking && !this.attackCooldown) {
 
             this.isAttacking = true;
@@ -94,10 +115,14 @@ export default class HeroKnight extends Player {
     
     updateRender() {
       switch (this.currentAnimation) {
-        case "attack":
+        case "attack1":
           this.renderWidth  = 325;
           this.renderHeight = 155
           break;
+        case "attack2":
+            this.renderWidth  = 325;
+            this.renderHeight = 155
+            break;
         case "fall":
           this.renderWidth  = this.width;
           this.renderHeight = 150;

@@ -34,6 +34,7 @@ export default class Player {
         this.attackClash = false
         this.attackBoxToDraw = []
         this.attackBoxConfig  = this.config.attackBoxConfig;
+        this.attackAnimCurrent = null
 
         this.health = this.config.health;
         this.isDamaged = false;
@@ -96,24 +97,19 @@ export default class Player {
             }
         }
 
-        if(this.keys.x && this.keys.y) {
-            this.isMoving = false
-            this.updateAnimationState()
-        }
-
         if (this.keys.mouseLeft && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
-                console.log('attack on1')
-                this.attack(players);
+                this.attackAnimCurrent = 'attack1'
+                this.firstAttack(players);
             }
         }
 
         if (this.keys.mouseRight && !this.isAttacking && !this.attackCooldown) {
             if (this.stamina >= this.attackStaminaCost) {
                 this.stamina -= this.attackStaminaCost;
-                console.log('attack 2')
-                this.attack(players);
+                this.attackAnimCurrent = 'attack2'
+                this.secondAttack(players);
             }
         }
 
@@ -133,7 +129,7 @@ export default class Player {
         } else if (this.isDamaged) {
           this.currentAnimation = 'hurt';
         } else if (this.isAttacking) {
-          this.currentAnimation = 'attack';
+          this.currentAnimation = this.attackAnimCurrent;
         } else if (this.rising) {
           this.currentAnimation = 'jump';
         } else if (this.falling) {

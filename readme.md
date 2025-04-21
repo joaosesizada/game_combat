@@ -1,6 +1,17 @@
-# Eternal Nexus - Jogo de Luta Online Indie
+<div style="display: flex; align-items: center;">
 
-![Logo do Eternal Nexus](public/imgs/assets/logo.png)
+  <!-- Logo com margem à direita -->
+  <img
+    src="public/imgs/assets/logo.png"
+    alt="Logo do Eternal Nexus"
+    width="50"
+    style="margin-right: 10px;"
+  />
+
+  <h1 style="margin: 0;">Eternal Nexus</h1>
+
+</div>
+<hr />
 
 **Eternal Nexus** é um jogo de luta online em pixel art, totalmente desenvolvido como um projeto independente. Combinando ação em tempo real, gráficos retrô e multiplayer via rede, o jogo oferece uma experiência intensa e divertida entre amigos ou adversários aleatórios.  
 

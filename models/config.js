@@ -1,13 +1,13 @@
 const config = {
     ninja: {
         speed: 8,
-        health: 80,
+        health: 200,
         maxStamina: 30,
         staminaRegenRate: 0.25,
         attacks: {
             attack1: {
                 staminaCost: 20,
-                damage: 35,
+                damage: 10,
                 duration: 400,
                 cooldown: 600,
                 boxConfig: {
@@ -18,7 +18,7 @@ const config = {
               },
               attack2: {
                 staminaCost: 25,
-                damage: 50,
+                damage: 20,
                 duration: 550,
                 cooldown: 800,
                 boxConfig: {
@@ -31,13 +31,13 @@ const config = {
     },
     heroKnight: {
         speed: 6.5,
-        health: 120,
+        health: 230,
         maxStamina: 30,
         staminaRegenRate: 0.25,
         attacks: {
             attack1: {
                 staminaCost: 20,
-                damage: 35,
+                damage: 10,
                 duration: 550,
                 cooldown: 600,
                 boxConfig: {
@@ -48,7 +48,7 @@ const config = {
               },
               attack2: {
                 staminaCost: 25,
-                damage: 50,
+                damage: 25,
                 duration: 780,
                 cooldown: 800,
                 boxConfig: {

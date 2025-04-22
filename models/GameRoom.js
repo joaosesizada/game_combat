@@ -1,5 +1,6 @@
 import Ninja from './Ninja.js'; 
 import Huntress from './HeroKnight.js';
+import { EffectManager } from './EffectManager.js';
 
 const MAX_PLAYERS = 2;
 
@@ -11,9 +12,9 @@ export default class GameRoom {
     this.idRoom = idRoom;
     this.io = io; // referência para o socket.io para poder emitir eventos
     this.players = {};  // armazenaremos os jogadores com socket.id como chave
-    this.effects = []
     this.FPS = 60;      // atualizações por segundo
     this.gameInterval = null;
+    this.effectManager = new EffectManager();
 
     console.log(`[GameRoom] Sala criada: ${idRoom}`);
     GameRoom.currentGameRoom = this;
@@ -80,17 +81,21 @@ export default class GameRoom {
           player.getState()
         ])
       ),
-      effects: this.effects
+      effects: this.effectManager.getEffects()
     };
   }
   
   startGame() {
     if (this.gameInterval) return;
     this.gameInterval = setInterval(() => {
-      // atualiza lógica de cada player
-      Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
-      this.cleanUpEffects()
-      this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects);
+      const allPlayers = Object.values(this.players);
+      const effects = this.effectManager.getEffects();
+
+      allPlayers.forEach(p => p.update(allPlayers, effects));
+
+      this.effectManager.update(); 
+
+      this.io.to(this.idRoom).emit('update', this.getState().players, effects);
 
       this.checkGameOver();
     }, 1000 / this.FPS);
@@ -121,18 +126,6 @@ export default class GameRoom {
 
       this.io.to(this.idRoom).emit("goToLobby")
     }
-  }
-
-  addEffect(effectData) {
-    effectData.created = Date.now();
-    this.effects.push(effectData);
-  }
-
-  cleanUpEffects() {
-    const now = Date.now();
-    this.effects = this.effects.filter(effect => {
-      return !effect.duration || (now - effect.created < effect.duration);
-    });
   }
   // Envia uma atualização para todos os sockets da sala
   broadcast(event, data) {

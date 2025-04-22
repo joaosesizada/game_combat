@@ -1,5 +1,7 @@
 import config from "./config.js";
 import { CombatManager } from './CombatManager.js';
+import GameRoom from "./GameRoom.js";
+
 
 export default class Player {
     constructor(x, y, id, person) {
@@ -14,6 +16,7 @@ export default class Player {
         this.renderWidth = this.width; 
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
+        this.gameRoom = GameRoom.getGameRoom();
 
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -46,7 +49,7 @@ export default class Player {
         this.facingDirection = "right";
     }
 
-    update(players) {
+    update(players, effects = []) {
 
         if (!this.isAlive) {
             this.renderHeight = this.height
@@ -58,6 +61,7 @@ export default class Player {
         this.regenStamina();
         this.applyGravity();
         this.updateVerticalDirection()
+        this.checkEffects(effects)
         	
         this.isMoving = false;
 
@@ -90,6 +94,18 @@ export default class Player {
                 this.velocityY = this.jumpForce;
                 this.isGrounded = false;
                 
+                
+                this.gameRoom.effectManager.addEffect({
+                    type: "clash",
+                    x: 0,
+                    y: 550,
+                    width: 200,
+                    height: 200,
+                    duration: 50000,
+                    flip: this.facingDirection === "left",
+                    impactful: true,
+                    speed: 2
+                });
             }
         }
 
@@ -103,6 +119,27 @@ export default class Player {
     customUpdate(players) {
 
     }
+
+    collides(effect) {
+        return !(
+          this.x + this.width  < effect.x ||
+          effect.x + effect.width  < this.x ||
+          this.y + this.height < effect.y ||
+          effect.y + effect.height < this.y
+        );
+      }
+    
+      checkEffects(effects) {
+        effects.forEach(effect => {
+          if (!effect.impactful) return;
+    
+          if (this.collides(effect)) {
+            console.log('colidiu')
+
+            effect.created = 0;
+          }
+        });
+      }
 
     requestAttack(type, players) {
         const atk = this.attacksConfig[type];
@@ -227,14 +264,16 @@ export default class Player {
         const effectX = footCenterX - eW / 2;
         const effectY = footY - eH / 2 + 10;
 
-        gameRoom.addEffect({
+        gameRoom.effectManager.addEffect({
             type: "smokeDust",
             x: effectX,
             y: effectY,
             width: eW,
             height: eH,
             duration: 500,
-            flip: this.facingDirection === "left"
+            flip: this.facingDirection === "left",
+            impactful: false,
+            speed: 0
         });
     }
     

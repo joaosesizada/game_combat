@@ -25,14 +25,16 @@ export class CombatManager {
               attacker.onAttackClash?.(gameRoom);
               player.onAttackClash?.(gameRoom);
               
-              gameRoom.addEffect({
+              gameRoom.effectManager.addEffect({
                 type: "clash",
                 x: centerX  - 64, 
                 y: centerY  - 64, 
                 width: 128,
                 height: 128,
                 duration: 750,
-                flip: false
+                flip: false,
+                impactful: false,
+                speed: 0
               });
             }
           }

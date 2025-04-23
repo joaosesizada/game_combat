@@ -127,4 +127,8 @@ export default class GameRoom {
     console.log(`[GameRoom ${this.idRoom}] Broadcast: ${event}`);
     this.io.to(this.idRoom).emit(event, data);  
   }
+
+  getPlayerCount() {
+    return Object.keys(this.players).length;
+  }
 }

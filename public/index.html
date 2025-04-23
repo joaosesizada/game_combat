@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eternal Nexus</title>
-    <script src="main.js" defer type="module"></script>
 
-    <link rel="shortcut icon" href="./imgs/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./imgs/logo/favicon.svg" type="image/x-icon">
+
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/animation.css">
     <link rel="stylesheet" href="./css/start.css">
+
+    <title>Eternal Nexus</title>
 </head>
+
 <body>
-    <img src="./imgs/backgroundFight.png" id="background">
-    <img src="./imgs/logo.png" id="logo">
-    <div >
-        <button onclick="window.location.href='home.html'">START</button>
-        <button>MANUAL</button>
-        <button>CRÉDITOS</button>
+    <div id="background"></div>
+    <img src="./imgs/logo/logo.png" id="logo">
+    <div class="div-button">
+        <button class="down">MANUAL</button>
+        <button class="up" onclick="window.location.href='home.html'">START</button>
+        <button class="down" onclick="window.location.href='creditos.html'">CRÉDITOS</button>
     </div>
 </body>
+
 </html>

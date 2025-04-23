@@ -1,83 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
+* {
+    overflow: hidden;
+}
 
 body {
     display: flex;
-    justify-content: center;
+    min-height: 100vh;
+    justify-content: space-evenly;
     align-items: center;
-    overflow: hidden;
     flex-direction: column;
-    font-family: "Jersey 15", sans-serif;
-    font-weight: 400;
-    font-style: normal;
 }
 
 #background {
-    position: absolute;
-    left: 0;
-    bottom: -100px;
-    width: 100%;
+    background-image: url('../imgs/backgrounds/plain.png');
 }
 
 #logo {
-    position: relative;
     width: 35%;
-    -webkit-animation: pulsate-fwd 2s ease-in-out infinite both;
-    animation: pulsate-fwd 2s ease-in-out infinite both;
+    position: relative;
 }
 
-div {
+.div-button {
     position: relative;
     display: flex;
-    flex-direction: column;
-    transform: translateY(-120px);
+    width: 50%;
+    justify-content: space-around;
+    height: min-content;
 }
 
-button {
-    background-color: #3c9fc8;
-    border: 3px solid black;
-    margin-top: 5px;
-    font-size: 30px;
-    font-family: "Jersey 15", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+.down {
+    margin-top: 20px;
 }
 
-button:hover {
-    transition: 0.5s;
-    transform: translateY(-3px);
-    cursor: pointer;
-}
-
-@-webkit-keyframes pulsate-fwd {
-    0% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-
-    50% {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-}
-
-@keyframes pulsate-fwd {
-    0% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-
-    50% {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
+.up {
+    margin-bottom: 20px;
 }

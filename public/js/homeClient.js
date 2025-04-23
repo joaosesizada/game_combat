@@ -1,7 +1,7 @@
 const socket = io();
 
 document.getElementById('createRoom').addEventListener('click', () => {
-    const roomId = Math.random().toString(36).substr(2, 6).toLowerCase(); 
+    const roomId = Math.random().toString(36).substr(2, 6).toLowerCase();
     socket.emit('createRoom', { roomId });
 });
 
@@ -14,4 +14,7 @@ socket.on('connectToRoom', ({ roomId }) => {
     window.location.href = `/room/${roomId}`;
 });
 
-
+socket.on("playerCountGlobal", ({ count }) => {
+    document.getElementById("online-count").textContent = `PLAYERS: ${count}`;
+    console.log(count);
+});  

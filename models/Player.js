@@ -104,11 +104,13 @@ export default class Player {
                     duration: 50000,
                     flip: this.facingDirection === "left",
                     impactful: true,
-                    speed: 2
+                    speed: 2,
+                    attacker: this.id
                 });
             }
         }
 
+        if (this.keys.scroll) this.requestSuper('type', players)
         if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
         if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
@@ -131,7 +133,7 @@ export default class Player {
     
       checkEffects(effects) {
         effects.forEach(effect => {
-          if (!effect.impactful) return;
+          if (!effect.impactful || effect.attacker == this.id) return;
     
           if (this.collides(effect)) {
             console.log('colidiu')
@@ -140,6 +142,14 @@ export default class Player {
           }
         });
       }
+
+    requestSuper(type, players) {
+        const atk = this.attacksConfig[type];
+        if (!atk || this.isAttacking || this.attackCooldown) return;
+        if (this.stamina < atk.staminaCost) return;
+        
+        CombatManager.handleSuper(this, players)
+    }
 
     requestAttack(type, players) {
         const atk = this.attacksConfig[type];
@@ -273,7 +283,8 @@ export default class Player {
             duration: 500,
             flip: this.facingDirection === "left",
             impactful: false,
-            speed: 0
+            speed: 0,
+            attacker: null
         });
     }
     

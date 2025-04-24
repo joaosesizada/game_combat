@@ -9,7 +9,7 @@ const config = {
                 staminaCost: 20,
                 damage: 10,
                 duration: 400,
-                cooldown: 600,
+                cooldown: 300,
                 boxConfig: {
                     lWidth: 100,
                     lHeight: 160,
@@ -20,7 +20,7 @@ const config = {
                 staminaCost: 25,
                 damage: 20,
                 duration: 550,
-                cooldown: 800,
+                cooldown: 400,
                 boxConfig: {
                     lWidth: 100,       
                     lHeight: 135,    
@@ -37,7 +37,7 @@ const config = {
         attacks: {
             attack1: {
                 staminaCost: 20,
-                damage: 10,
+                damage: 20,
                 duration: 550,
                 cooldown: 600,
                 boxConfig: {
@@ -48,7 +48,7 @@ const config = {
               },
               attack2: {
                 staminaCost: 25,
-                damage: 25,
+                damage: 30,
                 duration: 780,
                 cooldown: 800,
                 boxConfig: {

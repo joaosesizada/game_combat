@@ -25,16 +25,16 @@ export default class HeroKnight extends Player {
           // Parte vertical (descendo da frente do player)
           const verticalBox = {
             x: facingRight
-              ?  baseX + bodyWidth
+              ?  baseX + bodyWidth - 55
               : baseX - 40,
             y: baseY - 50,
-            width: cfg.lThickness,
+            width: cfg.lThickness + 55,
             height: cfg.lHeight
           };
   
           const verticalBoxTwo = {
               x: facingRight
-              ?  baseX + bodyWidth + cfg.lThickness
+              ?  baseX + bodyWidth + cfg.lThickness 
               : baseX - 55 - cfg.lThickness,
             y: baseY - 30,
             width: 55,

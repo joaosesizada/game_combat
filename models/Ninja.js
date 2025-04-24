@@ -26,10 +26,10 @@ export default class Ninja extends Player {
         // Parte vertical (descendo da frente do player)
           const verticalBox = {
             x: facingRight
-              ?  baseX + bodyWidth
+              ?  baseX + bodyWidth - 55
               : baseX - 40,
             y: baseY - 50,
-            width: cfg.lThickness + 5,
+            width: cfg.lThickness + 55,
             height: cfg.lHeight
           };
 

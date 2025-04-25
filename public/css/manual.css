@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url('../imgs/assets/manual_back.png');
+    color: white;
+    font-family: "Jersey 15", sans-serif;
+}
+
+button {
+    background-color: transparent;
+    border: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}

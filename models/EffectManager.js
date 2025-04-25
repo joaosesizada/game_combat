@@ -3,7 +3,7 @@ export class EffectManager {
     this.effects = [];
   }
 
-  addEffect({ type, x, y, width, height, duration = 1000, flip = false, impactful = true, speed = 2, attacker = null }) {
+  addEffect({ type, x, y, width, height, duration = 1000, flip = false, impactful = true, speed = 2, damage = 0, attacker = null }) {
     const vx = flip ? -speed : speed
     const effectData = {
       type,
@@ -15,6 +15,7 @@ export class EffectManager {
       height,
       duration,
       impactful,
+      damage,
       attacker,
       created: Date.now()
     };

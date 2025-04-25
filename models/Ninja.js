@@ -4,10 +4,6 @@ export default class Ninja extends Player {
     constructor(x, y, id) {
         super(x, y, id, "ninja");
     }
-    
-    handleSuper(attacker, playeers) {
-      
-    }
 
     getAttackHitbox(attackName) {
         const cfg = this.attacksConfig[this.attackAnimCurrent].boxConfig;

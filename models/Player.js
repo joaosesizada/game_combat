@@ -93,24 +93,10 @@ export default class Player {
                 this.stamina -= this.jumpStaminaCost;
                 this.velocityY = this.jumpForce;
                 this.isGrounded = false;
-                
-                
-                this.gameRoom.effectManager.addEffect({
-                    type: "clash",
-                    x: 0,
-                    y: 550,
-                    width: 200,
-                    height: 200,
-                    duration: 50000,
-                    flip: this.facingDirection === "left",
-                    impactful: true,
-                    speed: 2,
-                    attacker: this.id
-                });
             }
         }
 
-        if (this.keys.scroll) this.requestSuper('type', players)
+        if (this.keys.scroll) this.requestAttack('super', players)
         if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
         if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
@@ -131,24 +117,16 @@ export default class Player {
         );
       }
     
-      checkEffects(effects) {
+    checkEffects(effects) {
         effects.forEach(effect => {
           if (!effect.impactful || effect.attacker == this.id) return;
     
           if (this.collides(effect)) {
-            console.log('colidiu')
+            this.takeDamage(effect.damage, effect, this.gameRoom)
 
             effect.created = 0;
           }
         });
-      }
-
-    requestSuper(type, players) {
-        const atk = this.attacksConfig[type];
-        if (!atk || this.isAttacking || this.attackCooldown) return;
-        if (this.stamina < atk.staminaCost) return;
-        
-        CombatManager.handleSuper(this, players)
     }
 
     requestAttack(type, players) {
@@ -161,11 +139,34 @@ export default class Player {
         this.attackCooldown = true;
         this.attackAnimCurrent = type;
     
-        setTimeout(() => CombatManager.handleAttack(this, players), 120);
+        if (type === 'super') {
+            this.requestSuper(atk)
+        } else {
+            setTimeout(() => CombatManager.handleAttack(this, players), 120);
+        }
     
         setTimeout(() => { this.isAttacking = false; }, atk.duration);
     
         setTimeout(() => { this.attackCooldown = false; }, atk.duration + atk.cooldown);
+    }
+    
+    requestSuper(config) {
+        const flip = this.facingDirection === 'left'
+        const initX = flip ? this.x : this.x + this.width
+  
+        this.gameRoom.effectManager.addEffect({
+          type: "clash",
+          x: initX,
+          y: this.y,
+          width: config.width,
+          height: config.height,
+          duration: 5000,
+          flip: flip,
+          impactful: true,
+          speed: config.speed,
+          damage: config.damage,
+          attacker: this.id
+        });
     }
 
     updateAnimationState() {
@@ -222,7 +223,7 @@ export default class Player {
         
         const direction = attacker.x > this.x ? -1 : 1;
         
-        this.smokeDust(gameRoom)
+        this.smokeDust(gameRoom, direction)
         this.startKnockback(direction * knockbackStrength, knockbackY);
 
         if (this.health <= 0) {
@@ -245,11 +246,11 @@ export default class Player {
         const direction = this.facingDirection === "right" ? -1 : 1;
     
         this.startKnockback(direction * knockbackStrength, 0);
-        this.smokeDust(gameRoom)
+        this.smokeDust(gameRoom, direction)
 
         setTimeout(() => {
             this.isAttacking = false
-            this.attackClash = true;
+            this.attackClash = true;    
             this.renderWidth = this.width;
             this.renderHeight = this.height;
         }, 350)
@@ -265,15 +266,20 @@ export default class Player {
         this.knockbackTimer = 0;
     }
 
-    smokeDust(gameRoom) {
+    smokeDust(gameRoom, direction) {
         const eW = 128, eH = 128;
-
-        const footCenterX = this.facingDirection === "left" ? this.x + (this.width * 2): this.x - this.width;
+    
+        const footCenterX = direction === 1 
+            ? this.x + this.width   
+            : this.x - this.width; 
+    
         const footY = this.y + this.height / 2;
-
+    
         const effectX = footCenterX - eW / 2;
         const effectY = footY - eH / 2 + 10;
-
+    
+        const flip = direction === 1;
+    
         gameRoom.effectManager.addEffect({
             type: "smokeDust",
             x: effectX,
@@ -281,7 +287,7 @@ export default class Player {
             width: eW,
             height: eH,
             duration: 500,
-            flip: this.facingDirection === "left",
+            flip: flip, 
             impactful: false,
             speed: 0,
             attacker: null

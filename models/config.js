@@ -26,6 +26,13 @@ const config = {
                     lHeight: 135,    
                     lThickness: 82.5  
                 }
+              },
+              super: {
+                staminaCost: 25,
+                damage: 50,
+                speed: 10,
+                width: 100,
+                height: 100
               }
         },
     },
@@ -56,6 +63,13 @@ const config = {
                     lHeight: 160,    
                     lThickness: 40  
                 }
+              }, 
+              super: {
+                staminaCost: 25,
+                damage: 50,
+                speed: 10,
+                width: 100,
+                height: 100
               }
         },
     },

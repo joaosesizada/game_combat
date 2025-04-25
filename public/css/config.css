@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: "Press Start 2P", system-ui;
@@ -19,12 +20,12 @@
 
 
     --opacity: rgba(0, 0, 0, 0.5);
-    --degrad: linear-gradient(-45deg, rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.6), rgba(20, 20, 20, 0.2));
+    --degrad: linear-gradient(-45deg, rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2), rgba(150, 150, 150, 0.4), rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2));
 }
 
-h1, h2, h3 {
+/* h1, h2, h3 {
     margin-top: 30px;
-}
+} */
 
 #background {
     position: fixed;
@@ -36,6 +37,7 @@ h1, h2, h3 {
     background-position: center;
     background-repeat: no-repeat;
     z-index: -1;
+    background-image: url('../imgs/backgrounds/default.png');
 }
 
 #background::after {
@@ -53,6 +55,8 @@ h1, h2, h3 {
 #logo {
     -webkit-animation: pulsate-fwd 2s ease-in-out infinite both;
     animation: pulsate-fwd 2s ease-in-out infinite both;
+    width: 200px;
+    margin-top: 20px;
 }
 
 input {
@@ -94,6 +98,26 @@ button:hover {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
 }
 
+.container-orange {
+    background-color: var(--orangeD);
+    border: 0;
+    border-bottom: 10px solid var(--orangeL);
+    color: white;
+    padding: 10px 0;
+    font-size: 20px;
+    text-align: center;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    transition: 0.5s;
+}
+
+.container-orange:hover {
+    border-bottom: 0;
+    transform: translateY(-10px)
+}
+
 .nes-container.with-title {
     position: relative;
     overflow: hidden;
@@ -104,7 +128,17 @@ button:hover {
 .nes-container.with-title .title {
     font-size: 1.1em;
     letter-spacing: 1px;
-    background-color: black;
+    background-color: var(--black);
     padding: 2px 4px;
     color: var(--blueL);
+}
+
+
+
+.trio-caloroso {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1400px;
+    /* background-color: rgba(255, 0, 0, 0.4); */
 }

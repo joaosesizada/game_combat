@@ -3,10 +3,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-#background {
-    background-image: url('../imgs/backgrounds/default.png');
+    flex-direction: column;
 }
 
 section div {

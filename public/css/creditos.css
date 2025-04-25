@@ -6,15 +6,6 @@ body {
     flex-direction: column;
 }
 
-#background {
-    background-image: url('../imgs/backgrounds/default.png');
-}
-
-#logo {
-    width: 200px;
-    margin-top: 20px;
-}
-
 .team-grid {
     display: flex;
     flex-wrap: wrap;

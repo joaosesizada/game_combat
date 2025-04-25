@@ -126,7 +126,7 @@ io.on("connection", (socket) => {
   
       delete socketToRoom[socket.id];
     } else {
-      console.log(`👋 Jogador ${socket.id} saiu da home, nada a fazer na sala.`);
+      console.log(`👋 Jogador ${socket.id} saiu da home.`);
     }
   
     // Atualiza o contador global independentemente de estar em sala

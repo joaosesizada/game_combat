@@ -45,9 +45,10 @@ function loop() {
 }
 
 function renderPlayers(deltaTime) {
+  
   const players = getPlayers();
   cleanupAnimators(players);
-
+  
   for (let id in players) {
     const player = players[id];
     const animator = getAnimator(id, player);

@@ -107,6 +107,10 @@ export default class HeroKnight extends Player {
             this.renderWidth  = 325;
             this.renderHeight = 200
             break;
+        case "super":
+            this.renderWidth  = 325;
+            this.renderHeight = 155
+            break;
         case "fall":
           this.renderWidth  = this.width;
           this.renderHeight = 150;

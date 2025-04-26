@@ -155,7 +155,7 @@ export default class Player {
         const initX = flip ? this.x : this.x + this.width
   
         this.gameRoom.effectManager.addEffect({
-          type: "clash",
+          type: config.name,
           x: initX,
           y: this.y,
           width: config.width,

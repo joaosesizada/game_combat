@@ -45,6 +45,9 @@ export default class Player {
         this.staminaRegenRate = this.config.staminaRegenRate;
         this.jumpStaminaCost = 15;
 
+        this.maxSuperEnergy = this.config.maxSuperEnergy
+        this.superEnergy = 0
+
         this.knockbackResistance = 0.8;
         this.facingDirection = "right";
     }
@@ -96,7 +99,7 @@ export default class Player {
             }
         }
 
-        if (this.keys.scroll) this.requestAttack('super', players)
+        if (this.keys.scroll) this.requestSuper('super')
         if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
         if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
@@ -138,19 +141,24 @@ export default class Player {
         this.isAttacking = true;
         this.attackCooldown = true;
         this.attackAnimCurrent = type;
-    
-        if (type === 'super') {
-            this.requestSuper(atk)
-        } else {
-            setTimeout(() => CombatManager.handleAttack(this, players), 120);
-        }
+
+        setTimeout(() => CombatManager.handleAttack(this, players), 120);
     
         setTimeout(() => { this.isAttacking = false; }, atk.duration);
     
         setTimeout(() => { this.attackCooldown = false; }, atk.duration + atk.cooldown);
     }
     
-    requestSuper(config) {
+    requestSuper(type) {
+        const config = this.attacksConfig[type];
+        if(this.isAttacking || this.attackCooldown) return
+        if(this.superEnergy < config.energyCost) return
+
+        this.superEnergy -= config.energyCost
+        this.isAttacking = true
+        this.attackCooldown = true
+        this.attackAnimCurrent = type
+
         const flip = this.facingDirection === 'left'
         const initX = flip ? this.x : this.x + this.width
   
@@ -167,6 +175,10 @@ export default class Player {
           damage: config.damage,
           attacker: this.id
         });
+
+        setTimeout(() => { this.isAttacking = false; }, config.duration);
+    
+        setTimeout(() => { this.attackCooldown = false; }, config.duration + config.cooldown);
     }
 
     updateAnimationState() {
@@ -223,12 +235,14 @@ export default class Player {
         
         const direction = attacker.x > this.x ? -1 : 1;
         
+        if (this.health <= 0) {
+            this.isAlive = false;
+            return 
+        }
+        
+        this.chargeSuper('takeDamage')
         this.smokeDust(gameRoom, direction)
         this.startKnockback(direction * knockbackStrength, knockbackY);
-
-        if (this.health <= 0) {
-            this.isAlive = false; 
-        }
 
         setTimeout(() => {
             this.isDamaged = false;
@@ -264,6 +278,17 @@ export default class Player {
         this.knockbackVelocity = { x: velocityX, y: velocityY };
         this.knockbackActive = true;
         this.knockbackTimer = 0;
+    }
+
+    chargeSuper(type) {
+        const energy = type === 'takeDamage' ? 10 : 5
+        
+        if (this.superEnergy < this.maxSuperEnergy) {
+            this.superEnergy += energy
+            if (this.superEnergy > this.maxSuperEnergy) {
+                this.superEnergy = this.maxSuperEnergy
+            }
+        }
     }
 
     smokeDust(gameRoom, direction) {
@@ -355,6 +380,8 @@ export default class Player {
           maxStamina: this.maxStamina,
           stamina: this.stamina,
           staminaRegenRate: this.staminaRegenRate,
+          maxSuperEnergy: this.maxSuperEnergy,
+          superEnergy: this.superEnergy,
           attackStaminaCost: this.attackStaminaCost,
           jumpStaminaCost: this.jumpStaminaCost,
           facingDirection: this.facingDirection

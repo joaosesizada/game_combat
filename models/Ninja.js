@@ -95,12 +95,16 @@ export default class Ninja extends Player {
     updateRender() {
       switch (this.currentAnimation) {
         case "attack1":
-          this.renderWidth  = 300;
-          this.renderHeight = 175;
-          break;
+            this.renderWidth  = 300;
+            this.renderHeight = 175;
+            break;
         case "attack2":
             this.renderWidth  = 300;
             this.renderHeight = 160;
+            break;
+        case "super":
+            this.renderWidth  = 300;
+            this.renderHeight = 175;
             break;
         case "fall":
           this.renderWidth  = this.width;

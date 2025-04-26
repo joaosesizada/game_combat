@@ -3,20 +3,121 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
+
+.page {
+    display: none;
+}
+
+.page.ativa {
+    display: block;
+}
+
 
 body {
     background-image: url('../imgs/assets/manual_back.png');
+    background-size: cover;
+    background-position: center;
     color: white;
     font-family: "Jersey 15", sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10rem;
+    flex: 1;
+    flex-wrap: wrap;
+    padding: 2rem;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.mouse {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+}
+
+.mouse2 {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 4rem;
+    margin-top: 2rem;
+    font-weight: normal;
+}
+
+h2 {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 1.5rem;
+    font-weight: normal;
 }
 
 button {
     background-color: transparent;
-    border: 0;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.conteudo {
+    font-size: 35px;
+    width: 65%;
+    padding: 40px;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 85vh;
 }
 
 footer {
-    position: absolute;
-    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    margin-top: auto;
 }

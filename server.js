@@ -44,7 +44,6 @@ app.get('/game/:roomId', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
-// Armazena todas as salas ativas
 const gameRooms = {};
 const socketToRoom = {};
 
@@ -88,8 +87,8 @@ io.on("connection", (socket) => {
                 return;
             }
 
-            gameRooms[roomId] = new GameRoom(roomId, io); // estrutura real da sala
-            socket.join(roomId);
+    gameRooms[roomId] = new GameRoom(roomId, io); 
+    socket.join(roomId); 
 
             socket.emit('connectToRoom', { roomId });
         });
@@ -106,39 +105,31 @@ io.on("connection", (socket) => {
             socket.emit('connectToRoom', { roomId });
         });
 
-        socket.on("addPlayer", ({ roomId, characterType }) => {
-            const room = gameRooms[roomId];
-            if (!room) return socket.emit('erro', 'Sala não existe');
+  socket.on("addPlayer", ({ roomId, characterType}) => {
+    const room = gameRooms[roomId];
+    if (!room) return socket.emit('erro', 'Sala não existe');
+  
+    socket.join(roomId);    
+    const success = room.addPlayer(socket.id, characterType);
+    if (!success) return socket.emit('erro', 'Sala cheia');
+  
+    socketToRoom[socket.id] = roomId;
+  
+    socket.emit("updateRoom", { room: room.getState() });
+  });  
 
-            const success = room.addPlayer(socket.id, characterType);
-
-            io.to(roomId).emit("playerCount", { count: room.getPlayerCount() });
-
-            if (!success) return socket.emit('erro', 'Sala cheia');
-
-            // mapeia e inscreve na sala do Socket.IO
-            socketToRoom[socket.id] = roomId;
-            socket.join(roomId);        // <<=== ESSENCIAL
-
-            // envia só para quem entrou, o estado da sala
-            socket.emit("updateRoom", { room: room.getState() });
-        });
-
-        socket.on("startGame", ({ roomId }) => {
-            const room = gameRooms[roomId];
-            if (!room) return;
-
-            io.to(roomId).emit("goToGame");
-
-            room.startGame();
-        });
-
-
-        // Evento de movimentação do jogador
-        // server.js
-        socket.on("move", (keys) => {
-            const roomId = socketToRoom[socket.id];
-            if (!roomId) return;
+  // socket.on("startGame", ({ roomId }) => {
+  //   const room = gameRooms[roomId];
+  //   if (!room) return;
+  
+  //   io.to(roomId).emit("goToGame");
+  
+  //   room.startGame();
+  // });
+  
+  socket.on("move", (keys) => {
+    const roomId = socketToRoom[socket.id];
+    if (!roomId) return;
 
             const room = gameRooms[roomId];
             if (!room) return;
@@ -146,35 +137,27 @@ io.on("connection", (socket) => {
             const player = room.players[socket.id];
             if (!player) return;
 
-            // atualiza as teclas pressionadas
-            player.keys = keys;
-        });
+    player.keys = keys;
+  });
 
 
-        socket.on("disconnect", () => {
-            clearInterval(updateInterval); // limpar o setInterval quando desconectar!
-
-            const roomId = socketToRoom[socket.id];
-
-            if (roomId) {
-                const room = gameRooms[roomId];
-                if (room) {
-                    room.removePlayer(socket.id);
-                    console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
-
-                    io.to(roomId).emit("playerCount", { count: room.getPlayerCount() });
-                }
-
-                delete socketToRoom[socket.id];
-            } else {
-                console.log(`👋 Jogador ${socket.id} saiu da home.`);
-            }
-
-            connectedPlayers = Math.max(connectedPlayers - 1, 0);
-            io.emit("playerCountGlobal", { count: connectedPlayers });
-            socket.data.user = null;  // Limpar as informações do usuário ao desconectar
-        });
-    });
+  socket.on("disconnect", () => {
+    const roomId = socketToRoom[socket.id];
+  
+    if (!roomId) {
+      console.log(`👋 Jogador ${socket.id} saiu da home, nada a fazer.`);
+      return;
+    }
+  
+    const room = gameRooms[roomId];
+    if (room) {
+      room.removePlayer(socket.id);
+      console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
+    }
+  
+    delete socketToRoom[socket.id]; //
+  });  
+});
 
     // Rotas de Usuário
     app.post('/cadastrar', async (req, res) => {

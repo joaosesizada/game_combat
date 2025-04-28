@@ -1,4 +1,7 @@
 import config from "./config.js";
+import { CombatManager } from './CombatManager.js';
+import GameRoom from "./GameRoom.js";
+
 
 export default class Player {
     constructor(x, y, id, person) {
@@ -10,9 +13,10 @@ export default class Player {
         this.speed = this.config.speed || 5;
         this.width = 100;
         this.height = 125;
-        this.renderWidth = this.width; // inicial igual à hitbox
+        this.renderWidth = this.width; 
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
+        this.gameRoom = GameRoom.getGameRoom();
 
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -27,52 +31,56 @@ export default class Player {
         this.falling = false;
         this.rising = false;
 
-        this.attackDamage = 25
-        this.isAttacking = false;
-        this.attackCooldown = false;
-        this.attackDuration = this.config.attackDuration || 300;
+        this.attacksConfig = this.config.attacks;
         this.attackClash = false
-        // Define a área de ataque: 40 pixels de largura e 20 pixels de altura
-        this.attackBoxConfig  = this.config.attackBoxConfig  || { width: 40, height: 20 };
+        this.attackBoxToDraw = []
+        this.attackAnimCurrent = null
 
-        // Propriedade para simular a vida do player
-        this.health = this.config.health || 100;
+        this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
 
-        // NOVO: Propriedades de stamina
-        this.maxStamina = this.config.maxStamina || 100;
+        this.maxStamina = this.config.maxStamina;
         this.stamina = this.maxStamina;
-        this.staminaRegenRate = 0.25; // Quantidade regenerada por frame (pode ajustar)
-        this.attackStaminaCost = 20;
+        this.staminaRegenRate = this.config.staminaRegenRate;
         this.jumpStaminaCost = 15;
 
-        // Propriedade para controlar a direção que o player está olhando (left ou right)
+        this.knockbackResistance = 0.8;
         this.facingDirection = "right";
     }
 
-    update(players) {
+    update(players, effects = []) {
 
-        if(!this.isAlive) {
-            this.updateAnimationState()
-            return
+        if (!this.isAlive) {
+            this.renderHeight = this.height
+            this.renderWidth = this.width
+            this.updateAnimationState();
+            return; 
         }
-        
+
         this.regenStamina();
         this.applyGravity();
         this.updateVerticalDirection()
+        this.checkEffects(effects)
         	
         this.isMoving = false;
 
-        // Movimento lateral e atualização da direção
-        if (this.keys.a) {
+        if (this.knockbackActive) {
+            this.processKnockback();
+            this.updateAnimationState();
+            this.updateRender();
+            this.customUpdate(players);
+            return;
+        }
+
+        if (this.keys.lastKey === 'a' && this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
                 this.isMoving = true;
             }
         }
-        if (this.keys.d) {
+        if (this.keys.lastKey === 'd' && this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";
@@ -80,26 +88,85 @@ export default class Player {
             }
         }
 
-        // Pulo (verifica se há stamina suficiente para pular)
         if (this.keys.w && this.isGrounded) {
             if (this.stamina >= this.jumpStaminaCost) {
                 this.stamina -= this.jumpStaminaCost;
                 this.velocityY = this.jumpForce;
                 this.isGrounded = false;
-                
             }
         }
 
-
-        // Ataque (verifica se há stamina suficiente para atacar)
-        if (this.keys[" "] && !this.isAttacking && !this.attackCooldown) {
-            if (this.stamina >= this.attackStaminaCost) {
-                this.stamina -= this.attackStaminaCost;
-                this.attack(players);
-            }
-        }
+        if (this.keys.scroll) this.requestAttack('super', players)
+        if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
+        if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
         this.updateAnimationState()
+        this.customUpdate(players);
+    }
+
+    customUpdate(players) {
+
+    }
+
+    collides(effect) {
+        return !(
+          this.x + this.width  < effect.x ||
+          effect.x + effect.width  < this.x ||
+          this.y + this.height < effect.y ||
+          effect.y + effect.height < this.y
+        );
+      }
+    
+    checkEffects(effects) {
+        effects.forEach(effect => {
+          if (!effect.impactful || effect.attacker == this.id) return;
+    
+          if (this.collides(effect)) {
+            this.takeDamage(effect.damage, effect, this.gameRoom)
+
+            effect.created = 0;
+          }
+        });
+    }
+
+    requestAttack(type, players) {
+        const atk = this.attacksConfig[type];
+        if (!atk || this.isAttacking || this.attackCooldown) return;
+        if (this.stamina < atk.staminaCost) return;
+    
+        this.stamina -= atk.staminaCost;
+        this.isAttacking = true;
+        this.attackCooldown = true;
+        this.attackAnimCurrent = type;
+    
+        if (type === 'super') {
+            this.requestSuper(atk)
+        } else {
+            setTimeout(() => CombatManager.handleAttack(this, players), 120);
+        }
+    
+        setTimeout(() => { this.isAttacking = false; }, atk.duration);
+    
+        setTimeout(() => { this.attackCooldown = false; }, atk.duration + atk.cooldown);
+    }
+    
+    requestSuper(config) {
+        const flip = this.facingDirection === 'left'
+        const initX = flip ? this.x : this.x + this.width
+  
+        this.gameRoom.effectManager.addEffect({
+          type: "clash",
+          x: initX,
+          y: this.y,
+          width: config.width,
+          height: config.height,
+          duration: 5000,
+          flip: flip,
+          impactful: true,
+          speed: config.speed,
+          damage: config.damage,
+          attacker: this.id
+        });
     }
 
     updateAnimationState() {
@@ -110,7 +177,7 @@ export default class Player {
         } else if (this.isDamaged) {
           this.currentAnimation = 'hurt';
         } else if (this.isAttacking) {
-          this.currentAnimation = 'attack';
+          this.currentAnimation = this.attackAnimCurrent;
         } else if (this.rising) {
           this.currentAnimation = 'jump';
         } else if (this.falling) {
@@ -138,7 +205,6 @@ export default class Player {
         }
     }
 
-    // Método que regenera a stamina
     regenStamina() {
         if (this.stamina < this.maxStamina) {
             this.stamina += this.staminaRegenRate;
@@ -148,18 +214,26 @@ export default class Player {
         }
     }
 
-    takeDamage(damage, players) {
+    takeDamage(damage, attacker, gameRoom) {
         this.health -= damage;
         this.isDamaged = true;
         
+        const knockbackStrength = 30 * this.knockbackResistance; 
+        const knockbackY = -15 * this.knockbackResistance; 
+        
+        const direction = attacker.x > this.x ? -1 : 1;
+        
+        this.smokeDust(gameRoom, direction)
+        this.startKnockback(direction * knockbackStrength, knockbackY);
+
+        if (this.health <= 0) {
+            this.isAlive = false; 
+        }
 
         setTimeout(() => {
             this.isDamaged = false;
         }, 350);
     
-        if (this.health <= 0) {
-            this.isAlive = false; 
-        }
     }
 
     updateVerticalDirection() {
@@ -167,18 +241,77 @@ export default class Player {
         this.falling = this.velocityY > 0;
     }
     
-    onAttackClash() {
-        this.isAttacking = false
+    onAttackClash(gameRoom) {
+        const knockbackStrength = 30 * this.knockbackResistance; 
+        const direction = this.facingDirection === "right" ? -1 : 1;
+    
+        this.startKnockback(direction * knockbackStrength, 0);
+        this.smokeDust(gameRoom, direction)
 
         setTimeout(() => {
-            this.attackClash = true;
+            this.isAttacking = false
+            this.attackClash = true;    
             this.renderWidth = this.width;
             this.renderHeight = this.height;
-        }, 200)
+        }, 350)
         
         setTimeout(() => {
             this.attackClash = false;
-        }, 900);
+        }, 1000);
+    }
+
+    startKnockback(velocityX, velocityY) {
+        this.knockbackVelocity = { x: velocityX, y: velocityY };
+        this.knockbackActive = true;
+        this.knockbackTimer = 0;
+    }
+
+    smokeDust(gameRoom, direction) {
+        const eW = 128, eH = 128;
+    
+        const footCenterX = direction === 1 
+            ? this.x + this.width   
+            : this.x - this.width; 
+    
+        const footY = this.y + this.height / 2;
+    
+        const effectX = footCenterX - eW / 2;
+        const effectY = footY - eH / 2 + 10;
+    
+        const flip = direction === 1;
+    
+        gameRoom.effectManager.addEffect({
+            type: "smokeDust",
+            x: effectX,
+            y: effectY,
+            width: eW,
+            height: eH,
+            duration: 500,
+            flip: flip, 
+            impactful: false,
+            speed: 0,
+            attacker: null
+        });
+    }
+    
+    processKnockback() {
+        this.x += this.knockbackVelocity.x;
+        
+        if (this.isGrounded && this.knockbackVelocity.y < 0) {
+            this.isGrounded = false;
+            this.velocityY = this.knockbackVelocity.y;
+        }
+        
+        this.knockbackVelocity.x *= 0.8;
+        
+        if (this.x < 0) this.x = 0;
+        if (this.x > this.canvasWidth - this.width) this.x = this.canvasWidth - this.width;
+        
+        this.knockbackTimer += 16; 
+        if (this.knockbackTimer >= this.knockbackDuration || Math.abs(this.knockbackVelocity.x) < 0.5) {
+            this.knockbackActive = false;
+            this.knockbackVelocity = { x: 0, y: 0 };
+        }
     }
 
     setPosition(x, y) {
@@ -194,6 +327,7 @@ export default class Player {
           speed: this.speed,
           height: this.height,
           width: this.width,
+          person: this.person,
           hitBoxToDraw: this.hitBoxToDraw,
           renderWidth: this.renderWidth,
           renderHeight: this.renderHeight,
@@ -214,6 +348,7 @@ export default class Player {
           attackCooldown: this.attackCooldown,
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
+          attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,

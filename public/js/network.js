@@ -1,90 +1,68 @@
 import setup from './setup.js';
 import Animator from './Animator.js';
+import { setupInputListeners } from './input.js';
 
 const socket = io();
 const animators = {};
-
 let players = {};
 let effects = [];
-
 let gameOver = false;
 let gameOverData = null;
 
-// setInterval(initSocket(onConnected)) {}
-
+function getRoomIdFromURL() {
+  const parts = window.location.pathname.split('/');
+  return parts[parts.length - 1];
+}
 
 export function initSocket(onConnected) {
   socket.on('connect', () => {
-    const roomId = getRoomIdFromURL();
-    setTimeout(() => {
-      socket.emit('addPlayer', { roomId });
-      document.getElementById('infoSala').innerHTML = roomId;
-    }, 500);
     onConnected();
   });
 
-  socket.on("updateRoom", ({ room }) => {
-    document.getElementById('infoSala').innerHTML = room.id;
-    console.log("Sala: " + room.id);
-  
-    const playerIds = Object.keys(room.players);
-    console.log("Jogadores conectados:", playerIds);
-  
-    document.getElementById('host').innerHTML = playerIds[0]
-    if (playerIds[1]) {
-      document.getElementById('player2').innerHTML = playerIds[1]
-    }
+  socket.on('updateRoom', ({ room }) => {
+    document.getElementById('infoSala').textContent = room.id;
+    const ids = Object.keys(room.players);
+    document.getElementById('host').textContent = ids[0] || '';
+    document.getElementById('player2').textContent = ids[1] || '';
   });
-  
-  socket.on("playerCount", ({ count }) => {
-    console.log("Quantidade de Jogadores: " + count);
-    document.getElementById('placar').innerHTML = count + '/2'
-  })
+
+  socket.on('playerCount', ({ count }) => {
+    document.getElementById('placar').textContent = `${count}/2`;
+  });
 
   socket.on('update', (serverPlayers, serverEffects) => {
     players = serverPlayers;
     effects = serverEffects || [];
-    console.log(players);
-
   });
 
   socket.on('goToGame', () => {
-    document.getElementById("game").style.display = "block";
-    document.getElementById("room").style.display = "none";
+    document.getElementById('game').style.display = 'block';
+    document.getElementById('room').style.display = 'none';
+    setupInputListeners();
   });
 
-  socket.on("gameOver", (data) => {
-    gameOver = false;
+  socket.on('gameOver', data => {
+    gameOver = true;
     gameOverData = data;
   });
 
-  socket.on("goToLobby", () => {
+  socket.on('goToLobby', () => {
     window.location.href = '/';
-  })
+  });
+
+  // **Play** só ao clicar
+  document.getElementById('play').addEventListener('click', () => {
+    const character = document.getElementById('characterSelect').value;
+    const roomId = getRoomIdFromURL();
+    socket.emit('addPlayer', { roomId, characterType: character });
+  });
 }
 
-setInterval(() => {
-}, 1000);
-
-export function isGameOver() {
-  return gameOver;
-}
-
-export function getGameOverData() {
-  return gameOverData;
-}
-
-export function getSocket() {
-  return socket;
-}
-
-export function getPlayers() {
-  return players;
-}
-
-export function getEffects() {
-  return effects;
-}
+export function isGameOver() { return gameOver; }
+export function getGameOverData() { return gameOverData; }
+export function getSocket() { return socket; }
+export function getPlayers() { return players; }
+export function getEffects() { return effects; }
 
 export function getAnimator(playerId, playerData) {
   if (!animators[playerId]) {
@@ -94,14 +72,7 @@ export function getAnimator(playerId, playerData) {
 }
 
 export function cleanupAnimators() {
-  for (const playerId in animators) {
-    if (!players[playerId]) {
-      delete animators[playerId];
-    }
+  for (const id in animators) {
+    if (!players[id]) delete animators[id];
   }
-}
-
-function getRoomIdFromURL() {
-  const pathParts = window.location.pathname.split('/');
-  return pathParts[pathParts.length - 1];
 }

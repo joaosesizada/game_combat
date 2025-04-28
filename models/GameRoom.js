@@ -1,4 +1,6 @@
 import Ninja from './Ninja.js'; 
+import Huntress from './HeroKnight.js';
+import { EffectManager } from './EffectManager.js';
 
 const MAX_PLAYERS = 2;
 
@@ -10,9 +12,9 @@ export default class GameRoom {
     this.idRoom = idRoom;
     this.io = io; // referência para o socket.io para poder emitir eventos
     this.players = {};  // armazenaremos os jogadores com socket.id como chave
-    this.effects = []
     this.FPS = 60;      // atualizações por segundo
     this.gameInterval = null;
+    this.effectManager = new EffectManager();
 
     console.log(`[GameRoom] Sala criada: ${idRoom}`);
     GameRoom.currentGameRoom = this;
@@ -22,32 +24,43 @@ export default class GameRoom {
     return GameRoom.currentGameRoom;
   }
   // Adiciona um jogador à sala
-  addPlayer(socketId, characterType = "ninja") {
+  addPlayer(socketId, characterType = "heroKnight") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
       console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
       return false;
     }
 
-    // Distribuir a posição inicial: o primeiro na esquerda, o segundo na direita
     const positionInitX = Object.keys(this.players).length === 0 ? 0 : 500;
 
     let player;
-    // Um mapeamento ou if/else para instanciar a classe correta
-    switch (characterType) {
+
+    const type = characterType
+    ? characterType
+    : (Object.keys(this.players).length === 0 ? "heroKnight" : "ninja");
+
+    switch (type) {
       case "ninja":
         player = new Ninja(positionInitX, 700, socketId);
         break;
-      case "viking":
-        // player = new Viking(100, 500, socketId); // Exemplo
+      case "heroKnight":
+        player = new Huntress(positionInitX, 700, socketId);
         break;
-      // Adicione outros cases para outras classes, por exemplo "monge",     etc.
       default:
-        // Pode instanciar o Player base ou o ninja como padrão
         player = new Ninja(positionInitX, 700, socketId);
     }
 
     this.players[socketId] = player;
-    console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado. Total de jogadores: ${Object.keys(this.players).length}`);
+    console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado como ${type}. Total: ${Object.keys(this.players).length}/${MAX_PLAYERS}`);
+
+    // Se atingiu o número máximo de jogadores, inicia a partida
+    if (Object.keys(this.players).length === MAX_PLAYERS) {
+      console.log(`[GameRoom ${this.idRoom}] Número máximo de jogadores alcançado. Iniciando jogo.`);
+      // Notifica todos os clientes para ir à tela de jogo
+      this.io.to(this.idRoom).emit('goToGame');
+      // Inicia o loop de atualização
+      this.startGame();
+    }
+
     return true;
   }
 
@@ -68,17 +81,21 @@ export default class GameRoom {
           player.getState()
         ])
       ),
-      effects: this.effects
+      effects: this.effectManager.getEffects()
     };
   }
   
   startGame() {
     if (this.gameInterval) return;
     this.gameInterval = setInterval(() => {
-      // atualiza lógica de cada player
-      Object.values(this.players).forEach(p => p.update(Object.values(this.players)));
-      this.cleanUpEffects()
-      this.io.to(this.idRoom).emit('update', this.getState().players, this.getState().effects);
+      const allPlayers = Object.values(this.players);
+      const effects = this.effectManager.getEffects();
+
+      allPlayers.forEach(p => p.update(allPlayers, effects));
+
+      this.effectManager.update(); 
+
+      this.io.to(this.idRoom).emit('update', this.getState().players, effects);
 
       this.checkGameOver();
     }, 1000 / this.FPS);
@@ -109,18 +126,6 @@ export default class GameRoom {
 
       this.io.to(this.idRoom).emit("goToLobby")
     }
-  }
-
-  addEffect(effectData) {
-    effectData.created = Date.now();
-    this.effects.push(effectData);
-  }
-
-  cleanUpEffects() {
-    const now = Date.now();
-    this.effects = this.effects.filter(effect => {
-      return !effect.duration || (now - effect.created < effect.duration);
-    });
   }
   // Envia uma atualização para todos os sockets da sala
   broadcast(event, data) {

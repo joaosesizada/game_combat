@@ -1,11 +1,10 @@
 import Player from './Player.js';
 
-export default class Ninja extends Player {
+export default class HeroKnight extends Player {
     constructor(x, y, id) {
-        super(x, y, id, "ninja");
-    }
-
-    getAttackHitbox(attackName) {
+        super(x, y, id, "heroKnight");
+    }    
+      getAttackHitbox(attackName) {
         const cfg = this.attacksConfig[this.attackAnimCurrent].boxConfig;
       
         const hitboxes = [];
@@ -22,66 +21,72 @@ export default class Ninja extends Player {
             width: cfg.lWidth,
             height: cfg.lThickness
           };
-      
-        // Parte vertical (descendo da frente do player)
+        
+          // Parte vertical (descendo da frente do player)
           const verticalBox = {
             x: facingRight
               ?  baseX + bodyWidth
               : baseX - 40,
             y: baseY - 50,
-            width: cfg.lThickness + 5,
+            width: cfg.lThickness,
             height: cfg.lHeight
           };
-
+  
           const verticalBoxTwo = {
               x: facingRight
-                  ? baseX + bodyWidth + cfg.lThickness
-                  : baseX - 55 - cfg.lThickness,
-              y: baseY - 30,
-              width: 55,
-              height: 130
-          };
+              ?  baseX + bodyWidth + cfg.lThickness
+              : baseX - 55 - cfg.lThickness,
+            y: baseY - 30,
+            width: 55,
+            height: 130
+          }
         
           hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
         } else {
           const horizontalBox = {
-            x: baseX,
-            y: baseY + this.height / 4,
-            width: cfg.lWidth,
-            height: cfg.lThickness
+            x: facingRight ? baseX - 65 : baseX,
+            y: baseY - 80,
+            width: cfg.lWidth + 15,
+            height: cfg.lThickness + 45
           };
-      
-        // Parte vertical (descendo da frente do player)
+        
+          // Parte vertical (descendo da frente do player)
           const verticalBox = {
             x: facingRight
               ?  baseX + bodyWidth
-              : baseX - bodyWidth + 8,
-            y: baseY - 20,
-            width: cfg.lThickness + 5,
-            height: cfg.lHeight
+              : baseX - cfg.lThickness,
+            y: baseY - 50,
+            width: cfg.lThickness,
+            height: cfg.lHeight + 10
           };
+  
+          const verticalBoxTwo = {
+              x: facingRight
+              ?  baseX + bodyWidth + cfg.lThickness
+              : baseX - (cfg.lThickness * 2) + 20,
+            y: baseY - 30,
+            width: 20,
+            height: 150
+          }
         
-          hitboxes.push(horizontalBox, verticalBox);
+          hitboxes.push(horizontalBox, verticalBox, verticalBoxTwo);
         }
 
-
-        
         this.attackBoxToDraw = hitboxes
         return hitboxes;
-    }      
+    }   
     
     getHitbox() {
-        const facingRight = this.facingDirection === "right";
         return {
-            x: facingRight ? this.x + 30 : this.x,
+            x: this.x,
             y: this.y,
-            width: 70,
+            width: this.width,
             height: this.height
         };
     }
 
     updateVerticalDirection() {
-        if (this.isAttacking && this.attackCooldown) return;
+        if (this.isAttacking && this.attackCooldown) return
         this.rising = this.velocityY < 0;
         this.falling = this.velocityY > 0;
     }
@@ -95,12 +100,12 @@ export default class Ninja extends Player {
     updateRender() {
       switch (this.currentAnimation) {
         case "attack1":
-          this.renderWidth  = 300;
-          this.renderHeight = 175;
+          this.renderWidth  = 325;
+          this.renderHeight = 155
           break;
         case "attack2":
-            this.renderWidth  = 300;
-            this.renderHeight = 160;
+            this.renderWidth  = 325;
+            this.renderHeight = 200
             break;
         case "fall":
           this.renderWidth  = this.width;

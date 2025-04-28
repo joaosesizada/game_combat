@@ -5,7 +5,7 @@ const socket = io();
 const animators = {};
 
 let players = {};
-let effects = []; 
+let effects = [];
 
 let gameOver = false;
 let gameOverData = null;
@@ -18,16 +18,34 @@ export function initSocket(onConnected) {
     const roomId = getRoomIdFromURL();
     setTimeout(() => {
       socket.emit('addPlayer', { roomId });
-      document.getElementById('infoSala').innerHTML = roomId;      
+      document.getElementById('infoSala').innerHTML = roomId;
     }, 500);
     onConnected();
   });
+
+  socket.on("updateRoom", ({ room }) => {
+    document.getElementById('infoSala').innerHTML = room.id;
+    console.log("Sala: " + room.id);
   
+    const playerIds = Object.keys(room.players);
+    console.log("Jogadores conectados:", playerIds);
+  
+    document.getElementById('host').innerHTML = playerIds[0]
+    if (playerIds[1]) {
+      document.getElementById('player2').innerHTML = playerIds[1]
+    }
+  });
+  
+  socket.on("playerCount", ({ count }) => {
+    console.log("Quantidade de Jogadores: " + count);
+    document.getElementById('placar').innerHTML = count + '/2'
+  })
+
   socket.on('update', (serverPlayers, serverEffects) => {
     players = serverPlayers;
     effects = serverEffects || [];
     console.log(players);
-    
+
   });
 
   socket.on('goToGame', () => {
@@ -35,36 +53,18 @@ export function initSocket(onConnected) {
     document.getElementById("room").style.display = "none";
   });
 
-  socket.on("updateRoom", ({ room }) => {
-    document.getElementById('infoSala').innerHTML = room.id;
-    console.log("Sala: "+room.id);
-
-    const playerIds = Object.keys(room.players);
-    console.log("Jogadores conectados:", playerIds);
-
-    setInterval(() => {
-      document.getElementById('host').innerHTML = playerIds[0]
-      if(playerIds[1]) {
-        document.getElementById('player2').innerHTML = playerIds[1]
-      }
-    }, 1000);
-
-  });
-
-  socket.on("playerCount", ({ count }) =>{
-    console.log(count);
-    document.getElementById('placar').innerHTML = count + '/2'  
-  })
-
   socket.on("gameOver", (data) => {
     gameOver = false;
     gameOverData = data;
   });
-  
+
   socket.on("goToLobby", () => {
     window.location.href = '/';
   })
 }
+
+setInterval(() => {
+}, 1000);
 
 export function isGameOver() {
   return gameOver;

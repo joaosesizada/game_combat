@@ -18,6 +18,13 @@
     --cyan: rgba(68, 157, 197, 0.8);
     --cyan-opacity: rgba(68, 157, 197, 0.4);
 
+    /* RANKING */
+    --ouro: #df9912;
+    --ouroB: #976400;
+    --prata: #b8b8b8;
+    --prataB: #656565;
+    --bronze: #c4551e;
+    --bronzeB: #7e3900;
 
     --opacity: rgba(0, 0, 0, 0.5);
     --degrad: linear-gradient(-45deg, rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2), rgba(150, 150, 150, 0.4), rgba(20, 20, 20, 0.2), rgba(20, 20, 20, 0.2));
@@ -133,12 +140,9 @@ button:hover {
     color: var(--blueL);
 }
 
-
-
 .trio-caloroso {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 1400px;
-    /* background-color: rgba(255, 0, 0, 0.4); */
 }

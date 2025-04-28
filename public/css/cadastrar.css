@@ -1,0 +1,68 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: auto;
+}
+
+input {
+    margin-bottom: 15px;
+    width: 100%
+}
+
+.container-blue {
+    width: 600px;
+}
+
+.doisPorUm {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.doisPorUm input {
+    width: 70%;
+}
+
+.doisPorUm button {
+    width: 25%;
+    transform: translateY(-9px);
+    /* margin-left: 5px; */
+}
+
+button:hover {
+    border-bottom: 0;
+    transform: translateY(0);
+    outline: 0;
+}
+
+#cadastrar {
+    margin: 20px auto;
+}
+
+.verifica {
+    margin: 10px 0;
+}
+
+select {
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 10px gray solid;
+}
+
+#img_user {
+    border-bottom: 10px solid gray;
+    margin-top: 10px;
+    width: 30%;
+    transition: 0.5s
+}

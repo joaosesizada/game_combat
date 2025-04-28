@@ -36,23 +36,6 @@ header {
     font-weight: bold;
 }
 
-#play {
-    background-color: #8bbd7a;
-    color: #fff;
-    padding: 14px 26px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.3rem;
-    box-shadow: 0 4px #69925c;
-    transition: all 0.2s ease;
-}
-
-#play:hover {
-    background-color: #8bbd7a;
-    box-shadow: 0 6px #69925c;
-    transform: translateY(-2px);
-}
-
 #logo {
     width: 300px;
 }

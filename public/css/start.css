@@ -8,6 +8,7 @@ body {
     justify-content: space-evenly;
     align-items: center;
     flex-direction: column;
+    
 }
 
 #background {
@@ -17,6 +18,9 @@ body {
 #logo {
     width: 35%;
     position: relative;
+    animation: slideUpSolid 1.5s ease-out forwards;
+    animation-delay: 0.2s;
+
 }
 
 .div-button {
@@ -25,6 +29,8 @@ body {
     width: 50%;
     justify-content: space-around;
     height: min-content;
+    animation: slideUpSolid 1.5s ease-out forwards;
+    animation-delay: 0.2s;
 }
 
 .down {

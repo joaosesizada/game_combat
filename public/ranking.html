@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Sessão dos metas (usado para divulgação) sempre padrão -->
+    <meta name="description" content="Eternal Nexus é um jogo de luta multiplayer com combates intensos e gráficos incríveis. Entre nessa batalha épica agora!">
+    <meta name="keywords" content="jogo de luta, multiplayer, Eternal Nexus, jogo online, batalha, combate, game de luta, jogo grátis, PvP, jogos de ação">
+    <meta property="og:title" content="Eternal Nexus - Jogo de Luta Multiplayer">
+    <meta property="og:description" content="Participe de batalhas épicas em Eternal Nexus, o jogo de luta multiplayer definitivo. Desafie seus amigos online!">
+    <meta property="og:image" content="./imgs/logo/ogglogo.png">
+    <meta property="og:url" content="https://eternalnexus.online">
+    <meta property="og:type" content="website">
+
+    <link rel="shortcut icon" href="./imgs/logo/icon.svg" type="image/x-icon">
+
+    <script src="./js/ranking.js" defer type="module"></script>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/scrollbar.css">
+    <link rel="stylesheet" href="./css/animation.css">
+    <link rel="stylesheet" href="./css/ranking.css">
+
+    <title>Ranking || Eternal Nexus</title>
+</head>
+
+<body>
+    <div id="background"></div>
+    <header>
+        <h1 class="title">Ranking Mundial</h1>
+    </header>
+    <div id="podio">
+        <div id="prata" class="top3">
+            <img src="" class="icone" id="tier2-icone">
+            <div class="info">
+                <h3 id="tier2-name">Nome</h3>
+                <div>
+                    <h3 id="tier2-victory">20</h3>
+                    <img src="./imgs/ranking/trofeu.png">
+                </div>
+                <div>
+                    <h3 id="tier2-lose">10</h3>
+                    <img src="./imgs/ranking/morte.png">
+                </div>
+            </div>
+            <img src="./imgs/ranking/prata.png" class="medalha">
+        </div>
+        <div id="ouro" class="top3">
+            <img src="" class="icone" id="tier1-icone">
+            <div class="info">
+                <h3 id="tier1-name">Nome</h3>
+                <div>
+                    <h3 id="tier1-victory">20</h3>
+                    <img src="./imgs/ranking/trofeu.png">
+                </div>
+                <div>
+                    <h3 id="tier1-lose">10</h3>
+                    <img src="./imgs/ranking/morte.png">
+                </div>
+            </div>
+            <img src="./imgs/ranking/ouro.png" class="medalha">
+        </div>
+        <div id="bronze" class="top3">
+            <img src="" class="icone" id="tier3-icone">
+            <div class="info">
+                <h3 id="tier3-name">Nome</h3>
+                <div>
+                    <h3 id="tier3-victory">20</h3>
+                    <img src="./imgs/ranking/trofeu.png">
+                </div>
+                <div>
+                    <h3 id="tier3-lose">10</h3>
+                    <img src="./imgs/ranking/morte.png">
+                </div>
+            </div>
+            <img src="./imgs/ranking/bronze.png" class="medalha">
+
+        </div>
+    </div>
+    <div id="resto">
+        <div id="tier4" class="top10">
+            <h2 id="tier4-name">Nome</h2>
+            <div>
+                <h3 id="tier4-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#04</h2>
+        </div>
+        <div id="tier5" class="top10">
+            <h2 id="tier5-name">Nome</h2>
+            <div>
+                <h3 id="tier5-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#05</h2>
+        </div>
+        <div id="tier6" class="top10">
+            <h2 id="tier6-name">Nome</h2>
+            <div>
+                <h3 id="tier6-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#06</h2>
+        </div>
+        <div id="tier7" class="top10">
+            <h2 id="tier7-name">Nome</h2>
+            <div>
+                <h3 id="tier7-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#07</h2>
+        </div>
+        <div id="tier8" class="top10">
+            <h2 id="tier8-name">Nome</h2>
+            <div>
+                <h3 id="tier8-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#08</h2>
+        </div>
+        <div id="tier9" class="top10">
+            <h2 id="tier9-name">Nome</h2>
+            <div>
+                <h3 id="tier9-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#09</h2>
+        </div>
+        <div id="tier10" class="top10">
+            <h2 id="tier10-name">Nome</h2>
+            <div>
+                <h3 id="tier10-victory">0</h3>
+                <img src="./imgs/ranking/trofeu.png">
+            </div>
+            <h2 class="rank">#10</h2>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

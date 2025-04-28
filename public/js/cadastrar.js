@@ -22,9 +22,11 @@ eyePassword.addEventListener("click", () => {
     if (password.type == "password") {
         password.type = "text";
         confirm_password.type = "text";
+        eyePassword.innerHTML = `<i class="fa-solid fa-eye-slash" style="color: #ffffff;"></i>`;
     } else {
         password.type = "password";
         confirm_password.type = "password";
+        eyePassword.innerHTML = `<i class="fa-solid fa-eye" style="color: #ffffff;">`;
     }
 });
 

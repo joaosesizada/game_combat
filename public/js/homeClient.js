@@ -19,19 +19,23 @@ socket.on("playerCountGlobal", ({ count }) => {
     console.log(count);
 });
 
+socket.on()
+
 socket.emit('getUserData')
 
 // Receber os dados do usuário
 socket.on('userData', (data) => {
     if (data.error) {
-      console.log(data.error);
+        console.error(data.error);
+        // Se der erro (por exemplo, se o socket não tiver dados do usuário), você pode redirecionar para o login:
+        // window.location.href = "index.html";
     } else {
-      console.log('Dados do usuário:', data);
-      // Aqui você pode usar as informações do usuário
-      // Exemplo: Exibir no frontend
-    //   document.getElementById("userProfile").innerHTML = `
-    //     <h3>${data.username}</h3>
-    //     <img src="${data.photo_user}" alt="Foto do usuário">
-    //   `;
+        console.log('Dados recebidos:', data);
+
+        // Atualizar informações do perfil na página
+        // document.getElementById("userProfile").innerHTML = `
+        //     <h3>${data.username}</h3>
+        //     <img src="${data.photo_user}" alt="Foto do usuário" width="100">
+        // `;
     }
 });

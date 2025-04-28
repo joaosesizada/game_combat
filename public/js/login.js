@@ -1,3 +1,5 @@
+const socket = io();
+
 let username = document.getElementById("username");
 let password = document.getElementById("password");
 
@@ -31,12 +33,16 @@ button.addEventListener("click", () => {
                 response.style.color = "green";
 
                 socket.emit('bindUserToSocket', {
-                    userId: data.id,          // ID do usuário
-                    username: data.username,   // Nome do usuário
-                    photo_user: data.photo_user // Foto do usuário
+                    userId: data.id,
+                    username: data.username,
+                    photo_user: data.photo_user
                 });
-
-                window.location.href = "home.html";
+                
+                // Espera a confirmação do servidor!
+                socket.once('loginSuccess', (response) => {
+                    console.log(response.message); // "Login bem-sucedido"
+                    window.location.href = "home.html";
+                });
             }
         })
         .catch(error => {

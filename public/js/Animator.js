@@ -191,11 +191,19 @@ export default class Animator {
     const staminaWidth = (jogador.stamina / jogador.maxStamina) * jogador.width;
     const staminaY = jogador.y - barOffset;
 
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "yellow";
     ctx.fillRect(jogador.x, staminaY, staminaWidth, barHeight);
     ctx.strokeStyle = "black";
     ctx.strokeRect(jogador.x, staminaY, jogador.width, barHeight);
 
+    const energyWidth = (jogador.superEnergy / jogador.maxSuperEnergy) * jogador.width
+    const energyY = jogador.y - (barOffset * 4)
+
+    ctx.fillStyle = "blue";
+    ctx.fillRect(jogador.x, energyY, energyWidth, barHeight);
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(jogador.x, energyY, jogador.width, barHeight);
+    
     // Texto de vida opcional (em cima da barra)
     ctx.fillStyle = "white";
     ctx.font = "bold 10px Arial";
@@ -227,16 +235,16 @@ export default class Animator {
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
 
-    const attackBoxes = jogador.attackBoxToDraw;
-    if (jogador.isAttacking) {
-      ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-      ctx.strokeStyle = "red";
+    // const attackBoxes = jogador.attackBoxToDraw;
+    // if (jogador.isAttacking) {
+    //   ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    //   ctx.strokeStyle = "red";
 
-      attackBoxes.forEach(box => {
-        ctx.fillRect(box.x, box.y, box.width, box.height);
-        ctx.strokeRect(box.x, box.y, box.width, box.height);
-      });
-    }
+    //   attackBoxes.forEach(box => {
+    //     ctx.fillRect(box.x, box.y, box.width, box.height);
+    //     ctx.strokeRect(box.x, box.y, box.width, box.height);
+    //   });
+    // }
 
     this.drawSprite(
       ctx,

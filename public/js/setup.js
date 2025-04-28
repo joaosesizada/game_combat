@@ -28,6 +28,13 @@ const setup = {
             totalFrames: 4,
             loop: true
         },
+        super: {
+            src: "../imgs/ninja/super.png",
+            framesWidth: 160,
+            framesHeight: 63,
+            totalFrames: 3,
+            loop: false
+        },
         jump: {
             src: "../imgs/ninja/jump.png",
             framesWidth: 40,
@@ -93,6 +100,13 @@ const setup = {
             totalFrames: 8,
             loop: false
         },
+        super: {
+            src: "../imgs/heroKnight/super.png",
+            framesWidth: 162,
+            framesHeight: 67,
+            totalFrames: 4,
+            loop: false
+        },
         jump: {
             src: "../imgs/heroKnight/jump.png",
             framesWidth: 35,
@@ -132,6 +146,8 @@ const setup = {
     effects: {
         clash: { src: "../imgs/effects/clash.png", totalFrames: 8, frameWidth: 50, frameHeight: 68, loop: true },
         smokeDust: { src: "../imgs/effects/smokeDust.png", totalFrames: 9, frameWidth: 47, frameHeight: 42, loop: false },
+        fenix: { src: "../imgs/effects/fenix.png", totalFrames: 24, frameWidth: 45, frameHeight: 48, loop: false },
+        tornado: { src: "../imgs/effects/tornado.png", totalFrames: 5, frameWidth: 31, frameHeight: 32, loop: true }
     }
 }
 

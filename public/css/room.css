@@ -1,81 +1,170 @@
-body {
-<<<<<<< HEAD
-    min-height: 100vh;
+/* Reset & Box-Sizing */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Previne scroll indesejado */
+  html, body {
+    height: 100%;
     overflow: hidden;
-=======
-  background-color: #556458;
-  font-weight: 200;
-  font-family: Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-size: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-}
-
-/* GAME CONTAINER */
-#game {
-  display: none;
-  width: 100vh;
-  height: 100vh;
-}
-
-#box-game {
->>>>>>> develop
+  }
+  
+  /* Corpo: centraliza o lobby, cor de fundo e tipografia */
+  body {
+    background-color: #556458;
+    font-weight: 200;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-<<<<<<< HEAD
-header {
-    top: 0;
-    position: absolute;
+    color: white;
+  }
+  
+  /* ************************************************** */
+  /*                      JOGO                          */
+  /* ************************************************** */
+  
+  /* Container geral do jogo – oculto até começar */
+  #game {
+    display: none;
+    width: 100vh;
+    height: 100vh;
+  }
+  
+  /* Box que alinha o canvas no centro */
+  #box-game {
+    display: flex;
     width: 100%;
-    height: 0;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Canvas do jogo: background do mapa, full-screen e pixelated */
+  #gameCanvas {
+    background: url('../imgs/maps/backgroundFight.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    image-rendering: pixelated;
+  
+    display: block;
+    margin: auto;
+  
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    transform-origin: top left;
+  }
+  
+  /* ************************************************** */
+  /*                      LOBBY                         */
+  /* ************************************************** */
+  
+  /* Fundo decorativo atrás do lobby (se usar) */
+  #background {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: url('../imgs/maps/lobbyBackground.png') center/cover no-repeat;
+    z-index: -1;
+  }
+  
+  /* Título no topo */
+  header {
+    position: relative;
+    width: 100%;
     text-align: center;
-=======
-/* GAME CANVAS */
-#gameCanvas {
-  background: url('../imgs/maps/backgroundFight.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  image-rendering: pixelated;
-  display: block;
-  margin: auto;
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  transform-origin: top left;
->>>>>>> develop
-}
-
-.title {
-    color: var(--white);
+    margin-bottom: 20px;
+  }
+  
+  .title {
+    color: white;
     font-size: 3rem;
-    margin-top: 50px;
-}
-
-.container-orange {
-    max-width: 300px;
-    width: 300px;
-    height: 200px;
-    margin: 20px 0;
-}
-
-
-
-/* ALERTA */
-#infoSala {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#logo {
-    width: 300px;
-}
+  }
+  
+  /* Layout de três painéis (código + logo + score) */
+  .trio-caloroso {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+    max-width: 900px;
+    margin-bottom: 30px;
+  }
+  
+  /* Boxes laranja de código e jogadores */
+  .container-orange {
+    background-color: #e48b5b;
+    border: 2px solid #b36f47;
+    border-radius: 8px;
+    padding: 16px;
+    width: 250px;
+    text-align: center;
+  }
+  
+  .container-orange h3 {
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+  }
+  
+  /* Logo central */
+  #logo {
+    width: 200px;
+    height: auto;
+  }
+  
+  /* Seleção de personagem + botão */
+  #room {
+    background-color: #804a43;
+    border: 3px solid #5b342f;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  #room h1 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+  
+  #infoSala {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 12px 0;
+    background-color: #7a3e38;
+    border: 2px solid #5b342f;
+    padding: 8px;
+  }
+  
+  #characterSelect {
+    margin-bottom: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #5b342f;
+  }
+  
+  #play {
+    background-color: #8bbd7a;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    box-shadow: 0 4px #69925c;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #play:hover {
+    box-shadow: 0 6px #69925c;
+    transform: translateY(-2px);
+  }
+  

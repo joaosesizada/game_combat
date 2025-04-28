@@ -19,6 +19,34 @@ export function startRenderLoop() {
   requestAnimationFrame(loop);
 }
 
+function renderRoundDisplay(ctx) {
+  const roundNumber = 1; // Substitua pela variável do jogo
+  const canvas = ctx.canvas;
+  
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  
+  // Fonte pixelada
+  ctx.font = '24px "Press Start 2P"';
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = "#000000";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  
+  // Texto "ROUND"
+  ctx.strokeText("ROUND", canvas.width/2, 20);
+  ctx.fillText("ROUND", canvas.width/2, 20);
+  
+  // Número do round (maior)
+  ctx.font = 'bold 48px "Press Start 2P"';
+  ctx.textBaseline = "alphabetic";
+  
+  ctx.strokeText(roundNumber, canvas.width/2, 85);
+  ctx.fillText(roundNumber, canvas.width/2, 85);
+  
+  ctx.restore();
+}
+
 function loop() {
   const now = performance.now();
   const deltaTime = now - lastTimestamp;
@@ -40,7 +68,7 @@ function loop() {
     }
     renderGameOverOverlay(ctx, getGameOverData());
   }
-
+  renderRoundDisplay(ctx); 
   requestAnimationFrame(loop);
 }
 
@@ -51,6 +79,8 @@ function renderPlayers(deltaTime) {
   for (let id in players) {
     const player = players[id];
     const animator = getAnimator(id, player);
+
+    animator.drawHud(ctx, player); 
     
     // Usa o currentAnimation do player, já definido pelo próprio objeto
     animator.setAnimation(player.currentAnimation);

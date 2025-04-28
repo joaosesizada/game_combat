@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* GAME CONTAINER */
+  #game {
+    display: none;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  #box-game {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  /* GAME CANVAS */
+  #gameCanvas {
+    background: url('../imgs/backgroundFight.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    image-rendering: pixelated;
+    display: block;
+    margin: auto;
+  }
+  
+  /* SALA */
+  #room {
+    background-color: #804a43;
+    border: 3px solid #5b342f;
+    border-radius: 0;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    margin: 40px auto;
+    text-align: center;
+  }
+  
+  /* TÍTULO */
+  #room h1 {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+  
+  /* ALERTA */
+  #infoSala {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    background-color: #7a3e38;
+    border: 2px solid #5b342f;
+    padding: 10px;
+  }
+  
+  #play {
+      background-color: #8bbd7a;
+      color: #fff;
+      padding: 14px 26px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      box-shadow: 0 4px #69925c;
+      transition: all 0.2s ease;
+    }
+    
+  #play:hover {
+      background-color: #8bbd7a;
+      box-shadow: 0 6px #69925c;
+      transform: translateY(-2px);
+  }

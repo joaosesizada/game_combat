@@ -1,3 +1,5 @@
+import { getPlayers } from './network.js';
+
 export default class Animator {
   constructor(setup, character = "ninja", defaultAnim = "idle") {
     this.animations = {};
@@ -65,7 +67,7 @@ export default class Animator {
       }
     } else {
       console.warn(
-        `Animação "${animName}" não encontrada para ${this.character}!`
+        `Animação "${animName}" não encontrada para ${this.character}!"`
       );
     }
   }
@@ -166,57 +168,78 @@ export default class Animator {
   }
 
   drawHud(ctx, jogador) {
-    // Não desenhar HUD se o jogador estiver morto
     if (!jogador.isAlive) return;
-    
-    const barHeight = 6;
-    const barOffset = 10;
-    const spacing = 4;
+
+    const canvasWidth = ctx.canvas.width;
+    const barWidth = 320; 
+    const barHeightLife = 50; 
+    const barHeightSta = 25; 
+    const margin = 20;
     const borderWidth = 2;
 
-    // Vida (Barra vermelha)
-    let lifeWidth = (jogador.health / 100) * jogador.width;
-    let lifeY = jogador.y - barOffset - barHeight - spacing;
+    // Ajuste de posição para aproximar do design original
+    const yPos = margin; // Eleva as barras e fotos para o topo
 
-    ctx.fillStyle = "red";
-    ctx.fillRect(jogador.x, lifeY, lifeWidth, barHeight);
+    const players = Object.values(getPlayers());
+    const isPlayer1 = players[0]?.id === jogador.id;
+
+    let xPos = isPlayer1 
+        ? margin 
+        : canvasWidth - barWidth - margin;
+
+    // Vida (Barra com gradiente vermelho escuro)
+    const lifeWidth = (jogador.health / 100) * barWidth;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(xPos, yPos, barWidth, barHeightLife);
+    const lifeGradient = ctx.createLinearGradient(xPos, yPos, xPos + barWidth, yPos);
+    lifeGradient.addColorStop(0, '#bf0000');
+    lifeGradient.addColorStop(1, '#800000');
+    ctx.fillStyle = lifeGradient;
+    ctx.fillRect(xPos, yPos, lifeWidth, barHeightLife);
+    ctx.strokeStyle = "black";
     ctx.lineWidth = borderWidth;
+    ctx.strokeRect(xPos, yPos, barWidth, barHeightLife);
+
+    // Stamina (Barra com gradiente amarelo escuro)
+    const staminaY = yPos + barHeightLife + 10;
+    const staminaWidth = (jogador.stamina / jogador.maxStamina) * barWidth;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(xPos, staminaY, barWidth, barHeightSta);
+    const staGradient = ctx.createLinearGradient(xPos, staminaY, xPos + barWidth, staminaY);
+    staGradient.addColorStop(0, '#cccc00');
+    staGradient.addColorStop(1, '#999900');
+    ctx.fillStyle = staGradient;
+    ctx.fillRect(xPos, staminaY, staminaWidth, barHeightSta);
     ctx.strokeStyle = "black";
-    ctx.strokeRect(jogador.x, lifeY, jogador.width, barHeight);
+    ctx.strokeRect(xPos, staminaY, barWidth, barHeightSta);
 
-    // Stamina (Barra azul)
-    const staminaWidth = (jogador.stamina / jogador.maxStamina) * jogador.width;
-    const staminaY = jogador.y - barOffset;
-
-    ctx.fillStyle = "blue";
-    ctx.fillRect(jogador.x, staminaY, staminaWidth, barHeight);
-    ctx.strokeStyle = "black";
-    ctx.strokeRect(jogador.x, staminaY, jogador.width, barHeight);
-
-    // Texto de vida opcional (em cima da barra)
-    ctx.fillStyle = "white";
-    ctx.font = "bold 10px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(
-      `${Math.floor(jogador.health)}/100`,
-      jogador.x + jogador.width / 2,
-      lifeY - 2
+    // Adicionar retrato do personagem
+    const portraitSize = 80;
+    const portraitX = isPlayer1 
+        ? xPos + barWidth + 20 
+        : xPos - portraitSize - 20;
+    ctx.drawImage(
+      this.getCharacterPortrait(),
+      portraitX,
+      yPos,
+      portraitSize,
+      portraitSize
     );
+  }
+
+  getCharacterPortrait() {
+    return this.animations.idle.image;
   }
 
   drawPlayer(ctx, jogador) {
     const flip = jogador.facingDirection === "left";
-
-    // Desenhar hitbox para debug (opcional)
     if (jogador.hitBoxToDraw) {
       ctx.strokeStyle = jogador.isAlive ? "rgba(0, 255, 0, 0.5)" : "rgba(255, 0, 0, 0.5)";
       ctx.lineWidth = 2;
       ctx.strokeRect(jogador.hitBoxToDraw.x, jogador.hitBoxToDraw.y, jogador.hitBoxToDraw.width, jogador.hitBoxToDraw.height);
     }
-
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
-
     this.drawSprite(
       ctx,
       jogador.x - offsetX,
@@ -225,8 +248,6 @@ export default class Animator {
       jogador.renderHeight,
       flip
     );
-    
     this.drawHud(ctx, jogador);
-    return;
   }
 }

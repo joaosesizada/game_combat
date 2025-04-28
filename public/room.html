@@ -1,26 +1,32 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+  <!DOCTYPE html>
+  <html lang="pt-BR">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sala de Jogo</title>
-  <script src="/js/main.js" type="module"></script>
-  <link rel="stylesheet" href="/css/room.css">
-</head>
-<body>
-  <div id="game">
-    <div id="box-game">
-      <canvas id="gameCanvas" width="1200" height="800"></canvas>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sala de Jogo</title>
+    <script src="/js/main.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/room.css">
+  </head>
+  <body>
+    <div id="game">
+      <div id="box-game">
+        <canvas id="gameCanvas" width="1200" height="800"></canvas>
+      </div>
     </div>
-  </div>
-  <div id="room">
-    <h1>Sala de Jogo</h1>
-    <div id="infoSala">Carregando informações da sala...</div>
-    <button id="play">Play</button>
-  </div>
+    <div id="room">
+      <h1>Sala de Jogo</h1>
+      <div id="infoSala">Carregando informações da sala...</div>
+      <button id="play">Play</button>
+      <div id="game">
+        <div id="box-game">
+          <canvas id="gameCanvas" width="1200" height="800"></canvas>
+        </div>
+      </div>
+    </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
 
-</html>
+  </html>

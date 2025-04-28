@@ -22,6 +22,7 @@ body {
   color: white;
 }
 
+
 /* GAME CONTAINER */
 #game {
   display: none;
@@ -43,6 +44,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  image-rendering: crisp-edges;
   image-rendering: pixelated;
   display: block;
   margin: auto;

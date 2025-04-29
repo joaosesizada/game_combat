@@ -27,26 +27,14 @@ body {
   height: 100vh;
 }
 
-/* Box que alinha o canvas no centro */
-#box-game {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Canvas do jogo: background do mapa, full-screen e pixelated */
 #gameCanvas {
   background: url('../imgs/maps/backgroundFight.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   image-rendering: pixelated;
-
   display: block;
   margin: auto;
-
   position: absolute;
   top: 0; left: 0;
   width: 100vw;
@@ -104,53 +92,4 @@ header {
 #logo {
   width: 200px;
   height: auto;
-}
-
-/* Seleção de personagem + botão */
-#room {
-  background-color: #804a43;
-  border: 3px solid #5b342f;
-  border-radius: 10px;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-}
-
-#room h1 {
-  font-size: 1.8rem;
-  margin-bottom: 16px;
-}
-
-#infoSala {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 12px 0;
-  background-color: #7a3e38;
-  border: 2px solid #5b342f;
-  padding: 8px;
-}
-
-#characterSelect {
-  margin-bottom: 16px;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #5b342f;
-}
-
-#play {
-  background-color: #8bbd7a;
-  color: #fff;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.3rem;
-  box-shadow: 0 4px #69925c;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#play:hover {
-  box-shadow: 0 6px #69925c;
-  transform: translateY(-2px);
 }

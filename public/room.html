@@ -3,21 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- metas OG etc... -->
   <link rel="shortcut icon" href="/imgs/logo/favicon.svg">
-
-  <!-- estilos -->
   <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/css/config.css">
   <link rel="stylesheet" href="/css/animation.css">
   <link rel="stylesheet" href="/css/room.css">
-
   <title>Sala de Jogo || Eternal Nexus</title>
 </head>
 <body>
-  <!-- Jogo (inicialmente oculto) -->
-  <div id="game" style="display:none;">
+  <div id="game">
     <canvas id="gameCanvas"></canvas>
   </div>
 
@@ -40,18 +34,8 @@
        <div id="player2"></div>
      </div>  
     </div>
-    <div id="room">
-      <label for="characterSelect">Escolha seu personagem:</label>
-      <select id="characterSelect">
-        <option value="heroKnight">Hero Knight</option>
-        <option value="ninja">Ninja</option>
-      </select>
-      <button id="play" class="nes-btn is-primary">Play</button>
-    </div>
+    <button id="play">Play</button>
  </div>
-
-
-  <!-- scripts -->
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="/js/main.js"></script>
 </body>

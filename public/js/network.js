@@ -37,7 +37,7 @@ export function initSocket(onConnected) {
 
   socket.on('goToGame', () => {
     document.getElementById('game').style.display = 'block';
-    document.getElementById('room').style.display = 'none';
+    document.getElementById('lobbyContainer').style.display = 'none';
     setupInputListeners();
   });
 

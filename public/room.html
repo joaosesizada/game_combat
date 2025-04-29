@@ -21,35 +21,35 @@
     <canvas id="gameCanvas"></canvas>
   </div>
 
-  <!-- Lobby -->
-  <header>
-    <h1 class="title">Sala de Jogo</h1>
-  </header>
-  <div class="trio-caloroso">
-    <div class="container-orange">
-      <h3>Código Sala</h3>
-      <div id="infoSala">Carregando...</div>
+ <div id="lobbyContainer">
+   <header>
+     <h1 class="title">Sala de Jogo</h1>
+   </header>
+   <div class="trio-caloroso">
+     <div class="container-orange">
+       <h3>Código Sala</h3>
+       <div id="infoSala">Carregando...</div>
+     </div>
+     <img src="/imgs/logo/logo.png" id="logo">
+     <div class="container-orange">
+       <div style="display: flex; justify-content: center;">
+         <h3>Players:</h3>
+         <h3 id="placar">0/2</h3>
+       </div>
+       <div id="host"></div>
+       <div id="player2"></div>
+     </div>  
     </div>
-    <img src="/imgs/logo/logo.png" id="logo">
-    <div class="container-orange">
-      <div style="display: flex; justify-content: center;">
-        <h3>Players:</h3>
-        <h3 id="placar">0/2</h3>
-      </div>
-      <div id="host"></div>
-      <div id="player2"></div>
+    <div id="room">
+      <label for="characterSelect">Escolha seu personagem:</label>
+      <select id="characterSelect">
+        <option value="heroKnight">Hero Knight</option>
+        <option value="ninja">Ninja</option>
+      </select>
+      <button id="play" class="nes-btn is-primary">Play</button>
     </div>
-  </div>
+ </div>
 
-  <!-- Escolha de personagem e Play -->
-  <div id="room">
-    <label for="characterSelect">Escolha seu personagem:</label>
-    <select id="characterSelect">
-      <option value="heroKnight">Hero Knight</option>
-      <option value="ninja">Ninja</option>
-    </select>
-    <button id="play" class="nes-btn is-primary">Play</button>
-  </div>
 
   <!-- scripts -->
   <script src="/socket.io/socket.io.js"></script>

@@ -1,18 +1,7 @@
 export default class EffectAnimator {
-  /**
-   * @param {Object} setup - Objeto com a configuração dos efeitos.
-   *   Exemplo:
-   *   {
-   *     effects: {
-   *       clash: { src: "imgs/clash.png", totalFrames: 8, frameWidth: 64, frameHeight: 64, loop: false },
-   *       sparkle: { src: "imgs/sparkle.png", totalFrames: 8, frameWidth: 64, frameHeight: 64, loop: true },
-   *       // etc.
-   *     }
-   *   }
-   */
+
   constructor(setup) {
-    this.effectsConfig = {};  // Armazena as configurações de cada efeito
-    // Define a duração de cada frame em milissegundos (valor padrão)
+    this.effectsConfig = {};  
     this.frameDuration = 100; 
 
     const effectSetup = setup.effects;

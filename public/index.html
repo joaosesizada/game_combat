@@ -14,7 +14,9 @@
     <meta property="og:url" content="https://eternalnexus.online">
     <meta property="og:type" content="website">
 
-    <link rel="shortcut icon" href="./assets/imgs/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./imgs/logo/icon.svg" type="image/x-icon">
+
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="./css/config.css">
     <link rel="stylesheet" href="./css/animation.css">
@@ -24,13 +26,12 @@
 </head>
 
 <body>
-    <img src="./imgs/maps/backgroundFight.png" id="background">
-    <img src="./imgs/assets/logo.png" id="logo">
-    <div>
-        <button onclick="window.location.href='/home'">START</button>
-        <button onclick="window.location.href='creditos.html'">MANUAL</button>
-        <button>CRÉDITOS</button>
-
+    <div id="background"></div>
+    <img src="./imgs/logo/logo.png" id="logo">
+    <div class="div-button">
+        <button class="down">MANUAL</button>
+        <button class="up" onclick="window.location.href='login.html'">START</button>
+        <button class="down" onclick="window.location.href='creditos.html'">CRÉDITOS</button>
     </div>
 </body>
 

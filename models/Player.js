@@ -2,7 +2,6 @@ import config from "./config.js";
 import { CombatManager } from './CombatManager.js';
 import GameRoom from "./GameRoom.js";
 
-
 export default class Player {
     constructor(x, y, id, person) {
         this.config = config[person]
@@ -49,7 +48,8 @@ export default class Player {
         this.superEnergy = 0
 
         this.knockbackResistance = 0.8;
-        this.facingDirection = this.x >= 0 ? 'left' : "right";
+        this.facingDirection = this.x >= 0 ? 'right' : "left";
+        this.platforms = GameRoom.getMap().platforms
     }
 
     update(players, effects = []) {
@@ -103,12 +103,29 @@ export default class Player {
         if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
         if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
+        this.checkPlatforms(this.platforms)
+        
         this.updateAnimationState()
         this.customUpdate(players);
     }
 
     customUpdate(players) {
 
+    }
+
+    checkPlatforms(platforms) {
+        this.isGrounded = false
+
+        for (let platform of platforms) {
+            const withinX = this.x + this.width > platform.x && this.x < platform.x + platform.width
+            const touchingTop = this.y + this.height >= platform.y && this.y + this.height <= platform.y + this.velocityY
+
+            if (withinX && touchingTop && this.velocityY >= 0) {
+                this.y = platform.y - this.height
+                this.velocityY = 0
+                this.isGrounded = true
+            }
+        }
     }
 
     collides(effect) {

@@ -6,6 +6,7 @@ const socket = io();
 const animators = {};
 let players = {};
 let effects = [];
+let plataforms = []
 let gameOver = false;
 let gameOverData = null;
 
@@ -32,9 +33,10 @@ export function initSocket(onConnected) {
     document.getElementById('player2').textContent = players[1] || ''
   });
   
-  socket.on('update', (serverPlayers, serverEffects) => {
+  socket.on('update', (serverPlayers, serverEffects, ServePlataforms) => {
     players = serverPlayers;
     effects = serverEffects || [];
+    plataforms = ServePlataforms
   });
 
   socket.on('goToGame', () => {
@@ -64,6 +66,7 @@ export function getGameOverData() { return gameOverData; }
 export function getSocket() { return socket; }
 export function getPlayers() { return players; }
 export function getEffects() { return effects; }
+export function getPlataforms() { return plataforms; }
 
 export function getAnimator(playerId, playerData) {
   if (!animators[playerId]) {

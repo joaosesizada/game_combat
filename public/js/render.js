@@ -1,4 +1,4 @@
-import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects } from './network.js';
+import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects, getPlataforms } from './network.js';
 import EffectAnimator from './EffectAnimator.js';
 import setup from './setup.js';
 
@@ -29,7 +29,7 @@ function loop() {
 
   renderPlayers(deltaTime);
   renderEffects(); // chamamos a renderização dos efeitos
-
+  renderPlataforms(ctx)
   // MODIFICADO: Processamento do game over
   checkGameOverCondition();
   
@@ -120,6 +120,15 @@ function renderEffects() {
   effects.forEach(effect => {
     effectAnimatorInstance.drawEffect(ctx, effect, currentTime);
   });
+}
+
+function renderPlataforms(ctx) {
+  const plataforms = getPlataforms()
+  ctx.fillStyle = "red"
+
+  plataforms.forEach(plataform => {
+    ctx.fillRect(plataform.x, plataform.y, plataform.width, plataform.height)
+  })
 }
 
 function renderGameOverOverlay(ctx, gameOverData) {

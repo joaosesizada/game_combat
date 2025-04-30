@@ -1,26 +1,36 @@
 import Ninja from './Ninja.js'; 
 import Huntress from './HeroKnight.js';
 import { EffectManager } from './EffectManager.js';
+import maps from './maps.js';
 
 const MAX_PLAYERS = 2;
 
 export default class GameRoom {
 
   static currentGameRoom = null;
-
+  static currentMap = 'forest'
   constructor(idRoom, io) {
     this.idRoom = idRoom;
     this.io = io; 
     this.players = {};
     this.lobbyPlayers = {}
-    this.FPS = 60;     
+    this.FPS = 40;     
     this.gameInterval = null;
     this.effectManager = new EffectManager();
+    this.map = null
     GameRoom.currentGameRoom = this;
   }
 
   static getGameRoom() {
     return GameRoom.currentGameRoom;
+  }
+
+  static setMap(map) {
+    GameRoom.currentMap = map
+  }
+
+  static getMap() {
+    return maps[GameRoom.currentMap]
   }
 
   addPlayer(socketId, characterType = "heroKnight") {
@@ -76,7 +86,8 @@ export default class GameRoom {
           player.getState()
         ])
       ),
-      effects: this.effectManager.getEffects()
+      effects: this.effectManager.getEffects(),
+      
     };
   }
   
@@ -85,12 +96,13 @@ export default class GameRoom {
     this.gameInterval = setInterval(() => {
       const allPlayers = Object.values(this.players);
       const effects = this.effectManager.getEffects();
+      const plataforms = maps[GameRoom.currentMap].platforms
 
       allPlayers.forEach(p => p.update(allPlayers, effects));
 
       this.effectManager.update(); 
 
-      this.io.to(this.idRoom).emit('update', this.getState().players, effects);
+      this.io.to(this.idRoom).emit('update', this.getState().players, effects, plataforms);
 
       this.checkGameOver();
     }, 1000 / this.FPS);

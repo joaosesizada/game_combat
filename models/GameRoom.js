@@ -10,27 +10,25 @@ export default class GameRoom {
 
   constructor(idRoom, io) {
     this.idRoom = idRoom;
-    this.io = io; // referência para o socket.io para poder emitir eventos
-    this.players = {};  // armazenaremos os jogadores com socket.id como chave
-    this.FPS = 60;      // atualizações por segundo
+    this.io = io; 
+    this.players = {};  
+    this.FPS = 60;     
     this.gameInterval = null;
     this.effectManager = new EffectManager();
-
-    console.log(`[GameRoom] Sala criada: ${idRoom}`);
     GameRoom.currentGameRoom = this;
   }
 
   static getGameRoom() {
     return GameRoom.currentGameRoom;
   }
-  // Adiciona um jogador à sala
+
   addPlayer(socketId, characterType = "heroKnight") {
     if (Object.keys(this.players).length >= MAX_PLAYERS) {
-      console.log(`[GameRoom ${this.idRoom}] Tentativa de adicionar jogador ${socketId}, mas a sala está cheia.`);
       return false;
     }
 
-    const positionInitX = Object.keys(this.players).length === 0 ? 0 : 500;
+    this.players[socketId] = null
+    const positionInitX = Object.keys(this.players).length === 1 ? 0 : 1000;
 
     let player;
 
@@ -50,25 +48,18 @@ export default class GameRoom {
     }
 
     this.players[socketId] = player;
-    console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} adicionado como ${type}. Total: ${Object.keys(this.players).length}/${MAX_PLAYERS}`);
 
-    // Se atingiu o número máximo de jogadores, inicia a partida
     if (Object.keys(this.players).length === MAX_PLAYERS) {
-      console.log(`[GameRoom ${this.idRoom}] Número máximo de jogadores alcançado. Iniciando jogo.`);
-      // Notifica todos os clientes para ir à tela de jogo
       this.io.to(this.idRoom).emit('goToGame');
-      // Inicia o loop de atualização
       this.startGame();
     }
 
     return true;
   }
 
-  // Remove o jogador da sala
   removePlayer(socketId) {
     if (this.players[socketId]) {
       delete this.players[socketId];
-      console.log(`[GameRoom ${this.idRoom}] Jogador ${socketId} removido. Restam: ${Object.keys(this.players).length} jogador(es).`);
     }
   }
 
@@ -105,7 +96,6 @@ export default class GameRoom {
     const alivePlayers = Object.values(this.players).filter(player => player.isAlive);
     if (alivePlayers.length <= 1) {
       const winner = alivePlayers[0] || null;
-      // Emite evento "gameOver" para todos os sockets na sala
       this.io.to(this.idRoom).emit("gameOver", { winnerId: winner ? winner.id : null});
       
       setTimeout(() => {
@@ -118,7 +108,6 @@ export default class GameRoom {
     if (this.gameInterval) {
       clearInterval(this.gameInterval);
       this.gameInterval = null;
-      console.log(`[GameRoom ${this.idRoom}] Jogo encerrado.`);
 
       Object.keys(this.players).forEach(socketId => {
         delete this.players[socketId];
@@ -127,9 +116,8 @@ export default class GameRoom {
       this.io.to(this.idRoom).emit("goToLobby")
     }
   }
-  // Envia uma atualização para todos os sockets da sala
+
   broadcast(event, data) {
-    console.log(`[GameRoom ${this.idRoom}] Broadcast: ${event}`);
     this.io.to(this.idRoom).emit(event, data);  
   }
 

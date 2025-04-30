@@ -49,7 +49,7 @@ export default class Player {
         this.superEnergy = 0
 
         this.knockbackResistance = 0.8;
-        this.facingDirection = "right";
+        this.facingDirection = this.x >= 0 ? 'left' : "right";
     }
 
     update(players, effects = []) {

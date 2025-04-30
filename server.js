@@ -40,10 +40,6 @@ app.get('/room/:roomId', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'room.html'));
 });
 
-app.get('/game/:roomId', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'game.html'));
-});
-
 const gameRooms = {};
 const socketToRoom = {};
 
@@ -142,21 +138,26 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnect", () => {
+    clearInterval(updateInterval); 
+
     const roomId = socketToRoom[socket.id];
-  
-    if (!roomId) {
-      console.log(`👋 Jogador ${socket.id} saiu da home, nada a fazer.`);
-      return;
-    }
-  
-    const room = gameRooms[roomId];
-    if (room) {
-      room.removePlayer(socket.id);
-      console.log(`❌ Jogador ${socket.id} removido da sala ${roomId}.`);
-    }
-  
-    delete socketToRoom[socket.id]; //
-  });  
+
+    if (roomId) {
+        const room = gameRooms[roomId];
+        if (room) {
+            room.removePlayer(socket.id);
+
+            io.to(roomId).emit("playerCount", { count: room.getPlayerCount() });
+        }
+
+        delete socketToRoom[socket.id];
+    } 
+
+    connectedPlayers = Math.max(connectedPlayers - 1, 0);
+    io.emit("playerCountGlobal", { count: connectedPlayers });
+    socket.data.user = null;  // Limpar as informações do usuário ao desconectar
+    }); 
+
 });
 
     // Rotas de Usuário

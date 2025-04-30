@@ -90,6 +90,18 @@ io.on("connection", (socket) => {
         socket.emit('connectToRoom', { roomId });
     });
 
+    socket.on("addPlayer", ({ roomId, characterType}) => {
+        const room = gameRooms[roomId];
+        if (!room) return socket.emit('erro', 'Sala não existe');
+      
+        socket.join(roomId);    
+        const success = room.addPlayer(socket.id, characterType);
+        if (!success) return socket.emit('erro', 'Sala cheia');
+      
+        socketToRoom[socket.id] = roomId;
+      });  
+      
+
     socket.on('getRoomData', async ( {roomId, socketId} ) => {
         const room = gameRooms[roomId];
         if (!room) return;

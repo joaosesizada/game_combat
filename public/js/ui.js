@@ -1,10 +1,6 @@
 import { getSocket } from './network.js';
 
 export function initUI() {
-  addPlayer();
-}
-
-function addPlayer() {
   document.getElementById('play').addEventListener('click', () => {
     // 1) pega a sala a partir da URL
     const pathParts = window.location.pathname.split('/');

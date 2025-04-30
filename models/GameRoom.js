@@ -11,7 +11,8 @@ export default class GameRoom {
   constructor(idRoom, io) {
     this.idRoom = idRoom;
     this.io = io; 
-    this.players = {};  
+    this.players = {};
+    this.lobbyPlayers = {}
     this.FPS = 60;     
     this.gameInterval = null;
     this.effectManager = new EffectManager();
@@ -57,10 +58,13 @@ export default class GameRoom {
     return true;
   }
 
+  addLobbyPlayer(socketId, data) {
+    this.lobbyPlayers[socketId] = data
+  }
+
   removePlayer(socketId) {
-    if (this.players[socketId]) {
-      delete this.players[socketId];
-    }
+    delete this.players[socketId];
+    delete this.lobbyPlayers[socketId];
   }
 
   getState() {

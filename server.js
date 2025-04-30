@@ -16,6 +16,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const PORT = 3000;
+
 let connectedPlayers = 0;
 
 // Middleware
@@ -44,179 +46,158 @@ const gameRooms = {};
 const socketToRoom = {};
 
 io.on("connection", (socket) => {
+    connectedPlayers++;
+    io.emit("playerCountGlobal", { count: connectedPlayers });
+
     socket.on('bindUserToSocket', ({ userId, username, photo_user }) => {
-        // Armazenar as informações do usuário
         socket.data.user = { userId, username, photo_user };
         console.log(`Usuário ${username} vinculado ao socket ${socket.id}`);
     
-        // Responder ao cliente com sucesso
         socket.emit('loginSuccess', { message: 'Login bem-sucedido' });
       });
     
-      // Quando o cliente pedir para obter os dados do usuário
-      socket.on('getUserData', () => {
+    socket.on('getUserData', () => {
         if (socket.data.user) {
           socket.emit('userData', socket.data.user);  // Envia os dados do usuário de volta ao cliente
         } else {
           socket.emit('userData', { error: 'Usuário não encontrado' });
         }
-      });
+    });
 
-        connectedPlayers++;
-        io.emit("playerCountGlobal", { count: connectedPlayers });
+    socket.on("createRoom", ({ roomId }) => {
+        if (gameRooms[roomId]) {
+            socket.emit('erro', 'Sala já existe');
+            return;
+        }
 
-        const updateInterval = setInterval(() => {
-            const roomId = socketToRoom[socket.id];
-            if (!roomId) return;
+        gameRooms[roomId] = new GameRoom(roomId, io); 
+        socket.join(roomId); 
+        socketToRoom[socket.id] = roomId;
 
-            const room = gameRooms[roomId];
-            if (!room) return;
+        socket.emit('connectToRoom', { roomId });
+    });
 
-            socket.emit("updateRoom", { room: room.getState() });
-            socket.emit("playerCount", { count: room.getPlayerCount() });
-        }, 1000); // a cada 1 segundo (1000 ms)
+    socket.on("joinRoom", ({ roomId }) => {
 
-        socket.on("createRoom", ({ roomId }) => {
+        const roomExists = !!gameRooms[roomId];
+        if (!roomExists) {
+            socket.emit('erro', 'Sala não existe');
+            return;
+        }
 
-            if (gameRooms[roomId]) {
-                socket.emit('erro', 'Sala já existe');
-                return;
-            }
+        socket.join(roomId);
+        socketToRoom[socket.id] = roomId;
+        socket.emit('connectToRoom', { roomId });
+    });
 
-    gameRooms[roomId] = new GameRoom(roomId, io); 
-    socket.join(roomId); 
+    socket.on('getRoomData', async ( {roomId, socketId} ) => {
+        const room = gameRooms[roomId];
+        if (!room) return;
 
-            socket.emit('connectToRoom', { roomId });
-        });
+        socket.join(roomId);
+        socketToRoom[socket.id] = roomId;
+        room.addLobbyPlayer(socketId, socketId)
 
-        socket.on("joinRoom", ({ roomId }) => {
-
-            const roomExists = !!gameRooms[roomId];
-            if (!roomExists) {
-                socket.emit('erro', 'Sala não existe');
-                return;
-            }
-
-            socket.join(roomId);
-            socket.emit('connectToRoom', { roomId });
-        });
-
-  socket.on("addPlayer", ({ roomId, characterType}) => {
-    const room = gameRooms[roomId];
-    if (!room) return socket.emit('erro', 'Sala não existe');
+        io.to(roomId).emit('updateRoom', { players: Object.values(room.lobbyPlayers) });
+    })
   
-    socket.join(roomId);    
-    const success = room.addPlayer(socket.id, characterType);
-    if (!success) return socket.emit('erro', 'Sala cheia');
-  
-    socketToRoom[socket.id] = roomId;
-  
-    socket.emit("updateRoom", { room: room.getState() });
-  });  
-
-  // socket.on("startGame", ({ roomId }) => {
-  //   const room = gameRooms[roomId];
-  //   if (!room) return;
-  
-  //   io.to(roomId).emit("goToGame");
-  
-  //   room.startGame();
-  // });
-  
-  socket.on("move", (keys) => {
-    const roomId = socketToRoom[socket.id];
-    if (!roomId) return;
-
+    socket.on("move", (keys) => {
+        const roomId = socketToRoom[socket.id];
+        if (!roomId) return;
             const room = gameRooms[roomId];
             if (!room) return;
 
             const player = room.players[socket.id];
             if (!player) return;
 
-    player.keys = keys;
-  });
+        player.keys = keys;
+    });
 
 
-  socket.on("disconnect", () => {
-    clearInterval(updateInterval); 
+    socket.on("disconnect", () => {
 
-    const roomId = socketToRoom[socket.id];
+        const roomId = socketToRoom[socket.id];
+        socket.join(roomId);
+        
+        if (roomId) {
+            const room = gameRooms[roomId];
+            if (room) {
+                room.removePlayer(socket.id);
 
-    if (roomId) {
-        const room = gameRooms[roomId];
-        if (room) {
-            room.removePlayer(socket.id);
+                io.to(roomId).emit("updateRoom", {
+                    players: Object.values(room.lobbyPlayers)
+                });
 
-            io.to(roomId).emit("playerCount", { count: room.getPlayerCount() });
-        }
+                io.to(roomId).emit("playerCount", {
+                    count: room.getPlayerCount()
+                });
+            }
+        
+            delete socketToRoom[socket.id];
+        } 
 
-        delete socketToRoom[socket.id];
-    } 
-
-    connectedPlayers = Math.max(connectedPlayers - 1, 0);
-    io.emit("playerCountGlobal", { count: connectedPlayers });
-    socket.data.user = null;  // Limpar as informações do usuário ao desconectar
+        connectedPlayers = Math.max(connectedPlayers - 1, 0);
+        io.emit("playerCountGlobal", { count: connectedPlayers });
+        socket.data.user = null;  
     }); 
 
 });
 
-    // Rotas de Usuário
-    app.post('/cadastrar', async (req, res) => {
-        const { username, email, password, photo_user } = req.body;
+app.post('/cadastrar', async (req, res) => {
+    const { username, email, password, photo_user } = req.body;
 
-        Users.create({
-            username,
-            email,
-            password,
-            photo_user: photo_user || 'default',
+    Users.create({
+        username,
+        email,
+        password,
+        photo_user: photo_user || 'default',
+    })
+        .then((user) => res.status(201).json(user))
+        .catch((error) => res.status(500).json({ error: 'Erro ao cadastrar usuário' }));
+});
+
+app.get('/login/:username/:password', async (req, res) => {
+    const { username, password } = req.params;
+
+    Users.findOne({ where: { username, password } })
+        .then((user) => {
+            if (user) res.status(200).json(user);
+            else res.status(404).json({ message: 'unavailable' });
         })
-            .then((user) => res.status(201).json(user))
-            .catch((error) => res.status(500).json({ error: 'Erro ao cadastrar usuário' }));
-    });
+        .catch((error) => res.status(500).json({ error: 'Erro ao buscar usuário' }));
+});
 
-    app.get('/login/:username/:password', async (req, res) => {
-        const { username, password } = req.params;
+app.get('/ranking', async (req, res) => {
+    Users.findAll({
+        order: [['victory', 'DESC'], ['lose', 'ASC'], ['createdAt', 'ASC']],
+        limit: 10,
+        attributes: ['id', 'username', 'photo_user', 'victory', 'lose'],
+    })
+        .then((users) => res.status(200).json(users))
+        .catch((error) => res.status(500).json({ error: 'Erro ao listar ranking' }));
+});
 
-        Users.findOne({ where: { username, password } })
-            .then((user) => {
-                if (user) res.status(200).json(user);
-                else res.status(404).json({ message: 'unavailable' });
-            })
-            .catch((error) => res.status(500).json({ error: 'Erro ao buscar usuário' }));
-    });
-
-    app.get('/ranking', async (req, res) => {
-        Users.findAll({
-            order: [['victory', 'DESC'], ['lose', 'ASC'], ['createdAt', 'ASC']],
-            limit: 10,
-            attributes: ['id', 'username', 'photo_user', 'victory', 'lose'],
+app.get('/verifica-user/:username', async (req, res) => {
+    const { username } = req.params;
+    Users.findOne({ where: { username } })
+        .then((user) => {
+            if (user) res.status(409).json({ message: 'unavailable', user: username });
+            else res.status(200).json({ message: 'available', user: username });
         })
-            .then((users) => res.status(200).json(users))
-            .catch((error) => res.status(500).json({ error: 'Erro ao listar ranking' }));
-    });
+        .catch((error) => res.status(500).json({ error: 'Erro ao verificar nome de usuário' }));
+});
 
-    app.get('/verifica-user/:username', async (req, res) => {
-        const { username } = req.params;
-        Users.findOne({ where: { username } })
-            .then((user) => {
-                if (user) res.status(409).json({ message: 'unavailable', user: username });
-                else res.status(200).json({ message: 'available', user: username });
-            })
-            .catch((error) => res.status(500).json({ error: 'Erro ao verificar nome de usuário' }));
-    });
+app.get('/verifica-email/:email', async (req, res) => {
+    const { email } = req.params;
+    Users.findOne({ where: { email } })
+        .then((user) => {
+            if (user) res.status(200).json({ message: 'unavailable' });
+            else res.status(200).json({ message: 'available' });
+        })
+        .catch((error) => res.status(500).json({ error: 'Erro ao verificar email' }));
+});
 
-    app.get('/verifica-email/:email', async (req, res) => {
-        const { email } = req.params;
-        Users.findOne({ where: { email } })
-            .then((user) => {
-                if (user) res.status(200).json({ message: 'unavailable' });
-                else res.status(200).json({ message: 'available' });
-            })
-            .catch((error) => res.status(500).json({ error: 'Erro ao verificar email' }));
-    });
 
-    // Listen
-    const PORT = 3000;
-    server.listen(PORT, () => {
-        console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    });
+server.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+});

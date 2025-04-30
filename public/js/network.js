@@ -14,22 +14,24 @@ function getRoomIdFromURL() {
   return parts[parts.length - 1];
 }
 
+const roomId = getRoomIdFromURL()
+
 export function initSocket(onConnected) {
   socket.on('connect', () => {
     onConnected();
+    socket.emit('getRoomData', { 
+      roomId: roomId,
+      socketId: socket.id    
+    })
+    document.getElementById('infoSala').textContent = roomId
   });
 
-  socket.on('updateRoom', ({ room }) => {
-    document.getElementById('infoSala').textContent = room.id;
-    const ids = Object.keys(room.players);
-    document.getElementById('host').textContent = ids[0] || '';
-    document.getElementById('player2').textContent = ids[1] || '';
+  socket.on('updateRoom', ({ players }) => {
+    document.getElementById('placar').textContent = `${players.length}/2`
+    document.getElementById('host').textContent = players[0] || ''
+    document.getElementById('player2').textContent = players[1] || ''
   });
-
-  socket.on('playerCount', ({ count }) => {
-    document.getElementById('placar').textContent = `${count}/2`;
-  });
-
+  
   socket.on('update', (serverPlayers, serverEffects) => {
     players = serverPlayers;
     effects = serverEffects || [];
@@ -53,7 +55,6 @@ export function initSocket(onConnected) {
   // **Play** só ao clicar
   document.getElementById('play').addEventListener('click', () => {
     const character = document.getElementById('characterSelect').value;
-    const roomId = getRoomIdFromURL();
     socket.emit('addPlayer', { roomId, characterType: character });
   });
 }

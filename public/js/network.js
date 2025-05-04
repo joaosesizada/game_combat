@@ -69,9 +69,9 @@ export function getPlayers() { return players; }
 export function getEffects() { return effects; }
 export function getPlataforms() { return plataforms; }
 
-export function getAnimator(playerId, playerData) {
+export function getAnimator(playerId, playerData, currentPlayer) {
   if (!animators[playerId]) {
-    animators[playerId] = new Animator(setup, playerData.person, 'idle');
+    animators[playerId] = new Animator(setup, playerData.person, 'idle', currentPlayer);
   }
   return animators[playerId];
 }

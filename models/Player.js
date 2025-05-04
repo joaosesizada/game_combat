@@ -35,6 +35,7 @@ export default class Player {
         this.attackBoxToDraw = []
         this.attackAnimCurrent = null
 
+        this.maxHealth = this.config.health;
         this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
@@ -392,6 +393,7 @@ export default class Player {
           attackBoxConfig: this.attackBoxConfig,
           attackBoxToDraw: this.attackBoxToDraw,
           health: this.health,
+          maxHealth: this.maxHealth,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,
           maxStamina: this.maxStamina,

@@ -61,7 +61,7 @@ export default class GameRoom {
     this.players[socketId] = player;
 
     if (Object.keys(this.players).length === MAX_PLAYERS) {
-      this.io.to(this.idRoom).emit('goToGame');
+      this.io.to(this.idRoom).emit('goToGame', { map: maps[GameRoom.currentMap].src });
       this.startGame();
     }
 

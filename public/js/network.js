@@ -39,9 +39,10 @@ export function initSocket(onConnected) {
     plataforms = ServePlataforms
   });
 
-  socket.on('goToGame', () => {
+  socket.on('goToGame', ({ map }) => {
     document.getElementById('game-box').style.display = 'flex';
     document.getElementById('lobbyContainer').style.display = 'none';
+    updateMap(map)
     setupInputListeners();
   });
 
@@ -79,4 +80,9 @@ export function cleanupAnimators() {
   for (const id in animators) {
     if (!players[id]) delete animators[id];
   }
+}
+
+function updateMap(src) {
+  const canvas = document.getElementById('gameCanvas');
+  canvas.style.backgroundImage = `url(${src})`;
 }

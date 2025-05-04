@@ -169,7 +169,6 @@ export default class Animator {
   }
 
   drawHud(ctx, jogador) {
-    // Não desenhar HUD se o jogador estiver morto
     if (!jogador.isAlive) return;
 
     const barHeight = 6;
@@ -177,7 +176,6 @@ export default class Animator {
     const spacing = 4;
     const borderWidth = 2;
 
-    // Vida (Barra vermelha)
     let lifeWidth = (jogador.health / 100) * jogador.width;
     let lifeY = jogador.y - barOffset - barHeight - spacing;
 
@@ -217,34 +215,8 @@ export default class Animator {
 
   drawPlayer(ctx, jogador) {
     const flip = jogador.facingDirection === "left";
-
-    // Desenhar hitbox para debug (opcional)
-    if (jogador.hitBoxToDraw) {
-      ctx.strokeStyle = jogador.isAlive
-        ? "rgba(0, 255, 0, 0.5)"
-        : "rgba(255, 0, 0, 0.5)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(
-        jogador.hitBoxToDraw.x,
-        jogador.hitBoxToDraw.y,
-        jogador.hitBoxToDraw.width,
-        jogador.hitBoxToDraw.height
-      );
-    }
-
     const offsetX = (jogador.renderWidth - jogador.width) / 2;
     const offsetY = jogador.renderHeight - jogador.height;
-
-    // const attackBoxes = jogador.attackBoxToDraw;
-    // if (jogador.isAttacking) {
-    //   ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-    //   ctx.strokeStyle = "red";
-
-    //   attackBoxes.forEach(box => {
-    //     ctx.fillRect(box.x, box.y, box.width, box.height);
-    //     ctx.strokeRect(box.x, box.y, box.width, box.height);
-    //   });
-    // }
 
     this.drawSprite(
       ctx,

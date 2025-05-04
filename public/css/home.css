@@ -6,11 +6,6 @@ body {
     flex-direction: column;
 }
 
-section div {
-    height: max-content;
-    margin-bottom: 10px;
-}
-
 button:hover {
     transform: translateY(10px);
 }

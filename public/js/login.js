@@ -22,7 +22,7 @@ button.addEventListener("click", () => {
     let usernameValue = username.value;
     let passwordValue = password.value;
 
-    fetch("http://localhost:3000/login/" + usernameValue + "/" + passwordValue)
+    fetch("https://eternalnexus.online/login/" + usernameValue + "/" + passwordValue)
         .then(response => response.json())
         .then(data => {
             if (data.message == "unavailable") {

@@ -33,19 +33,25 @@
         <h1 class="nes-text is-primary">CADASTRAR</h1>
         <div class="nes-container with-title form">
             <p class="title">Cadastrar sua conta</p>
-            <input type="text" id="username" placeholder="Username" required>
+            <div class="size">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
             <div id="usernameValido" class="verifica"></div>
             
-            <div class="doisPorUm">
+            <div class="container-password">
                 <input type="password" id="password" placeholder="Password" required>
                 <button id="eye-password"><i class="fa-solid fa-eye" style="color: #ffffff;"></i></button>
             </div>
             <div id="senhaValida" class="verifica"></div>
 
-            <input type="password" id="confirm_password" placeholder="Confirmar senha" required>
+            <div class="size">
+                <input type="password" id="confirm_password" placeholder="Confirmar senha" required>
+            </div>
             <div id="senhaConfirmada" class="verifica"></div>
 
-            <input type="text" id="email" placeholder="Email" required>
+            <div class="size">
+                <input type="text" id="email" placeholder="Email" required>
+            </div>
             <div id="emailValido" class="verifica"></div>
 
             <select id="photo_user">
@@ -60,8 +66,10 @@
 
             <img src="./imgs/icones/default.png" id="img_user" alt="Imagem de perfil do usuário">
 
-            <button id="cadastrar">REGISTRAR</button>
-            <a href="login.html">Já tem Cadastro?</a>
+            <div class="size">
+                <button id="cadastrar">REGISTRAR</button>
+            </div>
+            <a id="login" href="login.html">Já tem Cadastro?</a>
         </div>
     </div>
 </body>

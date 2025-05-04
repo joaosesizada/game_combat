@@ -39,11 +39,12 @@ footer {
 }
 
 a {
-    color: var(--blueL);
     text-decoration: none;
+    color: var(--blackL);
     transition: color 0.3s;
 }
 
 a:hover {
+    text-decoration: none;
     color: var(--orangeD);
 }

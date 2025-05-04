@@ -11,11 +11,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: auto;
 }
 
 input {
-    margin-bottom: 15px;
     width: 100%
 }
 
@@ -23,29 +21,10 @@ input {
     width: 600px;
 }
 
-.doisPorUm {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.doisPorUm input {
-    width: 70%;
-}
-
-.doisPorUm button {
-    width: 25%;
-    transform: translateY(-9px);
-    /* margin-left: 5px; */
+button {
+    margin: 20px auto;
 }
 
 button:hover {
-    border-bottom: 0;
-    transform: translateY(0);
-    outline: 0;
-}
-
-#login {
-    margin: 20px auto;
+    transform: translateY(10px);
 }

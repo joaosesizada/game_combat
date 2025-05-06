@@ -16,6 +16,7 @@ export default class Player {
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
         this.gameRoom = GameRoom.getGameRoom();
+        this.roundsGain = 0
 
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -377,6 +378,7 @@ export default class Player {
           currentAnimation: this.currentAnimation,
           canvasHeight: this.canvasHeight,
           canvasWidth: this.canvasWidth,
+          roundsGain: this.roundsGain,
           keys: this.keys,
           isMoving: this.isMoving,
           isGrounded: this.isGrounded,

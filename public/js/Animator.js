@@ -1,3 +1,5 @@
+import { hud } from "./setup.js";
+
 export default class Animator {
   constructor(setup, character = "ninja", defaultAnim = "idle", currentPlayer) {
     this.animations = {};
@@ -7,23 +9,7 @@ export default class Animator {
     this.frameDuration = 100;
     this.character = character;
     this.currentPlayer = currentPlayer
-
     this.barSkew = 10
-    this.barColorMap = {
-      energySuper: {
-        dark: "#FFD700",
-        light: "#FF4500",
-      },
-      stamina: {
-        dark: "#000080",
-        light: "#0070FF",
-      },
-      health: {
-        dark: "#800000",
-        light: "#FF0333",
-      },
-    };
-
     this.deathAnimationCompleted = false;
     this.animationFinishedCallbacks = {};
 
@@ -186,10 +172,23 @@ export default class Animator {
 
   drawHud(ctx, jogador) {
     if (!jogador.isAlive) return;
-    //(ctx, type, max, current, x, y, w, h, skew, invert)
-    const position = this.currentPlayer === 1 ? { x: 150, y: 50, flip: false } : { x: 750, y: 50, flip: true }
-    this.drawBar(ctx, 'health', jogador.maxHealth, jogador.health, position.x, position.y, 300, 20, this.barSkew, position.flip)
     
+    const playerKey = `player${this.currentPlayer}`
+    const bars = Object.values(hud[playerKey].bars)
+
+    bars.forEach(bar => {
+      const type = bar.type
+      const { dark, light } = bar.color
+      this.drawBar(ctx, type, jogador[bar.max], jogador[type], bar.x, bar.y, bar.width, bar.height, dark, light, this.barSkew, bar.invert)
+    })
+
+    const balls = Object.values(hud[playerKey].balls)
+    let roundsGain = jogador.roundsGain
+    balls.forEach(ball => {
+      let victory = roundsGain >= 1
+      this.drawPerfectBall(ctx, ball.x, ball.y, victory)
+      roundsGain--
+    })
   }
 
   drawPlayer(ctx, jogador) {
@@ -210,7 +209,7 @@ export default class Animator {
     return;
   }
 
-  drawBar(ctx, type, max, current, x, y, w, h, skew, invert) {
+  drawBar(ctx, type, max, current, x, y, w, h, dark, light, skew, invert) {
     x = Math.round(x);
     y = Math.round(y);
     w = Math.round(w);
@@ -225,7 +224,6 @@ export default class Animator {
         const x0Bot = x0Top + (invert ? +skew : -skew);
         const x1Bot = x1Top + (invert ? +skew : -skew);
 
-        const { dark, light } = this.barColorMap[type] || this.defaultColors;
         const color =
         i < current
           ? this.lerpColor(dark, light, i / (max - 1))
@@ -242,7 +240,7 @@ export default class Animator {
     }
 
     // Borda externa
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = "#000";
     ctx.beginPath();
     if (!invert) {
@@ -262,6 +260,17 @@ export default class Animator {
     }
     ctx.closePath();
     ctx.stroke();
+  }
+
+  drawPerfectBall(ctx, x, y, victory) {
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, Math.PI * 2); // Círculo completo
+      ctx.fillStyle = victory ? 'red' : 'transparent';
+      ctx.fill();
+
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
   }
 
   lerpColor(a, b, t) {

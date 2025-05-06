@@ -151,4 +151,114 @@ const setup = {
     }
 }
 
+export const hud = {
+    player1: {
+        balls: {
+            ballOne: {
+                x: 400,
+                y: 105
+            },
+            ballTwo: {
+                x: 430,
+                y: 105
+            }
+        },
+        bars: {
+            health: {
+                type: 'health',
+                max: 'maxHealth',
+                x: 150,
+                y: 50,
+                width: 300,
+                height: 17.5,
+                invert: false,
+                color: {
+                    dark: "#800000",
+                    light: "#FF0333",
+                }
+            },
+            superEnergy: {
+                type: 'superEnergy',
+                max: 'maxSuperEnergy',
+                x: 140,
+                y: 70,
+                width: 300,
+                height: 15,
+                invert: true,
+                color: {
+                    dark: "#FFD700",
+                    light: "#FF4500",
+                }
+            },
+            stamina: {
+                type: 'stamina',
+                max: 'maxStamina',
+                x: 155,
+                y: 95,
+                width: 200,
+                height: 12.5,
+                invert: true,
+                color: {
+                    dark: "#000080",
+                    light: "#0070FF",
+                }
+            }
+        }
+    },
+    player2: {
+        balls: {
+            ballOne: {
+                x: 800,
+                y: 105
+            },
+            ballTwo: {
+                x: 770,
+                y: 105
+            }
+        },
+        bars: {
+            health: {
+                type: 'health',
+                max: 'maxHealth',
+                x: 750,
+                y: 50,
+                width: 300,
+                height: 17.5,
+                invert: true,
+                color: {
+                    dark: "#800000",
+                    light: "#FF0333",
+                }
+            },
+            superEnergy: {
+                type: 'superEnergy',
+                max: 'maxSuperEnergy',
+                x: 760,
+                y: 70,
+                width: 300,
+                height: 15,
+                invert: false,
+                color: {
+                    dark: "#FFD700",
+                    light: "#FF4500",
+                }
+            },
+            stamina: {
+                type: 'stamina',
+                max: 'maxStamina',
+                x: 850,
+                y: 95,
+                width: 200,
+                height: 12.5,
+                invert: false,
+                color: {
+                    dark: "#000080",
+                    light: "#0070FF",
+                }
+            }
+        }
+    }
+}      
+
+
 export default setup

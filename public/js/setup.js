@@ -153,8 +153,8 @@ const setup = {
 
 export const hud = {
     profilesImg: {
-        ninja: '../imgs/effects/tornado.png',
-        heroKnight: '../imgs/effects/tornado.png'
+        ninja: '../imgs/ninja/perfil.png',
+        heroKnight: '../imgs/heroKnight/perfil.png'
     },
     player1: {
         balls: {
@@ -213,7 +213,7 @@ export const hud = {
         }, 
         profile: {
             x: 50,
-            y: 50,
+            y: 35,
             width: 80,
             height: 80,
             flip: false
@@ -275,11 +275,11 @@ export const hud = {
             }
         },
         profile: {
-            x: 750,
-            y: 50,
+            x: 1100,
+            y: 35,
             width: 80,
             height: 80,
-            flip: false
+            flip: true
         }
     }
 }      

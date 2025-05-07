@@ -194,7 +194,8 @@ export default class Animator {
     this.drawText(ctx, jogador, namePostions)
 
     const positionProfile = hud[playerKey].profile
-    this.drawProfileImage(ctx, 'https://th.bing.com/th/id/OIP.Q3LP4aVjOjZet32t-JRtXQHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7', positionProfile.x, positionProfile.y, positionProfile.width, positionProfile.height, positionProfile.flip)
+    const src = hud.profilesImg[jogador.person]
+    this.drawProfileImage(ctx, src, positionProfile.x, positionProfile.y, positionProfile.width, positionProfile.height, positionProfile.flip)
   }
 
   drawPlayer(ctx, jogador) {
@@ -341,7 +342,10 @@ export default class Animator {
     );
   }
 
-  drawProfileImage(ctx, img, x, y, width, height, flip = false) {
+  drawProfileImage(ctx, src, x, y, width, height, flip = false) {
+    const img = new Image()
+    img.src = src
+
     x = Math.round(x);
     y = Math.round(y);
     width = Math.round(width);

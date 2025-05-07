@@ -175,22 +175,7 @@ export default class Animator {
     bars.forEach((bar) => {
       const type = bar.type;
       const { dark, light } = bar.color;
-      this.drawBar(
-        ctx,
-        type,
-        jogador[bar.max],
-        jogador[type],
-        bar.x,
-        bar.y,
-        bar.width,
-        bar.height,
-        dark,
-        light,
-        this.barSkew,
-        bar.invert,
-        bar.startSide,
-        jogador.superCost
-      );
+      this.drawBar( ctx, type, jogador[bar.max], jogador[type], bar.x, bar.y, bar.width, bar.height, dark, light, this.barSkew, bar.invert, bar.startSide, jogador.superCost);
     });
 
     const balls = Object.values(hud[playerKey].balls);
@@ -204,6 +189,9 @@ export default class Animator {
     if (this.currentPlayer === 1) {
       this.drawTime(ctx);
     }
+
+    const namePostions = hud[playerKey].bars.health
+    this.drawText(ctx, jogador, namePostions)
   }
 
   drawPlayer(ctx, jogador) {
@@ -224,21 +212,7 @@ export default class Animator {
     return;
   }
 
-  drawBar(
-    ctx,
-    type,
-    max,
-    current,
-    x,
-    y,
-    w,
-    h,
-    dark,
-    light,
-    skew,
-    invert,
-    startSide = "left",
-    superCost = null
+  drawBar( ctx, type, max, current, x, y, w, h, dark, light, skew, invert, startSide = "left", superCost = null
   ) {
     const markerWidth = 4;
     x = Math.round(x);
@@ -339,6 +313,19 @@ export default class Animator {
 
     ctx.strokeText("∞", centroX, 60);
     ctx.fillText("∞", centroX, 60);
+  }
+
+  drawText(ctx, jogador, namePostions) {
+    const isPlayerOne = this.currentPlayer === 1
+
+    const nameX = isPlayerOne ? namePostions.x + 210 : namePostions.x  + 87.5
+    const nameY = namePostions.y - 10
+    const textAling = isPlayerOne ? 'left' : 'right'
+
+    ctx.font = '14px Arial'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = textAling;
+    ctx.fillText(`HP ${jogador.health} / ${jogador.maxHealth}`, nameX, nameY)
   }
 
   lerpColor(a, b, t) {

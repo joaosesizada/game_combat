@@ -69,7 +69,7 @@ const setup = {
             framesHeight: 54,
             totalFrames: 4,
             loop: false
-        }  
+        },
     },
     heroKnight: {
         idle: {
@@ -152,6 +152,10 @@ const setup = {
 }
 
 export const hud = {
+    profilesImg: {
+        ninja: '../imgs/effects/tornado.png',
+        heroKnight: '../imgs/effects/tornado.png'
+    },
     player1: {
         balls: {
             ballOne: {
@@ -206,6 +210,13 @@ export const hud = {
                     light: "#0070FF",
                 }
             }
+        }, 
+        profile: {
+            x: 50,
+            y: 50,
+            width: 80,
+            height: 80,
+            flip: false
         }
     },
     player2: {
@@ -262,6 +273,13 @@ export const hud = {
                     light: "#0070FF",
                 }
             }
+        },
+        profile: {
+            x: 750,
+            y: 50,
+            width: 80,
+            height: 80,
+            flip: false
         }
     }
 }      

@@ -192,6 +192,9 @@ export default class Animator {
 
     const namePostions = hud[playerKey].bars.health
     this.drawText(ctx, jogador, namePostions)
+
+    const positionProfile = hud[playerKey].profile
+    this.drawProfileImage(ctx, 'https://th.bing.com/th/id/OIP.Q3LP4aVjOjZet32t-JRtXQHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7', positionProfile.x, positionProfile.y, positionProfile.width, positionProfile.height, positionProfile.flip)
   }
 
   drawPlayer(ctx, jogador) {
@@ -257,7 +260,7 @@ export default class Animator {
     }
 
     if (type == "superEnergy") {
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#222";
       ctx.beginPath();
       ctx.moveTo(markerXTop - markerWidth / 2, y);
       ctx.lineTo(markerXTop + markerWidth / 2, y);
@@ -336,6 +339,22 @@ export default class Animator {
       Math.round(ag + (bg - ag) * t),
       Math.round(ab + (bb - ab) * t)
     );
+  }
+
+  drawProfileImage(ctx, img, x, y, width, height, flip = false) {
+    x = Math.round(x);
+    y = Math.round(y);
+    width = Math.round(width);
+    height = Math.round(height);
+
+    if (flip) {
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(img, -x - width, y, width, height);
+        ctx.restore();
+    } else {
+        ctx.drawImage(img, x, y, width, height);
+    }
   }
 
   hexToRgb(hex) {

@@ -48,10 +48,10 @@ function renderPlayers(deltaTime) {
   
   const players = getPlayers();
   cleanupAnimators(players);
-  
+  let index = 1 
   for (let id in players) {
     const player = players[id];
-    const animator = getAnimator(id, player);
+    const animator = getAnimator(id, player, index);
     
     // Usa o currentAnimation do player, já definido pelo próprio objeto
     animator.setAnimation(player.currentAnimation);
@@ -82,6 +82,7 @@ function renderPlayers(deltaTime) {
     
     animator.update(deltaTime);
     animator.drawPlayer(ctx, player);
+    index++
   }
 }
 

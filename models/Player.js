@@ -2,7 +2,6 @@ import config from "./config.js";
 import { CombatManager } from './CombatManager.js';
 import GameRoom from "./GameRoom.js";
 
-
 export default class Player {
     constructor(x, y, id, person) {
         this.config = config[person]
@@ -17,6 +16,7 @@ export default class Player {
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
         this.gameRoom = GameRoom.getGameRoom();
+        this.roundsGain = 0
 
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -36,6 +36,7 @@ export default class Player {
         this.attackBoxToDraw = []
         this.attackAnimCurrent = null
 
+        this.maxHealth = this.config.health;
         this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
@@ -45,8 +46,12 @@ export default class Player {
         this.staminaRegenRate = this.config.staminaRegenRate;
         this.jumpStaminaCost = 15;
 
+        this.maxSuperEnergy = this.config.maxSuperEnergy
+        this.superEnergy = 0
+
         this.knockbackResistance = 0.8;
-        this.facingDirection = "right";
+        this.facingDirection = this.x >= 0 ? 'right' : "left";
+        this.platforms = GameRoom.getMap().platforms
     }
 
     update(players, effects = []) {
@@ -96,16 +101,33 @@ export default class Player {
             }
         }
 
-        if (this.keys.scroll) this.requestAttack('super', players)
+        if (this.keys.scroll) this.requestSuper('super')
         if (this.keys.mouseLeft)  this.requestAttack('attack1', players);
         if (this.keys.mouseRight) this.requestAttack('attack2', players);
 
+        this.checkPlatforms(this.platforms)
+        
         this.updateAnimationState()
         this.customUpdate(players);
     }
 
     customUpdate(players) {
 
+    }
+
+    checkPlatforms(platforms) {
+        this.isGrounded = false
+
+        for (let platform of platforms) {
+            const withinX = this.x + this.width > platform.x && this.x < platform.x + platform.width
+            const touchingTop = this.y + this.height >= platform.y && this.y + this.height <= platform.y + this.velocityY
+
+            if (withinX && touchingTop && this.velocityY >= 0) {
+                this.y = platform.y - this.height
+                this.velocityY = 0
+                this.isGrounded = true
+            }
+        }
     }
 
     collides(effect) {
@@ -138,19 +160,24 @@ export default class Player {
         this.isAttacking = true;
         this.attackCooldown = true;
         this.attackAnimCurrent = type;
-    
-        if (type === 'super') {
-            this.requestSuper(atk)
-        } else {
-            setTimeout(() => CombatManager.handleAttack(this, players), 120);
-        }
+
+        setTimeout(() => CombatManager.handleAttack(this, players), 120);
     
         setTimeout(() => { this.isAttacking = false; }, atk.duration);
     
         setTimeout(() => { this.attackCooldown = false; }, atk.duration + atk.cooldown);
     }
     
-    requestSuper(config) {
+    requestSuper(type) {
+        const config = this.attacksConfig[type];
+        if(this.isAttacking || this.attackCooldown) return
+        if(this.superEnergy < config.energyCost) return
+
+        this.superEnergy -= config.energyCost
+        this.isAttacking = true
+        this.attackCooldown = true
+        this.attackAnimCurrent = type
+
         const flip = this.facingDirection === 'left'
         const initX = flip ? this.x : this.x + this.width
   
@@ -167,6 +194,10 @@ export default class Player {
           damage: config.damage,
           attacker: this.id
         });
+
+        setTimeout(() => { this.isAttacking = false; }, config.duration);
+    
+        setTimeout(() => { this.attackCooldown = false; }, config.duration + config.cooldown);
     }
 
     updateAnimationState() {
@@ -223,12 +254,14 @@ export default class Player {
         
         const direction = attacker.x > this.x ? -1 : 1;
         
+        if (this.health <= 0) {
+            this.isAlive = false;
+            return 
+        }
+        
+        this.chargeSuper('takeDamage')
         this.smokeDust(gameRoom, direction)
         this.startKnockback(direction * knockbackStrength, knockbackY);
-
-        if (this.health <= 0) {
-            this.isAlive = false; 
-        }
 
         setTimeout(() => {
             this.isDamaged = false;
@@ -264,6 +297,17 @@ export default class Player {
         this.knockbackVelocity = { x: velocityX, y: velocityY };
         this.knockbackActive = true;
         this.knockbackTimer = 0;
+    }
+
+    chargeSuper(type) {
+        const energy = type === 'takeDamage' ? 10 : 5
+        
+        if (this.superEnergy < this.maxSuperEnergy) {
+            this.superEnergy += energy
+            if (this.superEnergy > this.maxSuperEnergy) {
+                this.superEnergy = this.maxSuperEnergy
+            }
+        }
     }
 
     smokeDust(gameRoom, direction) {
@@ -334,6 +378,7 @@ export default class Player {
           currentAnimation: this.currentAnimation,
           canvasHeight: this.canvasHeight,
           canvasWidth: this.canvasWidth,
+          roundsGain: this.roundsGain,
           keys: this.keys,
           isMoving: this.isMoving,
           isGrounded: this.isGrounded,
@@ -349,12 +394,16 @@ export default class Player {
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
           attackBoxToDraw: this.attackBoxToDraw,
+          superCost: this.attacksConfig.super.energyCost,
           health: this.health,
+          maxHealth: this.maxHealth,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,
           maxStamina: this.maxStamina,
           stamina: this.stamina,
           staminaRegenRate: this.staminaRegenRate,
+          maxSuperEnergy: this.maxSuperEnergy,
+          superEnergy: this.superEnergy,
           attackStaminaCost: this.attackStaminaCost,
           jumpStaminaCost: this.jumpStaminaCost,
           facingDirection: this.facingDirection

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
 
 * {
@@ -105,19 +106,119 @@ button:hover {
     width: 65%;
     padding: 40px;
     text-align: center;
+=======
+body {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#page1 {
+    display: block;
+}
+
+.container-blue {
+    max-width: 1600px;
+    width: 1300px;
+    display: none;
+}
+
+.nes-container {
+    width: 100%;
+>>>>>>> 8bfcfa4997d696fe814d24ad29d5f4593c4cd82e
 }
 
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
+<<<<<<< HEAD
     min-height: 85vh;
+=======
+}
+
+#controles {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#teclas {
+    width: 35%;
+}
+
+.box {
+    display: flex;
+    text-align: start;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.box img {
+    width: 100px;
+}
+
+#mouse {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+#botton1 {
+    text-align: right;
+    margin-right: 5px;
+}
+
+#botton2 {
+    text-align: left;
+    margin-left: 5px;
+}
+
+.buttons img {
+    width: 30%;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+>>>>>>> 8bfcfa4997d696fe814d24ad29d5f4593c4cd82e
 }
 
 footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+<<<<<<< HEAD
     padding: 1rem 2rem;
     margin-top: auto;
+=======
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    transition: 0.2s;
+    outline: none;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+li {
+    margin: 20px 0;
+>>>>>>> 8bfcfa4997d696fe814d24ad29d5f4593c4cd82e
 }

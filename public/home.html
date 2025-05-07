@@ -1,43 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lobby Game Combat</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/home.css">
+
+    <!-- Sessão dos metas (usado para divulgação) sempre padrão -->
+    <meta name="description" content="Eternal Nexus é um jogo de luta multiplayer com combates intensos e gráficos incríveis. Entre nessa batalha épica agora!">
+    <meta name="keywords" content="jogo de luta, multiplayer, Eternal Nexus, jogo online, batalha, combate, game de luta, jogo grátis, PvP, jogos de ação">
+    <meta property="og:title" content="Eternal Nexus - Jogo de Luta Multiplayer">
+    <meta property="og:description" content="Participe de batalhas épicas em Eternal Nexus, o jogo de luta multiplayer definitivo. Desafie seus amigos online!">
+    <meta property="og:image" content="./imgs/logo/ogglogo.png">
+    <meta property="og:url" content="https://eternalnexus.online">
+    <meta property="og:type" content="website">
+
+    <link rel="shortcut icon" href="./imgs/logo/icon.svg" type="image/x-icon">
+
     <script src="./js/homeClient.js" defer type="module"></script>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/animation.css">
+    <link rel="stylesheet" href="./css/home.css">
+
+    <title>Lobby || Eternal Nexus</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="card shadow p-4">
-            <h1 class="text-center mb-4">
-                <i class="fa-solid fa-gamepad"></i> Lobby Game Combat
-            </h1>
-            <div class="mb-3">
-                <label for="cod_entry" class="form-label">Digite o código da Sala:</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="fa-solid fa-key"></i>
-                    </span>
-                    <input type="text" id="cod_entry" class="form-control" placeholder="Informe o código da sala">
-                </div>
+    <div id="background"></div>
+    <img src="./imgs/logo/logo.png" id="logo">
+    <div class="container-blue">
+        <header>
+            <h1 class="nes-text is-primary">Lobby Eternal Nexus</h1>
+        </header>
+
+        <section class="nes-container with-title">
+            <p class="title" id="online-count">PLAYERS: 0</p>
+            <div class="size">
+                <input type="text" id="cod_entry" placeholder="CÓDIGO SALA:">
+                <button id="joinRoom">ENTRAR</button>
             </div>
-            <div class="d-grid gap-2 mb-3">
-                <button id="joinRoom" class="btn btn-primary">
-                    <i class="fa-solid fa-sign-in-alt"></i> Entrar
-                </button>
+
+            <div class="size">
+                <button onclick="window.location.href='ranking.html'">RANKING</button>
+                <button id="createRoom">CRIAR SALA</button>
             </div>
-            <div class="d-grid gap-2">
-                <button id="createRoom" class="btn btn-primary">
-                    <i class="fa-solid fa-plus"></i> Criar Sala
-                </button>
-            </div>
-            <p id="mensagem" class="mt-3 text-center"></p>
-        </div>
+        </section>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

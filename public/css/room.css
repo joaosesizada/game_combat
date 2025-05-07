@@ -1,45 +1,35 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
-
 body {
-  background-color: #556458;
-  font-weight: 200;
-  font-family: Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-size: 1.2rem;
+  min-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
+  background-image: url('../imgs/backgrounds/default.png');
 }
 
-/* GAME CONTAINER */
-#game {
+header {
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 0;
+  text-align: center;
+}
+
+#game-box {
   display: none;
-  width: 100vh;
-  height: 100vh;
 }
 
-#box-game {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
+#lobbyContainer {
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* GAME CANVAS */
 #gameCanvas {
-  background: url('../imgs/maps/backgroundFight.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -53,49 +43,24 @@ body {
   transform-origin: top left;
 }
 
-/* SALA */
-#room {
-  background-color: #804a43;
-  border: 3px solid #5b342f;
-  border-radius: 0;
-  padding: 30px;
-  max-width: 600px;
-  width: 90%;
-  margin: 40px auto;
-  text-align: center;
+.title {
+  color: var(--white);
+  font-size: 3rem;
+  margin-top: 50px;
 }
 
-/* TÍTULO */
-#room h1 {
-  font-size: 1.8rem;
-  margin-bottom: 24px;
+.container-orange {
+  max-width: 300px;
+  width: 300px;
+  height: 200px;
+  margin: 20px 0;
 }
 
-/* ALERTA */
 #infoSala {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-  background-color: #7a3e38;
-  border: 2px solid #5b342f;
-  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-#play {
-    background-color: #8bbd7a;
-    color: #fff;
-    padding: 14px 26px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.3rem;
-    box-shadow: 0 4px #69925c;
-    transition: all 0.2s ease;
-  }
-  
-#play:hover {
-    background-color: #8bbd7a;
-    box-shadow: 0 6px #69925c;
-    transform: translateY(-2px);
+#logo {
+  width: 300px;
 }
-
-

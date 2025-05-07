@@ -1,48 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
-
 body {
-    background-color: #556458;
-    /* Verde pastel */
-    font-family: "Jersey 15", sans-serif;
-    font-weight: 200;
-    font-style: normal;
-    font-size: 1.2rem;
-    color: #f5f9a3;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
-.card {
-    background-color: #804a43;
-    border: 3px solid #5b342f;
-    border-radius: 0;
-}
-
-.btn-primary {
-    background-color: #8bbd7a;
-    border: 3px solid #7ca86d;
-    border-radius: 0;
-}
-
-.btn-primary:hover {
-    background-color: #7ab468;
-}
-
-#cod_entry {
-    border: 3px solid #7ca86d;
-    border-radius: 0;
-}
-
-.input-group-text {
-    background-color: #8bbd7a;
-    border: none;
-    border: 3px solid #7ca86d;
-    border-radius: 0;
-    color: #fff;
-}
-
-.form-control {
-    border: 1px solid #8bbd7a;
+button:hover {
+    transform: translateY(10px);
 }

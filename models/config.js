@@ -2,6 +2,7 @@ const config = {
     ninja: {
         speed: 8,
         health: 200,
+        maxSuperEnergy: 30,
         maxStamina: 30,
         staminaRegenRate: 0.25,
         attacks: {
@@ -28,7 +29,7 @@ const config = {
                 }
               },
               super: {
-                staminaCost: 25,
+                energyCost: 25,
                 name: 'tornado',
                 duration: 350,
                 cooldown: 400,
@@ -42,6 +43,7 @@ const config = {
     heroKnight: {
         speed: 6.5,
         health: 230,
+        maxSuperEnergy: 30,
         maxStamina: 30,
         staminaRegenRate: 0.25,
         attacks: {
@@ -68,7 +70,7 @@ const config = {
                 }
               }, 
               super: {
-                staminaCost: 25,
+                energyCost: 25,
                 name: 'fenix',
                 duration: 350,
                 cooldown: 600,

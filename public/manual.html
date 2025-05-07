@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eternal Nexus</title>
@@ -79,10 +80,133 @@
 
                     Basta criar uma sala e compartilhar o código.Quem receber o código pode entrar diretamente na
                     partida personalizada.
+=======
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Sessão dos metas (usado para divulgação) sempre padrão -->
+    <meta name="description" content="Eternal Nexus é um jogo de luta multiplayer com combates intensos e gráficos incríveis. Entre nessa batalha épica agora!">
+    <meta name="keywords" content="jogo de luta, multiplayer, Eternal Nexus, jogo online, batalha, combate, game de luta, jogo grátis, PvP, jogos de ação">
+    <meta property="og:title" content="Eternal Nexus - Jogo de Luta Multiplayer">
+    <meta property="og:description" content="Participe de batalhas épicas em Eternal Nexus, o jogo de luta multiplayer definitivo. Desafie seus amigos online!">
+    <meta property="og:image" content="./imgs/logo/ogglogo.png">
+    <meta property="og:url" content="https://eternalnexus.online">
+    <meta property="og:type" content="website">
+
+    <link rel="shortcut icon" href="./imgs/logo/icon.svg" type="image/x-icon">
+
+    <script src="./js/manual.js" defer></script>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/animation.css">
+    <link rel="stylesheet" href="./css/scrollbar.css">
+    <link rel="stylesheet" href="./css/manual.css">
+
+    <title>Eternal Nexus || Manual</title>
+</head>
+
+<body>
+    <div id="background"></div>
+    <img src="./imgs/logo/logo.png" id="logo">
+    
+    <div id="page1" class="container-blue">
+        <main>
+            <h1 class="nes-text is-primary">Manual do Usuário</h1>
+            
+            <div class="nes-container with-title">
+                <p class="title">Controles</p>
+                
+                <div id="controles">
+                    <section id="teclas">
+                        <div class="box">
+                            <img src="./imgs/teclas/teclaW.png" alt="Tecla W">
+                            <p>Pular</p>
+                        </div>
+                        <div class="box">
+                            <img src="./imgs/teclas/teclaD.png" alt="Tecla D">
+                            <p>Mover-se para a direita</p>
+                        </div>
+                        <div class="box">
+                            <img src="./imgs/teclas/teclaA.png" alt="Tecla A">
+                            <p>Mover-se para a esquerda</p>
+                        </div>
+                    </section>
+
+                    <section id="mouse">
+                        <div class="botton">
+                            <p>Botão Scroll</p>
+                            <p>Super</p>
+                        </div>
+    
+                        <div class="buttons">
+                            <div class="botton" id="botton1">
+                                <p>Botão Esquerdo</p>
+                                <p>Ataque 1</p>
+                            </div>
+    
+                            <img src="./imgs/teclas/mouse.png" alt="Mouse">
+    
+                            <div class="botton" id="botton2">
+                                <p>Botão Direito</p>
+                                <p>Ataque 2</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <button onclick="window.location.href='index.html'">
+                <img src="./imgs/teclas/SetaE.png" alt="Seta Esquerda">
+            </button>
+            <button onclick="showPage(1, 2)">
+                <img src="./imgs/teclas/SetaD.png" alt="Seta Direita">
+            </button>
+        </footer>
+    </div>
+
+    <div id="page2" class="container-blue">
+        <main>
+            <h1 class="nes-text is-primary">Manual do Usuário</h1>
+            <div class="nes-container with-title">
+                <p class="title">Mecânicas de Jogo</p>
+                
+                <ul class="nes-list is-disc">
+                    <li>As lutas seguem o estilo melhor de três rounds.</li>
+
+                    <li>Além da barra de vida, cada personagem possui uma barra de energia que limita o uso dos ataques: Ataques consomem energia, impedindo o uso ilimitado e incentivando uma jogabilidade estratégica.</li>
+
+                    <li>É possível jogar com um amigo através do sistema de criação de salas:</li>
+
+                    <li>Basta criar uma sala e compartilhar o código.Quem receber o código pode entrar diretamente na partida personalizada.</li>
+                </ul>
+            </div>
+        </main>
+        <footer>
+            <button onclick="showPage(2, 1)">
+                <img src="./imgs/teclas/SetaE.png" alt="Seta Esquerda">
+            </button>
+            <button onclick="showPage(2, 3)">
+                <img src="./imgs/teclas/SetaD.png" alt="Seta Direita">
+            </button>
+        </footer>
+    </div>
+
+    <div id="page3" class="container-blue">
+        <main>
+            <h1 class="nes-text is-primary">Manual do Usuário</h1>
+            <div class="nes-container with-title">
+                <p class="title">Personagens e Mapas</p>
+                
+                <p>
+                    Você pode escolher entre quatro personagens únicos, cada um com habilidades, ataques e efeitos diferentes. O jogo também oferece quatro mapas distintos, permitindo variedade nos cenários de batalha. Os jogadores têm liberdade para escolher onde desejam lutar.
+>>>>>>> 8bfcfa4997d696fe814d24ad29d5f4593c4cd82e
                 </p>
             </div>
         </main>
         <footer>
+<<<<<<< HEAD
             <button onclick="mostrarPagina('page1')"><img src="./imgs/assets/SetaE.png" alt="Seta Esquerda" width="70"
                     height="70" /></button>
             <button onclick="mostrarPagina('page3')"><img src="./imgs/assets/SetaD.png" alt="Seta Direita" width="70"
@@ -125,6 +249,30 @@
         <footer>
             <button onclick="mostrarPagina('page3')"><img src="./imgs/assets/SetaE.png" alt="Seta Esquerda" width="70"
                     height="70" /></button>
+=======
+            <button onclick="showPage(3, 2)">
+                <img src="./imgs/teclas/SetaE.png" alt="Seta Esquerda">
+            </button>
+            <button onclick="showPage(3, 4)">
+                <img src="./imgs/teclas/SetaD.png" alt="Seta Direita">
+            </button>
+        </footer>
+    </div>
+
+    <div id="page4" class="container-blue">
+        <main>
+            <h1 class="nes-test is-primary">Manual do Usuário</h1>
+            <div class="nes-container with-title">
+                <p class="title">Objetivo do Jogo</p>
+                
+                <p>Eternal Nexus é um jogo de luta em estilo casual, no formato 1 contra 1. O principal objetivo do jogador é reduzir completamente a barra de vida do oponente, vencendo dois dos três rounds disponíveis. O jogador que vencer dois rounds é declarado o vencedor da partida.</p>
+            </div>
+        </main>
+        <footer>
+            <button onclick="showPage(4, 3)">
+                <img src="./imgs/teclas/SetaE.png" alt="Seta Esquerda">
+            </button>
+>>>>>>> 8bfcfa4997d696fe814d24ad29d5f4593c4cd82e
         </footer>
     </div>
 </body>

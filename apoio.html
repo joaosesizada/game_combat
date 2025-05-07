@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HUD with Dynamic Update</title>
+    <style>
+      body {
+        margin: 0;
+        background: #222;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      canvas {
+        background: #333;
+        background: url("./backgroundFight.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="healthCanvas" width="1200" height="800"></canvas>
+    <script>
+        // --- Configurações gerais ---
+        const canvas = document.getElementById("healthCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // --- Funções utilitárias de cor ---
+        function hexToRgb(hex) {
+            const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return m
+            ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)]
+            : [0, 0, 0];
+        }
+        function rgbToHex(r, g, b) {
+            return (
+            "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")
+            );
+        }
+        function lerpColor(a, b, t) {
+            const [ar, ag, ab] = hexToRgb(a);
+            const [br, bg, bb] = hexToRgb(b);
+            return rgbToHex(
+            Math.round(ar + (br - ar) * t),
+            Math.round(ag + (bg - ag) * t),
+            Math.round(ab + (bb - ab) * t)
+            );
+        }
+
+        // --- Classe PlayerHUD ---
+        class PlayerHUD {
+            constructor(ctx, options) {
+            this.ctx = ctx;
+            // Propriedades estáticas
+            this.playerName = options.playerName || "";
+            this.maxHealth = options.maxHealth || 100;
+            this.currentHP = options.currentHP ?? this.maxHealth;
+            this.barX = options.barX || 0;
+            this.barY = options.barY || 0;
+            this.barWidth = options.barWidth || 200;
+            this.barHeight = options.barHeight || 20;
+            this.barSkew = options.barSkew || 10;
+            this.profileX = options.profileX || 0;
+            this.profileY = options.profileY || 0;
+            this.profileWidth = options.profileWidth || 80;
+            this.profileHeight = options.profileHeight || 80;
+            this.profileFlip = options.profileFlip || false;
+            this.colorDarkStamina = options.colorDarkStamina || "#000080";
+            this.colorLightStamina = options.colorLightStamina || "#0070FF";
+            
+            this.maxStamina = options.maxStamina || 100;
+            this.currentStamina = options.currentStamina ?? this.maxStamina;
+            this.barStaminaX = options.barStaminaX || this.barX; // Posição X padrão igual à barra de vida
+            this.barStaminaY = options.barStaminaY || this.barY + 30; // 30px abaixo da barra de vida
+            this.barStaminaWidth = options.barStaminaWidth || this.barWidth;
+            this.barStaminaHeight = options.barStaminaHeight || 15;
+            this.colorDarkStamina = options.colorDarkStamina || "#000080";
+            this.colorLightStamina = options.colorLightStamina || "#0070FF";
+
+            this.maxEnergy = options.maxEnergy || 100;
+            this.currentEnergy = options.currentEnergy ?? this.maxEnergy;
+            this.barEnergyX = options.barEnergyX ?? this.barX;
+            this.barEnergyY = options.barEnergyY ?? this.barY + 55;
+            this.barEnergyWidth = options.barEnergyWidth || this.barWidth;
+            this.barEnergyHeight = options.barEnergyHeight || this.barHeight;
+            this.colorDarkEnergySuper = options.colorDarkEnergySuper || "#FFD700";
+            this.colorLightEnergySuper = options.colorLightEnergySuper || "#FF4500";
+
+
+            this.ballOneX = options.ballOneX
+            this.ballOneY = options.ballOneY
+            this.ballTwoX = options.ballTwoX
+            this.ballTwoY = options.ballTwoY
+            // Carregamento da imagem
+            this.profileImage = new Image();
+            this.profileImage.src = options.profileImageSrc || "";
+            this.imageLoaded = false;
+            this.profileImage.onload = () => {
+                this.imageLoaded = true;
+            };
+            }
+
+            // Atualiza apenas as propriedades dinâmicas
+            update(props) {
+            if (props.currentHP !== undefined) this.currentHP = props.currentHP;
+            if (props.playerName !== undefined)
+                this.playerName = props.playerName;
+            if (props.profileImageSrc) {
+                this.imageLoaded = false;
+                this.profileImage.src = props.profileImageSrc;
+            }
+            if (props.profileFlip !== undefined)
+                this.profileFlip = props.profileFlip;
+            }
+
+            // Desenha tudo
+            render() {
+            const ctx = this.ctx;
+            // Barra de vida
+            this._drawHealthSegments(
+                ctx,
+                this.barX,
+                this.barY,
+                this.barWidth,
+                this.barHeight,
+                this.barSkew,
+                this.profileFlip
+            );
+
+            this._drawStaminaSegments(
+                ctx,
+                this.barStaminaX, // x (posição X)
+                this.barStaminaY, // y (posição Y)
+                this.barStaminaWidth, // w (largura)
+                this.barStaminaHeight, // h (altura)
+                this.barSkew, // skew (inclinação)
+                this.profileFlip // invert
+            );
+
+            this._drawSuperEnergy(
+                ctx,
+                this.barEnergyX, // x (posição X)
+                this.barEnergyY, // y (posição Y)
+                this.barEnergyWidth, // w (largura)
+                this.barEnergyHeight, // h (altura)
+                this.barSkew, // skew (inclinação)
+                this.profileFlip // invert
+            );
+
+            // Imagem de perfil
+            if (this.imageLoaded) {
+                this._drawProfileImage(
+                ctx,
+                this.profileImage,
+                this.profileX,
+                this.profileY,
+                this.profileWidth,
+                this.profileHeight,
+                this.profileFlip
+                );
+            }
+
+            this.drawName(ctx);
+
+            this.drawPerfectBall(ctx, this.ballOneX, this.ballOneY)
+            this.drawPerfectBall(ctx, this.ballTwoX, this.ballTwoY)
+
+            ctx.fillStyle = 'white'
+            const textY = this.barY - 10;
+            if (!this.profileFlip) {
+                ctx.textAlign = "left";
+                ctx.fillText(
+                `HP: ${this.currentHP} / ${this.maxHealth}`,
+                this.barX - 100 + this.barWidth + 5,
+                textY
+                );
+            } else {
+                ctx.textAlign = "right";
+                ctx.fillText(
+                `HP: ${this.currentHP} / ${this.maxHealth}`,
+                this.barX + 100 - this.barSkew - 5,
+                textY
+                );
+            }
+
+
+
+
+            }
+
+            // Desenha segmentos de vida
+            _drawHealthSegments(ctx, x, y, w, h, skew, invert = false) {
+                x = Math.round(x);
+                y = Math.round(y);
+                w = Math.round(w);
+                h = Math.round(h);
+                skew = Math.round(skew);
+
+                for (let i = 0; i < this.maxHealth; i++) {
+                    const t0 = i / this.maxHealth;
+                    const t1 = (i + 1) / this.maxHealth + 0.006;
+                    const x0Top = invert ? x + (1 - t1) * w : x + t0 * w;
+                    const x1Top = invert ? x + (1 - t0) * w : x + t1 * w;
+                    const x0Bot = x0Top + (invert ? +skew : -skew);
+                    const x1Bot = x1Top + (invert ? +skew : -skew);
+
+                    const color =
+                    i < this.currentHP
+                        ? lerpColor(
+                            this.colorDark,
+                            this.colorLight,
+                            i / (this.maxHealth - 1)
+                        )
+                        : "#333";
+
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(x0Top, y);
+                    ctx.lineTo(x1Top, y);
+                    ctx.lineTo(x1Bot, y + h);
+                    ctx.lineTo(x0Bot, y + h);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Borda externa
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#000";
+                ctx.beginPath();
+                if (!invert) {
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + w, y);
+                    ctx.lineTo(x + w - skew, y + h);
+                    ctx.lineTo(x - skew, y + h);
+                } else {
+                    const topLeftX = x + w;
+                    const topRightX = x;
+                    const botRightX = x + skew;
+                    const botLeftX = x + w + skew;
+                    ctx.moveTo(topLeftX, y);
+                    ctx.lineTo(topRightX, y);
+                    ctx.lineTo(botRightX, y + h);
+                    ctx.lineTo(botLeftX, y + h);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            _drawStaminaSegments(ctx, x, y, w, h, skew, flip = false) {
+                const invert = flip
+                x = Math.round(x);
+                y = Math.round(y);
+                w = Math.round(w);
+                h = Math.round(h);
+                skew = Math.round(skew);
+
+                for (let i = 0; i < this.maxStamina; i++) {
+                    const t0 = i / this.maxStamina;
+                    const t1 = (i + 1) / this.maxStamina + 0.006;
+                    const x0Top = invert ? x + (1 - t1) * w : x + t0 * w;
+                    const x1Top = invert ? x + (1 - t0) * w : x + t1 * w;
+                    const x0Bot = x0Top + (invert ? +skew : -skew);
+                    const x1Bot = x1Top + (invert ? +skew : -skew);
+
+                    const color =
+                    i < this.currentStamina
+                        ? lerpColor(
+                            this.colorLightStamina,
+                            this.colorDarkStamina,
+                            i / (this.maxStamina - 1)
+                        )
+                        : "#333";
+
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(x0Top, y);
+                    ctx.lineTo(x1Top, y);
+                    ctx.lineTo(x1Bot, y + h);
+                    ctx.lineTo(x0Bot, y + h);
+                    ctx.closePath();
+                    ctx.fill();
+            }
+            
+            // Borda externa
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#000";
+            ctx.beginPath();
+            if (!invert) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + w, y);
+                ctx.lineTo(x + w - skew, y + h);
+                ctx.lineTo(x - skew, y + h);
+            } else {
+                const topLeftX = x + w;
+                const topRightX = x;
+                const botRightX = x + skew;
+                const botLeftX = x + w + skew;
+                ctx.moveTo(topLeftX, y);
+                ctx.lineTo(topRightX, y);
+                ctx.lineTo(botRightX, y + h);
+                ctx.lineTo(botLeftX, y + h);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            }
+
+            _drawSuperEnergy(ctx, x, y, w, h, skew, flip = false) {
+                const invert = !flip
+                x = Math.round(x);
+                y = Math.round(y);
+                w = Math.round(w);
+                h = Math.round(h);
+                skew = Math.round(skew);
+
+                for (let i = 0; i < this.maxStamina; i++) {
+                    const t0 = i / this.maxStamina;
+                    const t1 = (i + 1) / this.maxStamina + 0.006;
+                    const x0Top = invert ? x + (1 - t1) * w : x + t0 * w;
+                    const x1Top = invert ? x + (1 - t0) * w : x + t1 * w;
+                    const x0Bot = x0Top + (invert ? +skew : -skew);
+                    const x1Bot = x1Top + (invert ? +skew : -skew);
+
+                    const color =
+                    i < this.currentStamina
+                        ? lerpColor(
+                            this.colorLightEnergySuper,
+                            this.colorDarkEnergySuper,
+                            i / (this.maxStamina - 1)
+                        )
+                        : "#333";
+
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(x0Top, y);
+                    ctx.lineTo(x1Top, y);
+                    ctx.lineTo(x1Bot, y + h);
+                    ctx.lineTo(x0Bot, y + h);
+                    ctx.closePath();
+                    ctx.fill();
+            }
+            
+            // Borda externa
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#000";
+            ctx.beginPath();
+            if (!invert) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + w, y);
+                ctx.lineTo(x + w - skew, y + h);
+                ctx.lineTo(x - skew, y + h);
+            } else {
+                const topLeftX = x + w;
+                const topRightX = x;
+                const botRightX = x + skew;
+                const botLeftX = x + w + skew;
+                ctx.moveTo(topLeftX, y);
+                ctx.lineTo(topRightX, y);
+                ctx.lineTo(botRightX, y + h);
+                ctx.lineTo(botLeftX, y + h);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            }
+            
+
+            // Desenha imagem de perfil
+            _drawProfileImage(ctx, img, x, y, width, height, flip = false) {
+                x = Math.round(x);
+                y = Math.round(y);
+                width = Math.round(width);
+                height = Math.round(height);
+
+                if (flip) {
+                    ctx.save();
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(img, -x - width, y, width, height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(img, x, y, width, height);
+                }
+            }
+
+            drawName(ctx) {
+                const y = this.profileY;
+
+                const nameWidth = ctx.measureText(this.playerName).width;
+
+                let x = this.profileFlip
+                    ? this.profileX - nameWidth
+                    : this.profileX + this.profileWidth;
+
+                ctx.fillStyle = "#fff";
+                ctx.font = "14px monospace";
+                ctx.textAlign = "left"; // Usamos alinhamento esquerdo pois já calculamos a posição
+
+                // Desenha o texto
+                ctx.fillText(this.playerName, x, y);
+            }
+
+
+        }
+
+        function desenharTrapezio(x, y, baseMaior, baseMenor, altura, invertido = false) {
+            const meioBaseMaior = baseMaior / 2;
+            const meioBaseMenor = baseMenor / 2;
+
+            ctx.beginPath();
+            if (!invertido) {
+                // Trapézio normal
+                ctx.moveTo(x - meioBaseMenor, y);                // Topo esquerdo
+                ctx.lineTo(x + meioBaseMenor, y);                // Topo direito
+                ctx.lineTo(x + meioBaseMaior, y + altura);        // Base direita
+                ctx.lineTo(x - meioBaseMaior, y + altura);        // Base esquerda
+            } else {
+                // Trapézio invertido
+                ctx.moveTo(x - meioBaseMaior, y);                // Base esquerda
+                ctx.lineTo(x + meioBaseMaior, y);                // Base direita
+                ctx.lineTo(x + meioBaseMenor, y + altura);        // Topo direito
+                ctx.lineTo(x - meioBaseMenor, y + altura);        // Topo esquerdo
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        // --- Instanciando HUDs ---
+        const player1 = new PlayerHUD(ctx, {
+            playerName: "Hero",
+            profileImageSrc: "perfil.png",
+            profileFlip: false,
+            maxHealth: 100,
+            currentHP: 70,
+            maxStamina: 50,
+            currentStamina: 50,
+            barX: 150,
+            barY: 50,
+            barWidth: 300,
+            barHeight: 20,
+            barEnergyX: 138,
+            barEnergyY: 70,
+            barEnergyWidth: 300,
+            barEnergyHeight: 15,
+            barSkew: 10,
+            barStaminaX: 150,
+            barStaminaY: 95,
+            barStaminaWidth: 200,
+            barStaminaHeight: 15,
+            profileX: 50,
+            profileY: 40,
+            profileWidth: 80,
+            profileHeight: 80,
+            ballOneX: 400,
+            ballOneY: 105,
+            ballTwoX: 430,
+            ballTwoY: 105,
+        });
+
+        const player2 = new PlayerHUD(ctx, {
+            playerName: "Hero",
+            profileImageSrc: "perfil.png",
+            profileFlip: true,
+            maxHealth: 250,
+            currentHP: 70,
+            maxStamina: 50,
+            currentStamina: 50,
+            barX: 750,
+            barY: 50,
+            barWidth: 300,
+            barHeight: 20,
+            barSkew: 10,
+            barEnergyX: 760,
+            barEnergyY: 70,
+            barEnergyWidth: 300,
+            barEnergyHeight: 15,
+            barStaminaX: 850,
+            barStaminaY: 95,
+            barStaminaWidth: 200,
+            barStaminaHeight: 15,
+            profileX: 1070,
+            profileY: 40,
+            profileWidth: 80,
+            profileHeight: 80,
+            ballOneX: 800,
+            ballOneY: 105,
+            ballTwoX: 770,
+            ballTwoY: 105,
+        });
+
+        function renderAll() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            player1.render();
+            player2.render();
+        }
+
+        // Controle de teclas para teste
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp")
+            player1.update({
+                currentHP: Math.min(player1.maxHealth, player1.currentHP + 1),
+            });
+            if (e.key === "ArrowDown")
+            player1.update({ currentHP: Math.max(0, player1.currentHP - 1) });
+            if (e.key === "ArrowUp")
+            player2.update({
+                currentHP: Math.min(player2.maxHealth, player2.currentHP + 1),
+            });
+            if (e.key === "ArrowDown")
+            player2.update({ currentHP: Math.max(0, player2.currentHP - 1) });
+            renderAll();
+        });
+
+        // Render inicial (aguarda imagens serem carregadas)
+        setTimeout(renderAll, 100);
+    </script>
+  </body>
+</html>

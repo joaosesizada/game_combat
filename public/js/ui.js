@@ -16,4 +16,3 @@ export function initUI() {
     document.getElementById('play').disabled = true;
   });
 }
-

@@ -47,6 +47,7 @@ export class CombatManager {
           );
           if (hit) {
             const gameRoom = GameRoom.getGameRoom();
+            attacker.chargeSuper('attack')
             player.takeDamage(atkDmg, attacker, gameRoom);
           }
         }

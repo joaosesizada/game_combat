@@ -394,6 +394,7 @@ export default class Player {
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
           attackBoxToDraw: this.attackBoxToDraw,
+          superCost: this.attacksConfig.super.energyCost,
           health: this.health,
           maxHealth: this.maxHealth,
           isAlive: this.isAlive,

@@ -156,11 +156,11 @@ export const hud = {
         balls: {
             ballOne: {
                 x: 400,
-                y: 105
+                y: 102.5
             },
             ballTwo: {
                 x: 430,
-                y: 105
+                y: 102.5
             }
         },
         bars: {
@@ -172,6 +172,7 @@ export const hud = {
                 width: 300,
                 height: 17.5,
                 invert: false,
+                startSide: 'left',
                 color: {
                     dark: "#800000",
                     light: "#FF0333",
@@ -185,6 +186,7 @@ export const hud = {
                 width: 300,
                 height: 15,
                 invert: true,
+                startSide: 'right',
                 color: {
                     dark: "#FFD700",
                     light: "#FF4500",
@@ -198,6 +200,7 @@ export const hud = {
                 width: 200,
                 height: 12.5,
                 invert: true,
+                startSide: 'right',
                 color: {
                     dark: "#000080",
                     light: "#0070FF",
@@ -209,11 +212,11 @@ export const hud = {
         balls: {
             ballOne: {
                 x: 800,
-                y: 105
+                y: 102.5
             },
             ballTwo: {
                 x: 770,
-                y: 105
+                y: 102.5
             }
         },
         bars: {
@@ -225,6 +228,7 @@ export const hud = {
                 width: 300,
                 height: 17.5,
                 invert: true,
+                startSide: 'left',
                 color: {
                     dark: "#800000",
                     light: "#FF0333",
@@ -238,6 +242,7 @@ export const hud = {
                 width: 300,
                 height: 15,
                 invert: false,
+                startSide: 'right',
                 color: {
                     dark: "#FFD700",
                     light: "#FF4500",
@@ -251,6 +256,7 @@ export const hud = {
                 width: 200,
                 height: 12.5,
                 invert: false,
+                startSide: 'right',
                 color: {
                     dark: "#000080",
                     light: "#0070FF",

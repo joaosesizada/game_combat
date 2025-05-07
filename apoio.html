@@ -188,26 +188,7 @@
             }
 
 
-            const centroX = canvas.width / 2;
 
-            // Definindo o degradê
-            const gradiente = ctx.createLinearGradient(0, 0, 0, 100);
-            gradiente.addColorStop(0, '#BEBEBE');  // Cor cinza claro
-            gradiente.addColorStop(1, '#FFFFFF');  // Cor branca
-
-            // Configura fonte pixelada
-            ctx.font = 'bold 70px "Press Start 2P", monospace';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            // Preenchendo o texto com o degradê
-            ctx.fillStyle = gradiente;
-            ctx.strokeStyle = '#000';  // Contorno preto
-            ctx.lineWidth = 4;
-
-            // Desenha o símbolo do infinito
-            ctx.strokeText('∞', centroX, 90);
-            ctx.fillText('∞', centroX, 90);
 
             }
 

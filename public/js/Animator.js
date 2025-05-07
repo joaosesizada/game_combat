@@ -8,10 +8,12 @@ export default class Animator {
     this.elapsedTime = 0;
     this.frameDuration = 100;
     this.character = character;
-    this.currentPlayer = currentPlayer
-    this.barSkew = 10
+    this.currentPlayer = currentPlayer;
+    this.barSkew = 10;
     this.deathAnimationCompleted = false;
     this.animationFinishedCallbacks = {};
+
+    this.canvasWidth = 1200;
 
     const animSetup = setup[character];
     if (!animSetup) {
@@ -54,7 +56,6 @@ export default class Animator {
   setAnimation(animName) {
     if (this.animations[animName]) {
       if (this.currentAnimation !== animName) {
-        // Reset da flag de morte completada ao trocar animações
         if (animName === "death") {
           this.deathAnimationCompleted = false;
         }
@@ -81,11 +82,9 @@ export default class Animator {
       this.elapsedTime = 0;
 
       if (animation.loop === false) {
-        // Para animações não-loop (como morte), verificar se chegou ao último frame
         if (this.currentFrame < animation.totalFrames - 1) {
           this.currentFrame++;
 
-          // NOVO: Se for o último frame da animação de morte, marcar como completa
           if (
             this.currentAnimation === "death" &&
             this.currentFrame === animation.totalFrames - 1
@@ -100,7 +99,6 @@ export default class Animator {
     }
   }
 
-  // NOVO: Método para registrar callbacks quando uma animação terminar
   onAnimationFinished(animName, callback) {
     if (!this.animationFinishedCallbacks[animName]) {
       this.animationFinishedCallbacks[animName] = [];
@@ -108,7 +106,6 @@ export default class Animator {
     this.animationFinishedCallbacks[animName].push(callback);
   }
 
-  // NOVO: Disparar callbacks quando uma animação terminar
   triggerAnimationFinished(animName) {
     if (this.animationFinishedCallbacks[animName]) {
       this.animationFinishedCallbacks[animName].forEach((callback) =>
@@ -117,7 +114,6 @@ export default class Animator {
     }
   }
 
-  // NOVO: Verificar se a animação de morte terminou
   isDeathAnimationCompleted() {
     return this.deathAnimationCompleted;
   }
@@ -172,23 +168,42 @@ export default class Animator {
 
   drawHud(ctx, jogador) {
     if (!jogador.isAlive) return;
-    
-    const playerKey = `player${this.currentPlayer}`
-    const bars = Object.values(hud[playerKey].bars)
 
-    bars.forEach(bar => {
-      const type = bar.type
-      const { dark, light } = bar.color
-      this.drawBar(ctx, type, jogador[bar.max], jogador[type], bar.x, bar.y, bar.width, bar.height, dark, light, this.barSkew, bar.invert)
-    })
+    const playerKey = `player${this.currentPlayer}`;
+    const bars = Object.values(hud[playerKey].bars);
 
-    const balls = Object.values(hud[playerKey].balls)
-    let roundsGain = jogador.roundsGain
-    balls.forEach(ball => {
-      let victory = roundsGain >= 1
-      this.drawPerfectBall(ctx, ball.x, ball.y, victory)
-      roundsGain--
-    })
+    bars.forEach((bar) => {
+      const type = bar.type;
+      const { dark, light } = bar.color;
+      this.drawBar(
+        ctx,
+        type,
+        jogador[bar.max],
+        jogador[type],
+        bar.x,
+        bar.y,
+        bar.width,
+        bar.height,
+        dark,
+        light,
+        this.barSkew,
+        bar.invert,
+        bar.startSide,
+        jogador.superCost
+      );
+    });
+
+    const balls = Object.values(hud[playerKey].balls);
+    let roundsGain = jogador.roundsGain;
+    balls.forEach((ball) => {
+      let victory = roundsGain >= 1;
+      this.drawPerfectBall(ctx, ball.x, ball.y, victory);
+      roundsGain--;
+    });
+
+    if (this.currentPlayer === 1) {
+      this.drawTime(ctx);
+    }
   }
 
   drawPlayer(ctx, jogador) {
@@ -209,90 +224,141 @@ export default class Animator {
     return;
   }
 
-  drawBar(ctx, type, max, current, x, y, w, h, dark, light, skew, invert) {
+  drawBar(
+    ctx,
+    type,
+    max,
+    current,
+    x,
+    y,
+    w,
+    h,
+    dark,
+    light,
+    skew,
+    invert,
+    startSide = "left",
+    superCost = null
+  ) {
+    const markerWidth = 4;
     x = Math.round(x);
     y = Math.round(y);
     w = Math.round(w);
     h = Math.round(h);
     skew = Math.round(skew);
 
-    for (let i = 0; i < max; i++) {
-        const t0 = i / max;
-        const t1 = (i + 1) / max + 0.006;
-        const x0Top = invert ? x + (1 - t1) * w : x + t0 * w;
-        const x1Top = invert ? x + (1 - t0) * w : x + t1 * w;
-        const x0Bot = x0Top + (invert ? +skew : -skew);
-        const x1Bot = x1Top + (invert ? +skew : -skew);
-
-        const color =
-        i < current
-          ? this.lerpColor(dark, light, i / (max - 1))
-          : "#333";
-
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(x0Top, y);
-        ctx.lineTo(x1Top, y);
-        ctx.lineTo(x1Bot, y + h);
-        ctx.lineTo(x0Bot, y + h);
-        ctx.closePath();
-        ctx.fill();
+    let markerXTop, markerXBot;
+    if (type == "superEnergy") {
+      const frac = Math.max(0, Math.min(1, superCost / max));
+      const fracLogical = startSide === "right" ? 1 - frac : frac;
+      markerXTop = invert ? x + (1 - fracLogical) * w : x + fracLogical * w;
+      markerXBot = markerXTop + (invert ? +skew : -skew);
     }
 
-    // Borda externa
+    for (let i = 0; i < max; i++) {
+      const pos = startSide === "right" ? max - 1 - i : i;
+
+      const t0 = i / max;
+      const t1 = (i + 1) / max + 0.006;
+      const x0Top = invert ? x + (1 - t1) * w : x + t0 * w;
+      const x1Top = invert ? x + (1 - t0) * w : x + t1 * w;
+      const x0Bot = x0Top + (invert ? +skew : -skew);
+      const x1Bot = x1Top + (invert ? +skew : -skew);
+
+      let color;
+      if (pos < current) {
+        color = this.lerpColor(dark, light, pos / (max - 1));
+      } else {
+        color = "#333";
+      }
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x0Top, y);
+      ctx.lineTo(x1Top, y);
+      ctx.lineTo(x1Bot, y + h);
+      ctx.lineTo(x0Bot, y + h);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    if (type == "superEnergy") {
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.moveTo(markerXTop - markerWidth / 2, y);
+      ctx.lineTo(markerXTop + markerWidth / 2, y);
+      ctx.lineTo(markerXBot + markerWidth / 2, y + h);
+      ctx.lineTo(markerXBot - markerWidth / 2, y + h);
+      ctx.closePath();
+      ctx.fill();
+    }
+
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#000";
     ctx.beginPath();
     if (!invert) {
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + w, y);
-        ctx.lineTo(x + w - skew, y + h);
-        ctx.lineTo(x - skew, y + h);
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w, y);
+      ctx.lineTo(x + w - skew, y + h);
+      ctx.lineTo(x - skew, y + h);
     } else {
-        const topLeftX = x + w;
-        const topRightX = x;
-        const botRightX = x + skew;
-        const botLeftX = x + w + skew;
-        ctx.moveTo(topLeftX, y);
-        ctx.lineTo(topRightX, y);
-        ctx.lineTo(botRightX, y + h);
-        ctx.lineTo(botLeftX, y + h);
+      ctx.moveTo(x + w, y);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x + skew, y + h);
+      ctx.lineTo(x + w + skew, y + h);
     }
     ctx.closePath();
     ctx.stroke();
   }
 
   drawPerfectBall(ctx, x, y, victory) {
-      ctx.beginPath();
-      ctx.arc(x, y, 10, 0, Math.PI * 2); // Círculo completo
-      ctx.fillStyle = victory ? 'red' : 'transparent';
-      ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = victory ? "red" : "transparent";
+    ctx.fill();
 
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.stroke();
+  }
+
+  drawTime(ctx) {
+    const centroX = this.canvasWidth / 2;
+
+    const gradiente = ctx.createLinearGradient(0, 0, 0, 100);
+    gradiente.addColorStop(0, "#BEBEBE");
+    gradiente.addColorStop(1, "#FFFFFF");
+
+    ctx.font = 'bold 50px "Press Start 2P", monospace';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = gradiente;
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 5;
+
+    ctx.strokeText("∞", centroX, 60);
+    ctx.fillText("∞", centroX, 60);
   }
 
   lerpColor(a, b, t) {
     const [ar, ag, ab] = this.hexToRgb(a);
     const [br, bg, bb] = this.hexToRgb(b);
     return this.rgbToHex(
-    Math.round(ar + (br - ar) * t),
-    Math.round(ag + (bg - ag) * t),
-    Math.round(ab + (bb - ab) * t)
+      Math.round(ar + (br - ar) * t),
+      Math.round(ag + (bg - ag) * t),
+      Math.round(ab + (bb - ab) * t)
     );
   }
 
   hexToRgb(hex) {
     const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return m
-    ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)]
-    : [0, 0, 0];
+      ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)]
+      : [0, 0, 0];
   }
 
   rgbToHex(r, g, b) {
-    return (
-    "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")
-    );
+    return "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
   }
 }

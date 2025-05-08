@@ -275,7 +275,7 @@ export const hud = {
             }
         },
         profile: {
-            x: 1100,
+            x: 1080,
             y: 35,
             width: 80,
             height: 80,

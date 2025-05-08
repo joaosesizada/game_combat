@@ -51,7 +51,7 @@ export default class Player {
 
         this.knockbackResistance = 0.8;
         this.facingDirection = this.x >= 0 ? 'right' : "left";
-        this.platforms = GameRoom.getMap().platforms
+        this.platforms = GameRoom.getMap().platforms.positions
     }
 
     update(players, effects = []) {

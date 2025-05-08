@@ -6,7 +6,7 @@ const socket = io();
 const animators = {};
 let players = {};
 let effects = [];
-let plataforms = []
+let platforms = {}
 let gameOver = false;
 let gameOverData = null;
 
@@ -36,7 +36,7 @@ export function initSocket(onConnected) {
   socket.on('update', (serverPlayers, serverEffects, ServePlataforms) => {
     players = serverPlayers;
     effects = serverEffects || [];
-    plataforms = ServePlataforms
+    platforms = ServePlataforms
   });
 
   socket.on('goToGame', ({ map }) => {
@@ -67,7 +67,7 @@ export function getGameOverData() { return gameOverData; }
 export function getSocket() { return socket; }
 export function getPlayers() { return players; }
 export function getEffects() { return effects; }
-export function getPlataforms() { return plataforms; }
+export function getPlatforms() { return platforms; }
 
 export function getAnimator(playerId, playerData, currentPlayer) {
   if (!animators[playerId]) {

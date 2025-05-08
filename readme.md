@@ -7,6 +7,18 @@
 O projeto foi desenvolvido por uma equipe apaixonada por jogos e tecnologia, com muito esforço, dedicação e trabalho em equipe!
 
 ---
+🎥 **Vídeos**
+
+- **Vídeo Técnico do Sistema e Arquitetura**: [Assista no YouTube](#)
+- **Demonstração de Gameplay**: [Confira o gameplay](#)
+
+---
+
+▶️ **Jogar Agora**
+
+Para jogar *Eternal Nexus*, acesse o link abaixo e divirta-se:
+
+🔗 **Link para Jogar**: [https://seu-servidor-ou-endereco-deploy.com](https://seu-servidor-ou-endereco-deploy.com)
 
 ## 👥 Equipe e Colaboradores
 

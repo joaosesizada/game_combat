@@ -69,7 +69,7 @@ const setup = {
             framesHeight: 54,
             totalFrames: 4,
             loop: false
-        }  
+        },
     },
     heroKnight: {
         idle: {
@@ -150,5 +150,139 @@ const setup = {
         tornado: { src: "../imgs/effects/tornado.png", totalFrames: 5, frameWidth: 31, frameHeight: 32, loop: true }
     }
 }
+
+export const hud = {
+    profilesImg: {
+        ninja: '../imgs/ninja/perfil.png',
+        heroKnight: '../imgs/heroKnight/perfil.png'
+    },
+    player1: {
+        balls: {
+            ballOne: {
+                x: 400,
+                y: 102.5
+            },
+            ballTwo: {
+                x: 430,
+                y: 102.5
+            }
+        },
+        bars: {
+            health: {
+                type: 'health',
+                max: 'maxHealth',
+                x: 150,
+                y: 50,
+                width: 300,
+                height: 17.5,
+                invert: false,
+                startSide: 'left',
+                color: {
+                    dark: "#800000",
+                    light: "#FF0333",
+                }
+            },
+            superEnergy: {
+                type: 'superEnergy',
+                max: 'maxSuperEnergy',
+                x: 140,
+                y: 70,
+                width: 300,
+                height: 15,
+                invert: true,
+                startSide: 'right',
+                color: {
+                    dark: "#FFD700",
+                    light: "#FF4500",
+                }
+            },
+            stamina: {
+                type: 'stamina',
+                max: 'maxStamina',
+                x: 155,
+                y: 95,
+                width: 200,
+                height: 12.5,
+                invert: true,
+                startSide: 'right',
+                color: {
+                    dark: "#000080",
+                    light: "#0070FF",
+                }
+            }
+        }, 
+        profile: {
+            x: 50,
+            y: 35,
+            width: 80,
+            height: 80,
+            flip: false
+        }
+    },
+    player2: {
+        balls: {
+            ballOne: {
+                x: 800,
+                y: 102.5
+            },
+            ballTwo: {
+                x: 770,
+                y: 102.5
+            }
+        },
+        bars: {
+            health: {
+                type: 'health',
+                max: 'maxHealth',
+                x: 750,
+                y: 50,
+                width: 300,
+                height: 17.5,
+                invert: true,
+                startSide: 'left',
+                color: {
+                    dark: "#800000",
+                    light: "#FF0333",
+                }
+            },
+            superEnergy: {
+                type: 'superEnergy',
+                max: 'maxSuperEnergy',
+                x: 760,
+                y: 70,
+                width: 300,
+                height: 15,
+                invert: false,
+                startSide: 'right',
+                color: {
+                    dark: "#FFD700",
+                    light: "#FF4500",
+                }
+            },
+            stamina: {
+                type: 'stamina',
+                max: 'maxStamina',
+                x: 850,
+                y: 95,
+                width: 200,
+                height: 12.5,
+                invert: false,
+                startSide: 'right',
+                color: {
+                    dark: "#000080",
+                    light: "#0070FF",
+                }
+            }
+        },
+        profile: {
+            x: 1080,
+            y: 35,
+            width: 80,
+            height: 80,
+            flip: true
+        }
+    }
+}      
+
 
 export default setup

@@ -16,6 +16,7 @@ export default class Player {
         this.renderHeight = this.height;
         this.currentAnimation = 'idle'
         this.gameRoom = GameRoom.getGameRoom();
+        this.roundsGain = 0
 
         this.canvasHeight = 675;
         this.canvasWidth = 1200;
@@ -35,6 +36,7 @@ export default class Player {
         this.attackBoxToDraw = []
         this.attackAnimCurrent = null
 
+        this.maxHealth = this.config.health;
         this.health = this.config.health;
         this.isDamaged = false;
         this.isAlive = true;
@@ -76,14 +78,14 @@ export default class Player {
             return;
         }
 
-        if (this.keys.lastKey === 'a' && this.keys.a) {
+        if (this.keys.lastHorizontal  === 'a' && this.keys.a) {
             if (this.x > 0) {
                 this.x -= this.speed;
                 this.facingDirection = "left";
                 this.isMoving = true;
             }
         }
-        if (this.keys.lastKey === 'd' && this.keys.d) {
+        if (this.keys.lastHorizontal  === 'd' && this.keys.d) {
             if (this.x < this.canvasWidth - this.width) {
                 this.x += this.speed;
                 this.facingDirection = "right";
@@ -376,6 +378,7 @@ export default class Player {
           currentAnimation: this.currentAnimation,
           canvasHeight: this.canvasHeight,
           canvasWidth: this.canvasWidth,
+          roundsGain: this.roundsGain,
           keys: this.keys,
           isMoving: this.isMoving,
           isGrounded: this.isGrounded,
@@ -391,7 +394,9 @@ export default class Player {
           attackDuration: this.attackDuration,
           attackBoxConfig: this.attackBoxConfig,
           attackBoxToDraw: this.attackBoxToDraw,
+          superCost: this.attacksConfig.super.energyCost,
           health: this.health,
+          maxHealth: this.maxHealth,
           isAlive: this.isAlive,
           isDamaged: this.isDamaged,
           maxStamina: this.maxStamina,

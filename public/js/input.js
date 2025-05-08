@@ -1,6 +1,6 @@
 import { getSocket } from './network.js';
 
-const keys = { w: false, a: false, d: false, s: false, mouseLeft: false, mouseRight: false, scroll: false, lastKey: ''};
+const keys = { w: false, a: false, d: false, s: false, mouseLeft: false, mouseRight: false, scroll: false, lastHorizontal : ''};
 
 export function setupInputListeners() {
 
@@ -8,7 +8,9 @@ export function setupInputListeners() {
     const key = event.key.toLowerCase();
     if (keys.hasOwnProperty(key)) {
       keys[key] = true;
-      keys.lastKey = key
+      if (key === 'a' || key === 'd') {
+        keys.lastHorizontal  = key
+      }
 
       getSocket().emit('move', keys);
     }

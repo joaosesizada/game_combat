@@ -96,13 +96,13 @@ export default class GameRoom {
     this.gameInterval = setInterval(() => {
       const allPlayers = Object.values(this.players);
       const effects = this.effectManager.getEffects();
-      const plataforms = maps[GameRoom.currentMap].platforms
+      const platforms = maps[GameRoom.currentMap].platforms
 
       allPlayers.forEach(p => p.update(allPlayers, effects));
 
       this.effectManager.update(); 
 
-      this.io.to(this.idRoom).emit('update', this.getState().players, effects, plataforms);
+      this.io.to(this.idRoom).emit('update', this.getState().players, effects, platforms);
 
       this.checkGameOver();
     }, 1000 / this.FPS);

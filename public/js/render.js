@@ -1,4 +1,4 @@
-import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects, getPlataforms } from './network.js';
+import { getPlayers, getAnimator, cleanupAnimators, isGameOver, getGameOverData, getSocket, getEffects, getPlatforms } from './network.js';
 import EffectAnimator from './EffectAnimator.js';
 import setup from './setup.js';
 
@@ -7,10 +7,8 @@ const ctx = canvas.getContext('2d');
 let lastTimestamp = performance.now();
 let timerLobby = 5;
 
-// Cria (única) instância para animar efeitos – agora ela é única e reutilizada.
 let effectAnimatorInstance = new EffectAnimator(setup);
 
-// NOVO: Variáveis para controlar estado de game over
 let showGameOverScreen = false;
 let deadPlayerIds = new Set();
 let gameOverTriggered = false;
@@ -24,13 +22,11 @@ function loop() {
   const deltaTime = now - lastTimestamp;
   lastTimestamp = now;
 
-  // Limpa a tela antes de desenhar
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   renderPlayers(deltaTime);
-  renderEffects(); // chamamos a renderização dos efeitos
-  renderPlataforms(ctx)
-  // MODIFICADO: Processamento do game over
+  renderEffects(); 
+  renderPlatforms(ctx)
   checkGameOverCondition();
   
   if (showGameOverScreen) {
@@ -53,20 +49,15 @@ function renderPlayers(deltaTime) {
     const player = players[id];
     const animator = getAnimator(id, player, index);
     
-    // Usa o currentAnimation do player, já definido pelo próprio objeto
     animator.setAnimation(player.currentAnimation);
     
-    // NOVO: Para jogadores mortos, verificar se a animação de morte terminou
     if (!player.isAlive) {
-      // Adicionar handler só uma vez para cada jogador morto
       if (!deadPlayerIds.has(id)) {
         deadPlayerIds.add(id);
         
-        // Registrar callback quando animação de morte terminar
         animator.onAnimationFinished('death', () => {
           player.deathAnimationComplete = true;
           
-          // Se for nosso jogador, iniciar game over
           if (id === getSocket().id) {
             showGameOverScreen = true;
           }
@@ -74,7 +65,6 @@ function renderPlayers(deltaTime) {
       }
     }
     
-    // Se a animação de ataque atingiu o fim, volta ao estado default
     if (animator.currentAnimation === 'attack' && animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
       animator.setAnimation(player.isMoving ? 'run' : 'idle');
       player.isAttacking = false;
@@ -86,15 +76,12 @@ function renderPlayers(deltaTime) {
   }
 }
 
-// NOVO: Verificar condições para mostrar game over
 function checkGameOverCondition() {
-  // Se já recebemos evento de game over do servidor
   if (isGameOver() && !gameOverTriggered) {
     gameOverTriggered = true;
     const players = getPlayers();
     const myId = getSocket().id;
     
-    // Verificar se somos o único jogador vivo (vitória)
     let amITheOnlyOneAlive = true;
     let amIAlive = false;
     
@@ -106,12 +93,10 @@ function checkGameOverCondition() {
       }
     }
     
-    // Mostrar game over imediatamente em caso de vitória
     if (amIAlive && amITheOnlyOneAlive) {
       showGameOverScreen = true;
     }
     
-    // Caso eu esteja morto, esperamos a animação terminar via callback
   }
 }
 
@@ -123,14 +108,39 @@ function renderEffects() {
   });
 }
 
-function renderPlataforms(ctx) {
-  const plataforms = getPlataforms()
-  ctx.fillStyle = "red"
+function renderPlatforms(ctx) {
+  const { positions, src } = getPlatforms();
+  console.log(positions, src);
 
-  plataforms.forEach(plataform => {
-    ctx.fillRect(plataform.x, plataform.y, plataform.width, plataform.height)
-  })
+  const img = new Image();
+  img.src = src;
+
+  const drawAll = () => {
+    positions.forEach(({ x, y, width, height }) => {
+      const imgRatio = img.width / img.height;
+      const targetRatio = width / height;
+
+      let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height;
+      if (imgRatio > targetRatio) {
+        sWidth = img.height * targetRatio;
+        sx = (img.width - sWidth) / 2;
+      } else {
+        sHeight = img.width / targetRatio;
+        sy = (img.height - sHeight) / 2;
+      }
+
+      ctx.drawImage(
+        img,
+        sx, sy, sWidth, sHeight,
+        x, y, width, height
+      );
+    });
+  };
+
+  img.onload = drawAll;
+  if (img.complete) drawAll();
 }
+
 
 function renderGameOverOverlay(ctx, gameOverData) {
   const players = getPlayers();

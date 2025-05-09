@@ -109,38 +109,42 @@ function renderEffects() {
 }
 
 function renderPlatforms(ctx) {
-  const { positions, src } = getPlatforms();
-  console.log(positions, src);
-
+  const { src, positions } = getPlatforms();
   const img = new Image();
   img.src = src;
 
-  const drawAll = () => {
-    positions.forEach(({ x, y, width, height }) => {
-      const imgRatio = img.width / img.height;
-      const targetRatio = width / height;
+  function drawAll() {
+    positions.forEach(p => {
+      // coordenadas FÍSICAS (colisão)
+      const { x, y, width, height } = p;
 
-      let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height;
+      // coordenadas VISUAIS
+      const { imgX, imgY, imgWidth, imgHeight } = p;
+
+      // cálculo de crop para manter proporção na imagem
+      const imgRatio    = img.width / img.height;
+      const targetRatio = imgWidth / imgHeight;
+      let sx = 0, sy = 0, sW = img.width, sH = img.height;
       if (imgRatio > targetRatio) {
-        sWidth = img.height * targetRatio;
-        sx = (img.width - sWidth) / 2;
+        sW = img.height * targetRatio;
+        sx = (img.width - sW) / 2;
       } else {
-        sHeight = img.width / targetRatio;
-        sy = (img.height - sHeight) / 2;
+        sH = img.width / targetRatio;
+        sy = (img.height - sH) / 2;
       }
 
+      // desenha imagem
       ctx.drawImage(
         img,
-        sx, sy, sWidth, sHeight,
-        x, y, width, height
+        sx, sy, sW, sH,
+        imgX, imgY, imgWidth, imgHeight
       );
     });
-  };
+  }
 
   img.onload = drawAll;
   if (img.complete) drawAll();
 }
-
 
 function renderGameOverOverlay(ctx, gameOverData) {
   const players = getPlayers();

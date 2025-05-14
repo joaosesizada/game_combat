@@ -92,7 +92,7 @@ function checkGameOverCondition() {
         amITheOnlyOneAlive = false;
 
         // Atualiza derrota para os perdedores
-        fetch('http://localhost:3000/derrota/' + window.localStorage.getItem('playerId'), {
+        fetch('https://eternalnexus.online/derrota/' + window.localStorage.getItem('playerId'), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ function checkGameOverCondition() {
         showGameOverScreen = true;
     
         // Atualiza vitória para o vencedor
-        fetch('http://localhost:3000/vitoria/' + window.localStorage.getItem('playerId'), {
+        fetch('https://eternalnexus.online/vitoria/' + window.localStorage.getItem('playerId'), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'

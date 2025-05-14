@@ -50,7 +50,7 @@ username.addEventListener("input", () => {
     }
 
     // Verifica se o nome de usuário já existe
-    fetch("https://eternalnexus.online/verifica-user/" + username.value)
+    fetch("http://localhost:3000/verifica-user/" + username.value)
         .then(response => response.json())
         .then(data => {
             if (data.message == "unavailable") {
@@ -119,7 +119,7 @@ email.addEventListener("input", () => {
         emailValido.style.color = "green";
     }
 
-    fetch("https://eternalnexus.online/verifica-email/" + email.value)
+    fetch("http://localhost:3000/verifica-email/" + email.value)
         .then(response => response.json())
         .then(data => {
             if (data.message == "unavailable") {
@@ -158,7 +158,7 @@ button.addEventListener("click", () => {
             photo_user: photo_user.value
         }
 
-        fetch("https://eternalnexus.online/cadastrar", {
+        fetch("http://localhost:3000/cadastrar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -169,6 +169,12 @@ button.addEventListener("click", () => {
             .then(data => {
                 console.log("Usuário cadastrado com sucesso:", data);
                 window.location.href = "home.html";
+                const localstorage = window.localStorage;
+                localstorage.setItem("userId", data.id);
+                localstorage.setItem("username", data.username);
+                localstorage.setItem("photo_user", data.photo_user);
+                localstorage.setItem("victory", data.victory);
+                localstorage.setItem("lose", data.lose);
             })
             .catch(error => {
                 console.error("Erro ao cadastrar usuário:", error);

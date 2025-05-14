@@ -168,3 +168,20 @@ button:hover {
 .container-password button {
     width: 25%;
 }
+
+.voltar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    border: none;
+    width: 60px;
+}
+
+.voltar:hover {
+    transform: scale(1.1);
+}
+
+.voltar img {
+    width: 60px;
+}

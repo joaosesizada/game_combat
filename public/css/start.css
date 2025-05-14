@@ -36,3 +36,22 @@
 .up {
     margin-bottom: 20px;
 }
+
+#message {
+    color: var(--blackL);
+    height: 50px;
+    width: 300px;
+    position: fixed;
+    top : 150px;
+    right: 630px;
+    -webkit-animation: pulsate-fwd 2s ease-in-out infinite both;
+    animation: pulsate-fwd 2s ease-in-out infinite both;
+    display: flex;
+    align-items: end;
+}
+
+#version {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}

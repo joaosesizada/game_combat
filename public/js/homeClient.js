@@ -39,3 +39,38 @@ socket.on('userData', (data) => {
         // `;
     }
 });
+const user = document.getElementById("user");
+window.addEventListener("load", () => {
+    const id = localStorage.getItem("userId");
+    const nome = localStorage.getItem("username");
+    const photo_user = localStorage.getItem("photo_user");
+    const victory = localStorage.getItem("victory");
+    const lose = localStorage.getItem("lose");
+
+    if (id == null || nome == null || photo_user == null) {
+        window.location.href = "login";
+    }
+
+    user.innerHTML = `
+        <img src="../imgs/icones/${photo_user}.png" alt="Foto do usuário">
+        <div>
+            <h3>${nome}</h3>
+            <div class="ladin">
+                <img src="../imgs/ranking/trofeu.png" alt="Vitória">
+                <h3>${victory}</h3>
+            </div>
+            <div class="ladin">   
+                <img src="../imgs/ranking/morte.png" alt="Derrota">
+                <h3>${lose}</h3>
+            </div>
+        </div>
+    `;
+});
+
+const sair = document.getElementById("sair");
+sair.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    localStorage.removeItem("photo_user");
+    window.location.href = "index.html";
+});

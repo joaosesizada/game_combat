@@ -25,10 +25,10 @@ function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   renderPlayers(deltaTime);
-  renderEffects(); 
+  renderEffects();
   renderPlatforms(ctx)
   checkGameOverCondition();
-  
+
   if (showGameOverScreen) {
     if (timerLobby > 0) {
       timerLobby -= deltaTime / 1000;
@@ -41,35 +41,35 @@ function loop() {
 }
 
 function renderPlayers(deltaTime) {
-  
+
   const players = getPlayers();
   cleanupAnimators(players);
-  let index = 1 
+  let index = 1
   for (let id in players) {
     const player = players[id];
     const animator = getAnimator(id, player, index);
-    
+
     animator.setAnimation(player.currentAnimation);
-    
+
     if (!player.isAlive) {
       if (!deadPlayerIds.has(id)) {
         deadPlayerIds.add(id);
-        
+
         animator.onAnimationFinished('death', () => {
           player.deathAnimationComplete = true;
-          
+
           if (id === getSocket().id) {
             showGameOverScreen = true;
           }
         });
       }
     }
-    
+
     if (animator.currentAnimation === 'attack' && animator.currentFrame >= animator.animations['attack'].totalFrames - 1) {
       animator.setAnimation(player.isMoving ? 'run' : 'idle');
       player.isAttacking = false;
     }
-    
+
     animator.update(deltaTime);
     animator.drawPlayer(ctx, player);
     index++
@@ -81,22 +81,40 @@ function checkGameOverCondition() {
     gameOverTriggered = true;
     const players = getPlayers();
     const myId = getSocket().id;
-    
+
     let amITheOnlyOneAlive = true;
     let amIAlive = false;
-    
+
     for (let id in players) {
       if (id === myId) {
         amIAlive = players[id].isAlive;
       } else if (players[id].isAlive) {
         amITheOnlyOneAlive = false;
+
+        // Atualiza derrota para os perdedores
+        fetch('http://localhost:3000/derrota/' + window.localStorage.getItem('playerId'), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(() => {
+            console.log('Derrota atualizada para o jogador ' + window.localStorage.getItem('playerId'));
+          })
+      }
+
+      if (amIAlive && amITheOnlyOneAlive) {
+        showGameOverScreen = true;
+    
+        // Atualiza vitória para o vencedor
+        fetch('http://localhost:3000/vitoria/' + window.localStorage.getItem('playerId'), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
       }
     }
-    
-    if (amIAlive && amITheOnlyOneAlive) {
-      showGameOverScreen = true;
-    }
-    
   }
 }
 
@@ -122,7 +140,7 @@ function renderPlatforms(ctx) {
       const { imgX, imgY, imgWidth, imgHeight } = p;
 
       // cálculo de crop para manter proporção na imagem
-      const imgRatio    = img.width / img.height;
+      const imgRatio = img.width / img.height;
       const targetRatio = imgWidth / imgHeight;
       let sx = 0, sy = 0, sW = img.width, sH = img.height;
       if (imgRatio > targetRatio) {

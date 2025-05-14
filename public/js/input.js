@@ -1,5 +1,24 @@
 import { getSocket } from './network.js';
 
+function handleMovement(keys) {
+  const socket = getSocket(); // Obtém o socket ativo
+  const localData = {
+    userId: localStorage.getItem("userId"),
+    username: localStorage.getItem("username"),
+    photo_user: localStorage.getItem("photo_user"),
+    victory: parseInt(localStorage.getItem("victory") || "0", 10),
+    lose: parseInt(localStorage.getItem("lose") || "0", 10),
+  };
+
+  socket.emit("move", {
+    keys,
+    localData,
+  });
+}
+
+// Exporta a função para ser usada em outros lugares
+export { handleMovement };
+
 const keys = { w: false, a: false, d: false, s: false, mouseLeft: false, mouseRight: false, scroll: false, lastHorizontal : ''};
 
 export function setupInputListeners() {

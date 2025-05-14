@@ -28,8 +28,9 @@ export function initSocket(onConnected) {
   });
 
   socket.on('updateRoom', ({ players }) => {
+
     document.getElementById('placar').textContent = `${players.length}/2`
-    document.getElementById('host').textContent = players[0] || ''
+    document.getElementById('host').textContent = players || ''
     document.getElementById('player2').textContent = players[1] || ''
   });
   

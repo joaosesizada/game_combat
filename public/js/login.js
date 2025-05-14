@@ -22,7 +22,7 @@ button.addEventListener("click", () => {
     let usernameValue = username.value;
     let passwordValue = password.value;
 
-    fetch("https://eternalnexus.online/login/" + usernameValue + "/" + passwordValue)
+    fetch("http://localhost:3000/login/" + usernameValue + "/" + passwordValue)
         .then(response => response.json())
         .then(data => {
             if (data.message == "unavailable") {
@@ -37,6 +37,13 @@ button.addEventListener("click", () => {
                     username: data.username,
                     photo_user: data.photo_user
                 });
+
+                const localstorage = window.localStorage;
+                localstorage.setItem("userId", data.id);
+                localstorage.setItem("username", data.username);
+                localstorage.setItem("photo_user", data.photo_user);
+                localstorage.setItem("victory", data.victory);
+                localstorage.setItem("lose", data.lose);
                 
                 // Espera a confirmação do servidor!
                 socket.once('loginSuccess', (response) => {

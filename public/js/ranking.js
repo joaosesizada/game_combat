@@ -1,7 +1,7 @@
 let tierList = []
 
 window.onload = function () {
-    fetch('https://eternalnexus.online/ranking')
+    fetch('http://localhost:3000/ranking')
         .then(response => response.json())
         .then(data => {
             let ranking = document.getElementById('ranking');

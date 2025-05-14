@@ -38,6 +38,10 @@ app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.get('/room/:roomId', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'room.html'));
 });
@@ -125,7 +129,6 @@ io.on("connection", (socket) => {
         player.keys = keys;
     });
 
-
     socket.on("disconnect", () => {
 
         const roomId = socketToRoom[socket.id];
@@ -153,6 +156,39 @@ io.on("connection", (socket) => {
         socket.data.user = null;  
     }); 
 
+});
+
+
+// aumentar uma vitoria
+app.put('/vitoria/:id', async (req, res) => {
+    const { id } = req.params;
+
+    Users.findByPk(id)
+        .then((user) => {
+            if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+            user.victory += 1;
+            user.save()
+                .then(() => res.status(200).json(user))
+                .catch((error) => res.status(500).json({ error: 'Erro ao atualizar vitórias' }));
+        })
+        .catch((error) => res.status(500).json({ error: 'Erro ao buscar usuário' }));
+});
+
+// aumentar uma derrota
+app.put('/derrota/:id', async (req, res) => {
+    const { id } = req.params;
+
+    Users.findByPk(id)
+        .then((user) => {
+            if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+            user.lose += 1;
+            user.save()
+                .then(() => res.status(200).json(user))
+                .catch((error) => res.status(500).json({ error: 'Erro ao atualizar derrotas' }));
+        })
+        .catch((error) => res.status(500).json({ error: 'Erro ao buscar usuário' }));
 });
 
 app.post('/cadastrar', async (req, res) => {
